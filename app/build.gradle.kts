@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.devtoolsKsp)
 }
 
 android {
@@ -66,4 +69,15 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Glide
+    implementation(libs.glide)
+    implementation(libs.glide.compose)
+
+    // navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // hilt adnroid
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 }
