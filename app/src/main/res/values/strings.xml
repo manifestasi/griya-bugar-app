@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GriyaBugar</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_button_box">ButtonBox</string>
+    <string name="title_activity_circle_background">CircleBackground</string>
+    <string name="title_activity_circle_card">CircleCard</string>
+    <string name="title_activity_circle_element">CircleElement</string>
 </resources>

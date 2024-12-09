@@ -14,6 +14,31 @@
         android:theme="@style/Theme.GriyaBugar"
         tools:targetApi="31">
         <activity
+            android:name=".ui.components.CircleElement"
+            android:exported="false"
+            android:label="@string/title_activity_circle_element"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
+            android:name=".ui.components.CircleBackground.CircleCard"
+            android:exported="false"
+            android:label="@string/title_activity_circle_card"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
+            android:name=".ui.components.CircleBackground.CircleBackground"
+            android:exported="false"
+            android:label="@string/title_activity_circle_background"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
+            android:name=".ui.components.ButtonBox"
+            android:exported="false"
+            android:label="@string/title_activity_button_box"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
+            android:name=".ui.screen.welcome.WelcomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_welcome"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
