@@ -15,6 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.home.HomeScreen
+import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
@@ -33,7 +34,7 @@ fun GriyaBugarApp(
             modifier = modifier.padding(innerPadding)
         ){
             composable(Screen.Home.route){
-                HomeScreen()
+                LoginScreen()
             }
         }
     }
