@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,10 +13,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,9 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.components.Button.BoxButton
-import com.griya.griyabugar.ui.components.CircleElement
+import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
 import com.griya.griyabugar.ui.screen.welcome.ui.theme.GriyaBugarTheme
-import com.griya.griyabugar.ui.theme.CircleColor
 import com.griya.griyabugar.ui.theme.MainColor
 
 class WelcomeActivity : ComponentActivity() {
@@ -123,10 +120,12 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun MainWelcomeScreen(modifier: Modifier){
-
-    WelcomeScreen(
-        modifier = modifier.padding(10.dp)
-    )
+    Scaffold { innerPadding->
+        WelcomeScreen(
+            modifier = modifier.padding(innerPadding)
+        )
+    }
+    
 }
 
 

@@ -14,6 +14,21 @@
         android:theme="@style/Theme.GriyaBugar"
         tools:targetApi="31">
         <activity
+            android:name=".ui.components.Button.ButtonBack"
+            android:exported="false"
+            android:label="@string/title_activity_button_back"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
+            android:name=".ui.components.Field.TextFieldTemplate"
+            android:exported="false"
+            android:label="@string/title_activity_text_field_template"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
+            android:name=".ui.screen.forgetPass.ForgetPassword"
+            android:exported="false"
+            android:label="@string/title_activity_forget_password"
+            android:theme="@style/Theme.GriyaBugar" />
+        <activity
             android:name=".ui.components.CircleElement"
             android:exported="false"
             android:label="@string/title_activity_circle_element"
