@@ -240,8 +240,9 @@ fun RegisterScreen(){
                     )
                     Spacer(Modifier.width(5.dp))
                     Text(
-                        text = "Daftar",
-                        fontFamily = FontFamily(listOf(Font(R.font.poppins_semibold))),
+                        text = "Masuk",
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = Color.Black,
                         modifier=Modifier.clickable {  }
