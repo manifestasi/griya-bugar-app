@@ -2,6 +2,7 @@ package com.griya.griyabugar.ui.screen.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -28,19 +30,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
-import com.griya.griyabugar.ui.components.EmailTextField
-import com.griya.griyabugar.ui.components.PasswordTextField
+import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
+import com.griya.griyabugar.ui.components.Field.EmailTextField
+import com.griya.griyabugar.ui.components.Field.PasswordTextField
+import com.griya.griyabugar.ui.components.register.ButtonConfirm
+import com.griya.griyabugar.ui.theme.Gray
+import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
-    Column(
+    Surface(
         modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Spacer(Modifier.height(40.dp))
-        HeaderSection(modifier = Modifier .padding(16.dp))
-        MainSection(modifier = Modifier.padding(16.dp))
+        .fillMaxSize()) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = Color.White)
+        ){
+            CircleElement()
+            CircleElement(
+                alignment = Alignment.BottomStart,
+                startAngle = 0f,
+                endAngle = 360f,
+                offsetX = -130,
+                offsetY = 80
+            )
+            Column(
+                modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+            ) {
+                Spacer(Modifier.height(40.dp))
+                HeaderSection(modifier = Modifier .padding(16.dp))
+                MainSection(modifier = Modifier.padding(16.dp))
+            }
+        }
     }
 }
 
@@ -103,24 +127,10 @@ private fun MainSection (modifier: Modifier = Modifier) {
             modifier = Modifier.align(Alignment.End).clickable {  }
         )
         Spacer(Modifier.height(30.dp))
-        Button(
+        ButtonConfirm(
             onClick = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp),
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Cyan,
-            )
-        ) {
-            Text(
-                text = "Masuk",
-                fontFamily = FontFamily(listOf(Font(R.font.poppins_medium))),
-                fontSize = 16.sp,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-            )
-        }
+            name = "Masuk"
+        )
         Spacer(Modifier.height(10.dp))
         Row(modifier = Modifier.align(CenterHorizontally)) {
             Text(
@@ -144,5 +154,7 @@ private fun MainSection (modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun HeaderPreview(modifier: Modifier = Modifier) {
-    HeaderSection()
+    GriyaBugarTheme {
+        LoginScreen()
+    }
 }

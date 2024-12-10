@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">GriyaBugar</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_button_box">ButtonBox</string>
+    <string name="title_activity_circle_background">CircleBackground</string>
+    <string name="title_activity_circle_card">CircleCard</string>
+    <string name="title_activity_circle_element">CircleElement</string>
+    <string name="title_activity_forget_password">ForgetPassword</string>
+    <string name="title_activity_text_field_template">TextFieldTemplate</string>
+    <string name="title_activity_button_back">ButtonBack</string>
 </resources>

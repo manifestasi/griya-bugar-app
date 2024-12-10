@@ -13,3 +13,6 @@ val Pink40 = Color(0xFF7D5260)
 val Gray = Color(0xFFD9D9D9)
 
 val Brown = Color(0xFF8F8080)
+//tambahkan konfigurasi color di sini, copy dari figma dan tambahkan 0xFF
+val MainColor = Color(0xFF8F8080)
+val CircleColor = Color(0xFFD9D9D9)

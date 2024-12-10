@@ -1,6 +1,7 @@
 package com.griya.griyabugar.ui.screen.register
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
+import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
 import com.griya.griyabugar.ui.components.register.ButtonConfirm
 import com.griya.griyabugar.ui.components.register.NoHandPhoneField
 import com.griya.griyabugar.ui.components.register.PasswordField
@@ -54,31 +56,42 @@ fun RegisterScreen(){
         modifier = Modifier.fillMaxSize()
     ) {
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.White)
         ){
-            Canvas(
-                modifier = Modifier
-                    .size(150.dp)
-                    .align(Alignment.TopEnd)
-                    .offset(x = 50.dp, y = (-65).dp)
-            ) {
-                drawCircle(
-                    color = Gray, // Warna lingkaran
-                    radius = size.minDimension / 2 // Setengah dari ukuran canvas
-                )
-            }
+//            Canvas(
+//                modifier = Modifier
+//                    .size(150.dp)
+//                    .align(Alignment.TopEnd)
+//                    .offset(x = 50.dp, y = (-65).dp)
+//            ) {
+//                drawCircle(
+//                    color = Gray, // Warna lingkaran
+//                    radius = size.minDimension / 2 // Setengah dari ukuran canvas
+//                )
+//            }
+//
+//            Canvas(
+//                modifier = Modifier
+//                    .size(150.dp)
+//                    .align(Alignment.BottomStart)
+//                    .offset(x = (-90).dp, y = 80.dp)
+//            ){
+//                drawCircle(
+//                    color = Gray,
+//                    radius = size.minDimension / 2
+//                )
+//            }
 
-            Canvas(
-                modifier = Modifier
-                    .size(150.dp)
-                    .align(Alignment.BottomStart)
-                    .offset(x = (-90).dp, y = 80.dp)
-            ){
-                drawCircle(
-                    color = Gray,
-                    radius = size.minDimension / 2
-                )
-            }
+            CircleElement()
+            CircleElement(
+                alignment = Alignment.BottomStart,
+                startAngle = 0f,
+                endAngle = 360f,
+                offsetX = -130,
+                offsetY = 80
+            )
 
             Column(
                 modifier = Modifier

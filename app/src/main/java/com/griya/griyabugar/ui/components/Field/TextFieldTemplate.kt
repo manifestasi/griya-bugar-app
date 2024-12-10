@@ -1,4 +1,4 @@
-package com.griya.griyabugar.ui.components
+package com.griya.griyabugar.ui.components.Field
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,7 +45,7 @@ fun PasswordTextField(
     fontSize: TextUnit = 14.sp,
     hint: String = "Masukan kata sandi",
     hintColor: Color = Color.Gray,
-    iconVisible: Int = R.drawable.round_visibility_24,
+    iconVisible: Int = R.drawable.round_visibility_off_24,
     iconInvisible: Int = R.drawable.round_visibility_off_24,
     backgroundColor: Color = Color.White,
     textColor: Color = Color.Black,
@@ -181,7 +181,6 @@ fun EmailTextField(
         )
     }
 }
-
 
 
 
