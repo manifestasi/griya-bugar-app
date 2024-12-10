@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,19 +40,19 @@ fun BoxButton(
     isBorder:Boolean = false,
     borderColor:Color=Color.Black,
     width:Float = 0.8f,
-    height:Float = 0.05f,
-    rounded:Float=0.05f,
+    height: Dp = 55.dp,
+    rounded:Dp=10.dp,
     modifier: Modifier = Modifier,
     onClick: ()->Unit,
 ){
  Button (
      onClick = onClick,
-     shape = RoundedCornerShape(CornerSize(percent = (rounded * 100).toInt())),
+     shape = RoundedCornerShape(rounded),
      colors = ButtonDefaults.buttonColors(color),
      border = if (isBorder) BorderStroke(2.dp, borderColor) else null,
      modifier = modifier
          .fillMaxWidth(width)
-         .fillMaxHeight(height)
+         .height(height)
 
  ){
      Text(
@@ -77,7 +79,7 @@ fun BoxButtonPreview() {
             color = MainColor,
             fontColor = Color.White,
             width = 0.8f,
-            height = 0.05f,
+//            height = 0.05f,
             onClick = {}
         )
     }

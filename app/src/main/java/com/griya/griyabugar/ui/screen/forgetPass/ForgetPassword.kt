@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ fun ForgetPasswordPart2(
 
     var visibility_state_old = remember { mutableStateOf(true) }
     var visibility_state_new = remember { mutableStateOf(true) }
+
 
     Box(){
         CircleElement()
@@ -135,7 +137,6 @@ fun ForgetPasswordPart2(
                 text = "Simpan",
                 color = MainColor,
                 fontColor = Color.White,
-                height = 0.1f,
                 width = 0.9f
             )
 

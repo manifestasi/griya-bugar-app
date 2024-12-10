@@ -98,8 +98,6 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                 color = MainColor,
                 fontColor = Color.White,
                 width = 0.98f,
-                height = 0.1f,
-                rounded = 0.1f,
                 onClick = {},
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -108,8 +106,6 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                 color = Color.White,
                 fontColor = Color.Black,
                 width = 0.98f,
-                height = 0.1f,
-                rounded = 0.1f,
                 isBorder = true,
                 onClick = {},
             )
