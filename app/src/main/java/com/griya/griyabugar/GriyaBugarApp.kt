@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
+import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
@@ -37,6 +38,9 @@ fun GriyaBugarApp(
             }
             composable(Screen.Register.route){
                 RegisterScreen()
+            }
+            composable(Screen.Splash.route){
+                SplashScreen()
             }
         }
     }
