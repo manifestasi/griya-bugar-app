@@ -44,7 +44,7 @@ fun SplashScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun SplashPreview() {
     GriyaBugarTheme {
         SplashScreen(
             onNavigateToWelcome = {}
