@@ -16,6 +16,7 @@ import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
+import com.griya.griyabugar.ui.screen.main.MainScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.screen.welcome.WelcomeScreen
@@ -80,6 +81,9 @@ fun GriyaBugarApp(
                         navController.navigate(Screen.Register.route)
                     }
                 )
+            }
+            composable(Screen.Main.route){
+                MainScreen()
             }
         }
     }
