@@ -65,9 +65,9 @@ fun BottomNavigationBar(navController: NavHostController){
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
         val bottomNavItems = listOf(
-            BottomNavItem(Screen.Home.route, Icons.Default.Home, "Home"),
-            BottomNavItem("profile", Icons.Default.Person, "Profile"),
-            BottomNavItem("settings", Icons.Default.Settings, "Settings")
+            BottomNavItem(Screen.Home.route, Icons.Default.Home, "Beranda"),
+            BottomNavItem(Screen.Order.route, Icons.Default.Person, "Pemesanan"),
+            BottomNavItem(Screen.MyAccount.route, Icons.Default.Settings, "Akun Saya")
         )
 
         bottomNavItems.map { item ->
