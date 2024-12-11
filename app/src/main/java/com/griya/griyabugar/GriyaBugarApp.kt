@@ -33,7 +33,7 @@ fun GriyaBugarApp(
 
         NavHost(
             navController = navController,
-            startDestination = Screen.Login.route,
+            startDestination = Screen.Splash.route,
             modifier = modifier.padding(innerPadding)
         ){
             composable(Screen.Login.route){
@@ -52,7 +52,7 @@ fun GriyaBugarApp(
             composable(Screen.Splash.route){
                 SplashScreen(
                     onNavigateToWelcome = {
-                        navController.navigate(Screen.Welcome){
+                        navController.navigate(Screen.Welcome.route){
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
                     }

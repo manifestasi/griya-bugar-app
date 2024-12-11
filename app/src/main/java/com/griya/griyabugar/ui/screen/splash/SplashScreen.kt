@@ -23,7 +23,8 @@ fun SplashScreen(
     onNavigateToWelcome: () -> Unit
 ){
     LaunchedEffect(true) {
-        delay(300)
+        delay(2000)
+        onNavigateToWelcome()
     }
     Surface(modifier = Modifier.fillMaxSize()) {
         Box(
