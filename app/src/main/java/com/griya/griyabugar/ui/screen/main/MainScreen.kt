@@ -49,11 +49,11 @@ fun MainScreen(
             }
 
             composable(Screen.Order.route){
-                MyAccountScreen()
+                OrderScreen()
             }
 
             composable(Screen.MyAccount.route){
-                OrderScreen()
+                MyAccountScreen()
             }
         }
     }
