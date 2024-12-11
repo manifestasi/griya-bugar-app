@@ -43,7 +43,11 @@ import com.griya.griyabugar.ui.theme.MainColor
 //}
 
 @Composable
-fun WelcomeScreen(modifier: Modifier = Modifier) {
+fun WelcomeScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToRegister: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +98,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                 color = MainColor,
                 fontColor = Color.White,
                 width = 0.98f,
-                onClick = {},
+                onClick = onNavigateToLogin,
             )
             Spacer(modifier = Modifier.height(10.dp))
             BoxButton(
@@ -103,7 +107,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                 fontColor = Color.Black,
                 width = 0.98f,
                 isBorder = true,
-                onClick = {},
+                onClick = onNavigateToRegister,
             )
         }
     }
@@ -111,10 +115,16 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun MainWelcomeScreen(modifier: Modifier){
+fun MainWelcomeScreen(
+    modifier: Modifier,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToRegister: () -> Unit
+){
     Scaffold { innerPadding->
         WelcomeScreen(
-            modifier = modifier.padding(innerPadding)
+            modifier = modifier.padding(innerPadding),
+            onNavigateToRegister = onNavigateToLogin,
+            onNavigateToLogin = onNavigateToRegister
         )
     }
     
@@ -125,6 +135,10 @@ fun MainWelcomeScreen(modifier: Modifier){
 @Composable
 fun WelcomePreview() {
     GriyaBugarTheme {
-        MainWelcomeScreen(modifier = Modifier)
+        MainWelcomeScreen(
+            modifier = Modifier,
+            onNavigateToLogin = {},
+            onNavigateToRegister = {}
+        )
     }
 }

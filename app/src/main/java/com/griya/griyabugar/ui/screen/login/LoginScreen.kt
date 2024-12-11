@@ -38,7 +38,11 @@ import com.griya.griyabugar.ui.theme.Gray
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToRegister: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit
+) {
     Surface(
         modifier = modifier
         .fillMaxSize()) {
@@ -62,7 +66,11 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             ) {
                 Spacer(Modifier.height(40.dp))
                 HeaderSection(modifier = Modifier .padding(16.dp))
-                MainSection(modifier = Modifier.padding(16.dp))
+                MainSection(
+                    modifier = Modifier.padding(16.dp),
+                    onNavigateToRegister = onNavigateToRegister,
+                    onNavigateToForgotPassword = onNavigateToForgotPassword
+                )
             }
         }
     }
@@ -89,7 +97,11 @@ private fun HeaderSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MainSection (modifier: Modifier = Modifier) {
+private fun MainSection (
+    modifier: Modifier = Modifier,
+    onNavigateToRegister: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit
+) {
     val emailState = remember { mutableStateOf("") }
     val state = remember { mutableStateOf("") }
     var passwordVisible = remember { mutableStateOf(false) }
@@ -124,7 +136,9 @@ private fun MainSection (modifier: Modifier = Modifier) {
             fontFamily = FontFamily(listOf(Font(R.font.poppins_medium))),
             fontSize = 16.sp,
             color = Color.Black,
-            modifier = Modifier.align(Alignment.End).clickable {  }
+            modifier = Modifier.align(Alignment.End).clickable {
+                onNavigateToForgotPassword()
+            }
         )
         Spacer(Modifier.height(30.dp))
         ButtonConfirm(
@@ -145,7 +159,9 @@ private fun MainSection (modifier: Modifier = Modifier) {
                 fontFamily = FontFamily(listOf(Font(R.font.poppins_semibold))),
                 fontSize = 16.sp,
                 color = Color.Black,
-                modifier=Modifier.clickable {  }
+                modifier=Modifier.clickable {
+                    onNavigateToRegister()
+                }
             )
 
         }
@@ -155,6 +171,9 @@ private fun MainSection (modifier: Modifier = Modifier) {
 @Composable
 fun HeaderPreview(modifier: Modifier = Modifier) {
     GriyaBugarTheme {
-        LoginScreen()
+        LoginScreen(
+            onNavigateToRegister = {},
+            onNavigateToForgotPassword = {},
+        )
     }
 }

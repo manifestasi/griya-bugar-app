@@ -30,8 +30,8 @@ fun ButtonBack(
     alignment: Alignment=Alignment.TopStart,
     modifier: Modifier = Modifier,
     size: Dp = 30.dp,
-    padding:Dp = 10.dp
-
+    padding:Dp = 10.dp,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = modifier.fillMaxWidth().padding(start = padding),
@@ -55,6 +55,8 @@ fun ButtonBack(
 @Composable
 fun GreetingPreview3() {
     GriyaBugarTheme {
-        ButtonBack()
+        ButtonBack(
+            onClick = {}
+        )
     }
 }

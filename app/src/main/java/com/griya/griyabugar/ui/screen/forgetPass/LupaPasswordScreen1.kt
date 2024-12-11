@@ -17,38 +17,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.components.Button.BoxButton
 import com.griya.griyabugar.ui.components.Button.ButtonBack
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
-import com.griya.griyabugar.ui.components.Field.PasswordTextField
+import com.griya.griyabugar.ui.components.Field.EmailTextField
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.MainColor
 import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
-fun ForgetPasswordPart2(
-    modifier: Modifier = Modifier,
-    onNavigationBack: () -> Unit,
-    onNavigationChangePassword: () -> Unit
-){
-
+fun LupaPasswordScreen1(){
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
-        val oldPass =  remember { mutableStateOf("") }
-        val newPass =  remember { mutableStateOf("") }
-
-        val visibility_state_old = remember { mutableStateOf(true) }
-        val visibility_state_new = remember { mutableStateOf(true) }
-
+        val email =  remember { mutableStateOf("") }
 
         Box(
             modifier = Modifier
@@ -65,7 +52,7 @@ fun ForgetPasswordPart2(
             )
 
             Column (
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 50.dp),
                 verticalArrangement = Arrangement.Top,
@@ -77,7 +64,7 @@ fun ForgetPasswordPart2(
                 * Button Back
                 * */
                 ButtonBack(
-                    onClick = onNavigationBack
+                    onClick = {}
                 )
 
                 Spacer(modifier=Modifier.height(20.dp))
@@ -103,46 +90,25 @@ fun ForgetPasswordPart2(
                 Column(
                     modifier=Modifier
                 ) {
-                    Text("Kata Sandi*",
+                    Text("Email",
                         fontFamily = poppins,
                         fontSize = 20.sp,
 
                         )
                     Spacer(modifier=Modifier.height(5.dp))
 
-                    PasswordTextField(
+                    EmailTextField(
                         modifier = Modifier.fillMaxWidth(0.9f),
-                        state = oldPass,
-                        passwordVisible = visibility_state_old
+                        state = email,
                     )
                 }
 
-                Spacer(modifier=Modifier.height(10.dp))
-
-                Column(
-                    modifier=Modifier
-                ) {
-                    Text("Konfirmasi Kata Sandi*",
-                        fontFamily = poppins,
-                        fontSize = 20.sp,
-
-                        )
-                    Spacer(modifier=Modifier.height(5.dp))
-
-                    PasswordTextField(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        state = newPass,
-                        passwordVisible = visibility_state_new
-                    )
-                }
                 Spacer(modifier=Modifier.height(30.dp))
                 /*
                 * Button untuk simpan
                 * */
                 BoxButton(
-                    onClick = {
-                        onNavigationChangePassword()
-                    },
+                    onClick = {},
                     text = "Simpan",
                     color = MainColor,
                     fontColor = Color.White,
@@ -156,11 +122,8 @@ fun ForgetPasswordPart2(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun ForgetPreview(){
+fun LupaPasswordPreview(){
     GriyaBugarTheme {
-        ForgetPasswordPart2(
-            onNavigationBack = {},
-            onNavigationChangePassword = {}
-        )
+        LupaPasswordScreen1()
     }
 }
