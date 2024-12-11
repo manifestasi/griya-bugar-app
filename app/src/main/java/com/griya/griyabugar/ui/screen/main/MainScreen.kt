@@ -24,6 +24,8 @@ import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.data.model.BottomNavItem
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.main.home.HomeScreen
+import com.griya.griyabugar.ui.screen.main.myaccount.MyAccountScreen
+import com.griya.griyabugar.ui.screen.main.order.OrderScreen
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
@@ -44,6 +46,14 @@ fun MainScreen(
         ){
             composable(Screen.Home.route){
                 HomeScreen()
+            }
+
+            composable(Screen.Order.route){
+                MyAccountScreen()
+            }
+
+            composable(Screen.MyAccount.route){
+                OrderScreen()
             }
         }
     }

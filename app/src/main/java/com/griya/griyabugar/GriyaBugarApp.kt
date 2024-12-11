@@ -29,8 +29,8 @@ fun GriyaBugarApp(
 ){
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
+//        val navBackStackEntry by navController.currentBackStackEntryAsState()
+//        val currentRoute = navBackStackEntry?.destination?.route
 
         NavHost(
             navController = navController,
