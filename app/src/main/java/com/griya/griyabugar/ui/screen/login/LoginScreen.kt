@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +37,8 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 fun LoginScreen(
     modifier: Modifier = Modifier,
     onNavigateToRegister: () -> Unit,
-    onNavigateToForgotPassword: () -> Unit
+    onNavigateToForgotPassword: () -> Unit,
+    onNavigateToMain: () -> Unit
 ) {
     Surface(
         modifier = modifier
@@ -69,7 +66,8 @@ fun LoginScreen(
                 MainSection(
                     modifier = Modifier.padding(16.dp),
                     onNavigateToRegister = onNavigateToRegister,
-                    onNavigateToForgotPassword = onNavigateToForgotPassword
+                    onNavigateToForgotPassword = onNavigateToForgotPassword,
+                    onNavigateToMain = onNavigateToMain
                 )
             }
         }
@@ -100,11 +98,12 @@ private fun HeaderSection(modifier: Modifier = Modifier) {
 private fun MainSection (
     modifier: Modifier = Modifier,
     onNavigateToRegister: () -> Unit,
-    onNavigateToForgotPassword: () -> Unit
+    onNavigateToForgotPassword: () -> Unit,
+    onNavigateToMain: () -> Unit
 ) {
     val emailState = remember { mutableStateOf("") }
     val state = remember { mutableStateOf("") }
-    var passwordVisible = remember { mutableStateOf(false) }
+    val passwordVisible = remember { mutableStateOf(false) }
     Column(modifier = modifier) {
         Text(
             text = "Email",
@@ -142,7 +141,9 @@ private fun MainSection (
         )
         Spacer(Modifier.height(30.dp))
         ButtonConfirm(
-            onClick = {},
+            onClick = {
+                onNavigateToMain()
+            },
             name = "Masuk"
         )
         Spacer(Modifier.height(10.dp))
@@ -174,6 +175,7 @@ fun HeaderPreview(modifier: Modifier = Modifier) {
         LoginScreen(
             onNavigateToRegister = {},
             onNavigateToForgotPassword = {},
+            onNavigateToMain = {}
         )
     }
 }
