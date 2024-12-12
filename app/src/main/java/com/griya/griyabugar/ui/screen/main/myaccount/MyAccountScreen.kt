@@ -29,7 +29,9 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
-fun MyAccountScreen(){
+fun MyAccountScreen(
+    onNavigateToEditProfile: () -> Unit
+){
     Surface(modifier = Modifier.fillMaxSize()) {
 
         Column(
@@ -72,14 +74,16 @@ fun MyAccountScreen(){
 
             MenuItemProfile(
                 name = "Edit Profile",
-                icon = R.drawable.placeholder_image_2
+                icon = R.drawable.placeholder_image_2,
+                onClick = onNavigateToEditProfile
             )
 
             Spacer(Modifier.height(16.dp))
 
             MenuItemProfile(
                 name = "Ubah Kata Sandi",
-                icon = R.drawable.placeholder_image_2
+                icon = R.drawable.placeholder_image_2,
+                onClick = {}
             )
 
             Spacer(Modifier.height(20.dp))
@@ -95,14 +99,16 @@ fun MyAccountScreen(){
 
             MenuItemProfile(
                 name = "Informasi SPA",
-                icon = R.drawable.placeholder_image_2
+                icon = R.drawable.placeholder_image_2,
+                onClick = {}
             )
 
             Spacer(Modifier.height(16.dp))
 
             MenuItemProfile(
                 name = "Hubungi SPA",
-                icon = R.drawable.placeholder_image_2
+                icon = R.drawable.placeholder_image_2,
+                onClick = {}
             )
 
             Spacer(Modifier.height(20.dp))
@@ -118,7 +124,8 @@ fun MyAccountScreen(){
 
             MenuItemProfile(
                 name = "Keluar",
-                icon = R.drawable.placeholder_image_2
+                icon = R.drawable.placeholder_image_2,
+                onClick = {}
             )
         }
     }
@@ -128,6 +135,8 @@ fun MyAccountScreen(){
 @Composable
 fun MyAccountScreenPreview(){
     GriyaBugarTheme {
-        MyAccountScreen()
+        MyAccountScreen(
+            onNavigateToEditProfile = {}
+        )
     }
 }

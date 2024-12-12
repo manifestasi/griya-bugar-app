@@ -30,7 +30,8 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
 fun MainScreen(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    onNavigateToEditProfile: () -> Unit
 ){
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -53,7 +54,9 @@ fun MainScreen(
             }
 
             composable(Screen.MyAccount.route){
-                MyAccountScreen()
+                MyAccountScreen(
+                    onNavigateToEditProfile = onNavigateToEditProfile
+                )
             }
         }
     }
@@ -100,6 +103,8 @@ fun BottomNavigationBar(navController: NavHostController){
 @Composable
 fun MainPreview() {
     GriyaBugarTheme {
-        MainScreen()
+        MainScreen(
+            onNavigateToEditProfile = {}
+        )
     }
 }

@@ -17,6 +17,7 @@ import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
+import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.screen.welcome.WelcomeScreen
@@ -83,7 +84,15 @@ fun GriyaBugarApp(
             )
         }
         composable(Screen.Main.route){
-            MainScreen()
+            MainScreen(
+                onNavigateToEditProfile = {
+                    navController.navigate(Screen.EditProfile.route)
+                }
+            )
+        }
+
+        composable(Screen.EditProfile.route) {
+            EditProfileScreen()
         }
     }
 

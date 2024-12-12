@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -21,7 +22,8 @@ fun CircleElement(
     offsetX:Int=100,
     offsetY:Int=-100,
     startAngle:Float=180f,
-    endAngle:Float=-90f
+    endAngle:Float=-90f,
+    color: Color = CircleColor
 ){
     Box(modifier = Modifier.fillMaxSize()){
         Canvas(
@@ -31,7 +33,7 @@ fun CircleElement(
                 .offset(x = (offsetX).dp, y = (offsetY).dp)
         ) {
             drawArc(
-                color = CircleColor,
+                color = color,
                 startAngle = startAngle,
                 sweepAngle = endAngle,
                 useCenter = true

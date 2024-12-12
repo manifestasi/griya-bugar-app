@@ -201,6 +201,7 @@ fun RegisterScreen(){
                             fontSize = 20.sp
                         )
                     )
+                    Spacer(Modifier.height(8.dp))
                     PasswordField(
                         placeHolder = "Masukkan Kata Sandi",
                         value = password,
@@ -226,6 +227,7 @@ fun RegisterScreen(){
                             fontSize = 20.sp
                         )
                     )
+                    Spacer(Modifier.height(8.dp))
                     PasswordField(
                         placeHolder = "Konfirmasi Kata Sandi",
                         value = confirmPassword,

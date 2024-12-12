@@ -2,6 +2,7 @@ package com.griya.griyabugar.ui.components.profile
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,10 +23,11 @@ import com.griya.griyabugar.ui.theme.poppins
 @Composable
 fun MenuItemProfile(
     name: String,
-    @DrawableRes icon: Int
+    @DrawableRes icon: Int,
+    onClick: () -> Unit
 ){
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
