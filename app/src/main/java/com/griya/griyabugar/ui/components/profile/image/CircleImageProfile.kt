@@ -1,6 +1,8 @@
 package com.griya.griyabugar.ui.components.profile.image
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -13,24 +15,26 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.griya.griyabugar.R
+import com.griya.griyabugar.ui.theme.Brown
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CircleImageProfile(
     modifier: Modifier = Modifier,
+    size: Int = 66,
     url: String
 ){
     GlideImage(
         model = url,
         contentDescription = "profile",
         modifier = modifier
-            .width(66.dp)
-            .height(66.dp)
-            .clip(RoundedCornerShape(100)),
+            .size((size).dp)
+            .clip(RoundedCornerShape(100))
+            .background(Brown),
         contentScale = ContentScale.None,
-        loading = placeholder(R.drawable.placeholder_image_2),
-        failure = placeholder(R.drawable.placeholder_image_2)
+        loading = placeholder(R.drawable.baseline_person_24),
+        failure = placeholder(R.drawable.baseline_person_24)
     )
 }
 

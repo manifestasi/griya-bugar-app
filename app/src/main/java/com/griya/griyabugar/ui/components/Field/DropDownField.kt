@@ -6,9 +6,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,18 +34,22 @@ fun DropDownField(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
-            label = { Text(label) },
             readOnly = true, // Membuat input menjadi hanya baca agar hanya bisa dipilih dari menu
             trailingIcon = {
                 TrailingIcon(expanded = expanded)
-            }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Black,
+                cursorColor = Color.Black
+            ),
+            placeholder = { Text(label) }
         )
 
         // Menu Dropdown
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = {
-                onExpandedChange(false)
+                onExpandedChange(expanded)
             }
         ) {
             options.forEach { item ->
@@ -51,7 +57,7 @@ fun DropDownField(
                     text = { Text(item) },
                     onClick = {
                         onSelected(item)
-                        onExpandedChange(false)
+                        onExpandedChange(expanded)
                     }
                 )
             }

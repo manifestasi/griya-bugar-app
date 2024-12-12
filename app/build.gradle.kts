@@ -81,6 +81,7 @@ dependencies {
     // hilt adnroid
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // icon extended
     implementation(libs.androidx.material.icons.extended)
