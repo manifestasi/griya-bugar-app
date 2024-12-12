@@ -30,18 +30,6 @@ import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.MainColor
 
-//class WelcomeActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            GriyaBugarTheme {
-//                MainWelcomeScreen(modifier=Modifier)
-//            }
-//        }
-//    }
-//}
-
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
