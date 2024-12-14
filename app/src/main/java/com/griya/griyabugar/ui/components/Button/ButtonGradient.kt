@@ -1,4 +1,4 @@
-package com.griya.griyabugar.ui.components.register
+package com.griya.griyabugar.ui.components.Button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,31 +25,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.griya.griyabugar.ui.theme.Brown
 import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
-import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
-fun ButtonConfirm(
+fun ButtonGradient(
     onClick: () -> Unit,
     name: String,
-    isLoading: Boolean = false,
-    isDisabled: Boolean = false
+    height: Dp = 55.dp,
+    rounded:Dp=10.dp,
+    width:Float = 0.9f,
 ){
     Button(
         onClick = {
             onClick()
         },
-        enabled = !isDisabled,
         modifier = Modifier
             .fillMaxWidth()
-            .height(55.dp)
+            .height(height)
             .drawBehind {
                 val shadowColor = Color(0x28000000)
                 val shadowRadius = 10.dp.toPx()
@@ -65,7 +63,7 @@ fun ButtonConfirm(
                     blendMode = BlendMode.SrcOver,
                 )
             },
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(rounded),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
         ),
@@ -76,52 +74,24 @@ fun ButtonConfirm(
                 .fillMaxSize()
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = if (isDisabled){
-                            listOf(
-                                DisabledColor,
-                                DisabledColor
-                            )
-                        } else {
-                            listOf(
-                                GreenColor1,
-                                GreenColor2
-                            )
-                        }
+                        colors = listOf(
+                            GreenColor1,
+                            GreenColor2
+                        )
                     )
                 )
         ) {
-            if(isLoading){
-                CircularProgressIndicator(
+            Text(
+                text = name,
+                style = TextStyle(
+                    fontSize = 16.sp,
                     color = Color.White,
-                    strokeWidth = 4.dp,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .align(Alignment.Center)
-                )
-            } else {
-                Text(
-                    text = name,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        fontFamily = poppins,
-                    ),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                )
-            }
+                    textAlign = TextAlign.Center,
+                    fontFamily = poppins,
+                ),
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ButtonConfirmPreview(){
-    GriyaBugarTheme {
-        ButtonConfirm(
-            name = "Masuk",
-            onClick = {}
-        )
     }
 }

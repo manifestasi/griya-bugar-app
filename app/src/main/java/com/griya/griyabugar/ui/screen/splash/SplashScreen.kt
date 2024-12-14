@@ -14,17 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    onNavigateToWelcome: () -> Unit
+    onNavigateToWelcome: () -> Unit,
+    onNavigateToMain: () -> Unit,
+    splashViewModel: SplashViewModel = hiltViewModel()
 ){
     LaunchedEffect(true) {
         delay(2000)
-        onNavigateToWelcome()
+        if(splashViewModel.getCurrentUser() !== null){
+            onNavigateToMain()
+        } else {
+            onNavigateToWelcome()
+        }
     }
     Surface(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -47,7 +54,8 @@ fun SplashScreen(
 fun SplashPreview() {
     GriyaBugarTheme {
         SplashScreen(
-            onNavigateToWelcome = {}
+            onNavigateToWelcome = {},
+            onNavigateToMain = {}
         )
     }
 }

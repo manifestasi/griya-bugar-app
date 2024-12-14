@@ -26,9 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.components.Button.BoxButton
+import com.griya.griyabugar.ui.components.Button.ButtonBorder
+import com.griya.griyabugar.ui.components.Button.ButtonGradient
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
+import com.griya.griyabugar.ui.theme.GreenColor3
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.MainColor
+import com.griya.griyabugar.ui.theme.TextColor2
 
 //class WelcomeActivity : ComponentActivity() {
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,22 +97,27 @@ fun WelcomeScreen(
                 fontSize = 12.sp
             )
             Spacer(modifier = Modifier.height(25.dp))
-            BoxButton(
-                text = "Masuk",
-                color = MainColor,
-                fontColor = Color.White,
-                width = 0.98f,
-                onClick = onNavigateToLogin,
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            BoxButton(
-                text = "Daftar",
-                color = Color.White,
-                fontColor = Color.Black,
-                width = 0.98f,
-                isBorder = true,
-                onClick = onNavigateToRegister,
-            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 3.dp)
+            ) {
+                ButtonGradient(
+                    onClick = {
+                        onNavigateToLogin()
+                    },
+                    name = "Masuk"
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                ButtonBorder(
+                    text = "Daftar",
+                    color = Color.White,
+                    fontColor = TextColor2,
+                    onClick = onNavigateToRegister,
+                    borderColor = GreenColor3
+                )
+            }
         }
     }
 }

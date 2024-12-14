@@ -16,3 +16,12 @@ val Brown = Color(0xFF8F8080)
 //tambahkan konfigurasi color di sini, copy dari figma dan tambahkan 0xFF
 val MainColor = Color(0xFF8F8080)
 val CircleColor = Color(0xFFD9D9D9)
+
+val GreenColor1 = Color(0xFF107D28)
+val GreenColor2 = Color(0xFF1CE148)
+val GreenColor3 = Color(0xFF168D21)
+
+val DisabledColor = Color(0xFF73856B)
+
+val TextColor1 = Color(0xFF208737)
+val TextColor2 = Color(0xFF107D28)

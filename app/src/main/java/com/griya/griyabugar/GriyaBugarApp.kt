@@ -40,17 +40,33 @@ fun GriyaBugarApp(
                     navController.navigate(Screen.ForgotPassword.route)
                 },
                 onNavigateToMain = {
-                    navController.navigate(Screen.Main.route)
+                    navController.navigate(Screen.Main.route){
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
                 }
             )
         }
         composable(Screen.Register.route){
-            RegisterScreen()
+            RegisterScreen(
+                onNavigateToMain = {
+                    navController.navigate(Screen.Main.route){
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login)
+                }
+            )
         }
         composable(Screen.Splash.route){
             SplashScreen(
                 onNavigateToWelcome = {
                     navController.navigate(Screen.Welcome.route){
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMain = {
+                    navController.navigate(Screen.Main.route){
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }
