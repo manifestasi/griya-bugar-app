@@ -20,8 +20,13 @@ val CircleColor = Color(0xFFD9D9D9)
 val GreenColor1 = Color(0xFF107D28)
 val GreenColor2 = Color(0xFF1CE148)
 val GreenColor3 = Color(0xFF168D21)
+val GreenColor4 = Color(0xFF269E41)
+val Yellow = Color(0xFFFFA322)
 
 val DisabledColor = Color(0xFF73856B)
+val BackgroundColor = Color(0xFFFDFDFD)
 
 val TextColor1 = Color(0xFF208737)
 val TextColor2 = Color(0xFF107D28)
+val TextColorWhite = Color(0xFFF8F8F8)
+val TextColorBlack = Color(0xFF1A1A1A)
