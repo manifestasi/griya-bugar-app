@@ -13,6 +13,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -22,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.data.model.BottomNavItem
+import com.griya.griyabugar.ui.components.loading.LoadingAnimation
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.main.home.HomeScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.MyAccountScreen
@@ -34,6 +38,8 @@ fun MainScreen(
     navController: NavHostController = rememberNavController(),
 //    onNavigateToEditProfile: () -> Unit
 ){
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -57,10 +63,19 @@ fun MainScreen(
             composable(Screen.MyAccount.route){
                 MyAccountScreen(
 //                    onNavigateToEditProfile = onNavigateToEditProfile
-                    rootNavController = rootNavController
+                    rootNavController = rootNavController,
+                    isLoading = isLoading,
+                    onLoadingChange = {
+                        isLoading = it
+                    }
                 )
             }
         }
+    }
+
+    /*  Digunakan untuk loading */
+    if(isLoading){
+        LoadingAnimation()
     }
 }
 

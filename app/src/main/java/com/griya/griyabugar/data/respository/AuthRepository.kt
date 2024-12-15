@@ -9,9 +9,12 @@ import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.DataUser
 import com.griya.griyabugar.util.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.delay
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -141,6 +144,8 @@ class AuthRepository @Inject constructor(
 
             emit(Resource.Loading)
 
+            delay(2000)
+
             firebaseAuth.signOut()
 
             Preferences.deleteFromPreferences(
@@ -153,7 +158,7 @@ class AuthRepository @Inject constructor(
         } catch (e: Exception){
             emit(Resource.Error(e.message ?: "Unknown error"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     fun getCurrentUser(): FirebaseUser? {
         return firebaseAuth.currentUser

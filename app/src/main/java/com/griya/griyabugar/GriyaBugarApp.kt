@@ -55,7 +55,7 @@ fun GriyaBugarApp(
                     }
                 },
                 onNavigateToLogin = {
-                    navController.navigate(Screen.Login)
+                    navController.navigate(Screen.Login.route)
                 }
             )
         }
