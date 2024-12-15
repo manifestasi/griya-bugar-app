@@ -144,36 +144,7 @@ fun RegisterScreen(
             .background(color = Color.White)
             .verticalScroll(rememberScrollState())
     ){
-//            Canvas(
-//                modifier = Modifier
-//                    .size(150.dp)
-//                    .align(Alignment.TopEnd)
-//                    .offset(x = 50.dp, y = (-65).dp)
-//            ) {
-//                drawCircle(
-//                    color = Gray, // Warna lingkaran
-//                    radius = size.minDimension / 2 // Setengah dari ukuran canvas
-//                )
-//            }
-//
-//            Canvas(
-//                modifier = Modifier
-//                    .size(150.dp)
-//                    .align(Alignment.BottomStart)
-//                    .offset(x = (-90).dp, y = 80.dp)
-//            ){
-//                drawCircle(
-//                    color = Gray,
-//                    radius = size.minDimension / 2
-//                )
-//            }
 
-//        CircleElement2(
-//            modifier = Modifier
-//                .size(200.dp)
-//                .align(Alignment.TopEnd)
-//                .offset(x = 100.dp, y = 100.dp)
-//        )
         CircleElement()
         CircleElement2(
             startAngle = 0f,

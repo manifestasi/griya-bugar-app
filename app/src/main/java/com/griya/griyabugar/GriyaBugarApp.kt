@@ -42,7 +42,10 @@ fun GriyaBugarApp(
                 },
                 onNavigateToMain = {
                     navController.navigate(Screen.Main.route){
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
                 }
             )
@@ -51,7 +54,10 @@ fun GriyaBugarApp(
             RegisterScreen(
                 onNavigateToMain = {
                     navController.navigate(Screen.Main.route){
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
                 },
                 onNavigateToLogin = {
@@ -64,25 +70,39 @@ fun GriyaBugarApp(
                 onNavigateToWelcome = {
                     navController.navigate(Screen.Welcome.route){
                         popUpTo(Screen.Splash.route) { inclusive = true }
+                        launchSingleTop = true
                     }
                 },
                 onNavigateToMain = {
                     navController.navigate(Screen.Main.route){
                         popUpTo(Screen.Splash.route) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
         }
         composable(Screen.ForgotPassword.route){
-            LupaPasswordScreen1()
+            LupaPasswordScreen1(
+                onNavigationBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToChangePassword = {
+                    navController.navigate(Screen.ChangePassword.route)
+                }
+            )
         }
         composable(Screen.ChangePassword.route){
             ForgetPasswordPart2(
                 onNavigationBack = {
                     navController.popBackStack()
                 },
-                onNavigationChangePassword = {
-                    navController.navigate(Screen.ChangePassword.route)
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login.route){
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             )
         }
