@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -67,6 +68,7 @@ fun AppBarWithBackButton(
 
             IconButton(onClick = {onClickBack()}) {
                 Icon(
+                    modifier = Modifier.size(32.dp),
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = "arrow back",
                     tint = Color.Unspecified
@@ -79,8 +81,8 @@ fun AppBarWithBackButton(
                 text = title,
                 style = TextStyle(
                     fontFamily = poppins,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
                 )
             )
 

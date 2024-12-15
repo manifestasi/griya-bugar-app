@@ -132,6 +132,16 @@ private fun MainSection (
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var isError by rememberSaveable { mutableStateOf(false) }
+    var isDisabled by rememberSaveable { mutableStateOf(false) }
+
+    if (
+        email.isEmpty() ||
+        password.isEmpty()
+    ){
+        isDisabled = true
+    } else {
+        isDisabled = false
+    }
 
     LaunchedEffect(Unit) {
         loginViewModel.loginEvent.collect { event ->
@@ -236,7 +246,7 @@ private fun MainSection (
             },
             name = "Masuk",
             isLoading = isLoading,
-            isDisabled = isLoading
+            isDisabled = isLoading || isDisabled
         )
         Spacer(Modifier.height(10.dp))
         Row(modifier = Modifier.align(CenterHorizontally)) {

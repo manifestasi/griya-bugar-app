@@ -1,12 +1,14 @@
 package com.griya.griyabugar.data.respository
 
+import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.DataUser
-import kotlinx.coroutines.delay
+import com.griya.griyabugar.util.Preferences
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val firebaseFirestore: FirebaseFirestore,
+    @ApplicationContext private val context: Context
 ) {
     private fun isValidEmail(email: String): Boolean {
         val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
@@ -30,10 +33,9 @@ class AuthRepository @Inject constructor(
         password: String,
         confirmPass: String
     ): Flow<Resource<String>> = flow {
+
         emit(Resource.Loading)
         Log.d("RegisterCustomer", "Loading started")
-
-
 
         try {
 
@@ -121,9 +123,15 @@ class AuthRepository @Inject constructor(
                 throw Exception("Oops, maaf kamu tidak di izinkan masuk")
             }
 
+            Preferences.saveToPreferences(
+                context = context,
+                key = EMAIL_USER,
+                value = dataUser?.email ?: ""
+            )
+
             emit(Resource.Success(result.user))
         } catch (e: Exception){
-            Log.e("RegisterCustomer", "Error: ${e.message}")
+            Log.e("loginAccount", "Error: ${e.message}")
             emit(Resource.Error(e.message ?: "Unknown error"))
         }
     }
@@ -134,6 +142,11 @@ class AuthRepository @Inject constructor(
             emit(Resource.Loading)
 
             firebaseAuth.signOut()
+
+            Preferences.deleteFromPreferences(
+                context = context,
+                key = EMAIL_USER
+            )
 
             emit(Resource.Success(firebaseAuth.currentUser == null))
 
@@ -148,5 +161,6 @@ class AuthRepository @Inject constructor(
 
     companion object {
         const val COLLECTION_USER = "user"
+        const val EMAIL_USER = "email"
     }
 }

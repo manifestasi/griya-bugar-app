@@ -74,6 +74,23 @@ fun RegisterScreen(
 
     var errorRegisterMessage by rememberSaveable { mutableStateOf("") }
 
+    if(
+        nama.isEmpty()
+        ||
+        noTelepon.isEmpty()
+        ||
+        email.isEmpty()
+        ||
+        password.isEmpty()
+        ||
+        confirmPassword.isEmpty()
+    ){
+        isDisabled = true
+    } else {
+        isDisabled = false
+    }
+
+
 //    val registerState = registerViewModel.registerState.collectAsState().value
 
     LaunchedEffect(Unit) {

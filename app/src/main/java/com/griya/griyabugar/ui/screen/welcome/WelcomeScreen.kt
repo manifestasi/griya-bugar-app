@@ -75,11 +75,11 @@ fun WelcomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter = painterResource(R.drawable.rafiki),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(200.dp)
+                    .fillMaxWidth(0.8f)
+                    .height(239.dp)
             )
             Spacer(modifier = Modifier.height(30.dp))
             Text(

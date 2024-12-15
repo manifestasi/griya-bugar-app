@@ -12,6 +12,7 @@ import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
+import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.ChangePasswordScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
@@ -106,6 +107,12 @@ fun GriyaBugarApp(
 
         composable(Screen.EditProfile.route) {
             EditProfileScreen(
+                rootNavControll = navController
+            )
+        }
+
+        composable(Screen.OldPassword.route){
+            ChangePasswordScreen(
                 rootNavControll = navController
             )
         }

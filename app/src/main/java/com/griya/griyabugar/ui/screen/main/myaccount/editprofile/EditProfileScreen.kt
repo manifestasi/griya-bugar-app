@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,8 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.ui.components.Field.DropDownField
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
 import com.griya.griyabugar.ui.components.profile.image.CircleImageProfile
@@ -44,7 +47,8 @@ import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
 fun EditProfileScreen(
-    rootNavControll: NavHostController = rememberNavController()
+    rootNavControll: NavHostController = rememberNavController(),
+    editProfileViewModel: EditProfileViewModel = hiltViewModel()
 ){
 
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -53,6 +57,7 @@ fun EditProfileScreen(
     var nama by rememberSaveable { mutableStateOf("") }
     var noTelepon by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
+    var isDisabled by rememberSaveable { mutableStateOf(true) }
 
     var imageUrl by rememberSaveable { mutableStateOf<String>("") }
 
@@ -61,6 +66,39 @@ fun EditProfileScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUrl = uri.toString() // Simpan URI gambar yang dipilih
+    }
+
+    if(
+        nama.isEmpty()
+        ||
+        noTelepon.isEmpty()
+        ||
+        email.isEmpty()
+        ||
+        selectedGender.isEmpty()
+    ){
+        isDisabled = true
+    } else {
+        isDisabled = false
+    }
+
+    LaunchedEffect(Unit) {
+        editProfileViewModel.dataProfile.collect { event ->
+            when (event){
+                is Resource.Loading -> {
+
+                }
+                is Resource.Success -> {
+
+                }
+                is Resource.Error -> {
+
+                }
+                is Resource.Empty -> {
+
+                }
+            }
+        }
     }
 
     Scaffold(
@@ -113,7 +151,7 @@ fun EditProfileScreen(
 
             Column {
                 Text(
-                    text = "Nama*",
+                    text = "Nama",
                     style = TextStyle(
                         fontFamily = poppins,
                         fontWeight = FontWeight(400),
@@ -134,7 +172,7 @@ fun EditProfileScreen(
 
             Column {
                 Text(
-                    text = "Nomor Telepon*",
+                    text = "Nomor Telepon",
                     style = TextStyle(
                         fontFamily = poppins,
                         fontWeight = FontWeight(400),
@@ -153,7 +191,7 @@ fun EditProfileScreen(
             Spacer(Modifier.height(18.dp))
 
             Text(
-                text = "Email*",
+                text = "Email",
                 style = TextStyle(
                     fontFamily = poppins,
                     fontWeight = FontWeight(400),
@@ -172,7 +210,7 @@ fun EditProfileScreen(
             Spacer(Modifier.height(18.dp))
 
             Text(
-                text = "Jenis Kelamin*",
+                text = "Jenis Kelamin",
                 style = TextStyle(
                     fontFamily = poppins,
                     fontWeight = FontWeight(400),
@@ -197,7 +235,8 @@ fun EditProfileScreen(
 
             ButtonConfirm(
                 onClick = {},
-                name = "Simpan"
+                name = "Simpan",
+                isDisabled = isDisabled
             )
         }
     }
