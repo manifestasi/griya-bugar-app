@@ -47,7 +47,9 @@ fun MainScreen(
             modifier = Modifier.padding(innerPadding)
         ){
             composable(Screen.Home.route){
-                HomeScreen()
+                HomeScreen(
+                    rootNavController = rootNavController
+                )
             }
 
             composable(Screen.Order.route){

@@ -17,4 +17,11 @@ sealed class Screen(val route: String) {
 
     /* Profile screen */
     object EditProfile: Screen("editProfile")
+
+    /* Notifikasi screen */
+    object Notifikasi: Screen("notifikasi")
+
+    /*Detail Paket screen*/
+    object DetailPaket: Screen("detailPaket")
+
 }

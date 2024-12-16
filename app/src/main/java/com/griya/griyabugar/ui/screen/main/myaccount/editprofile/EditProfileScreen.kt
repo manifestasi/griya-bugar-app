@@ -46,7 +46,6 @@ import com.griya.griyabugar.ui.theme.poppins
 fun EditProfileScreen(
     rootNavControll: NavHostController = rememberNavController()
 ){
-
     var expanded by rememberSaveable { mutableStateOf(false) }
     var selectedGender by rememberSaveable { mutableStateOf("") }
     val genderOptions = listOf("Laki-laki", "Perempuan")

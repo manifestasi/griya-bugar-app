@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,23 +21,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,26 +34,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.griya.griyabugar.R
+import com.griya.griyabugar.ui.components.promo.DiskonBox
+import com.griya.griyabugar.ui.components.promo.Rating
+import com.griya.griyabugar.ui.components.promo.ServiceRow
+import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.theme.BackgroundColor
-import com.griya.griyabugar.ui.theme.Brown
 import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GreenColor4
-import com.griya.griyabugar.ui.theme.TextColor1
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.Yellow
@@ -74,80 +63,102 @@ import com.griya.griyabugar.ui.theme.poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    rootNavController: NavHostController = rememberNavController()
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollState = rememberScrollState()
-            Column(
-                modifier = Modifier
-                    .background(BackgroundColor)
-                    .verticalScroll(scrollState)
-            ) {
-                //Header
-                HeaderSection(Modifier.background(brush = Brush.linearGradient(listOf(GreenColor1, GreenColor2))))
-                AddressSection(Modifier
-                    .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
-                    .background(brush = Brush.linearGradient(listOf(GreenColor1, GreenColor2))))
-                Spacer(modifier = Modifier.height(25.dp))
 
-                //Promo
-                Text(
-                    text = "Paket Promosi",
-                    fontFamily = poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    color = TextColorBlack,
-                    modifier = Modifier.padding(start = 16.dp)
+    Column(
+        modifier = Modifier
+            .background(BackgroundColor)
+            .verticalScroll(scrollState)
+    ) {
+        //Header
+        HeaderSection(
+            rootNavController = rootNavController,
+            Modifier.background(
+                brush = Brush.linearGradient(
+                    listOf(
+                        GreenColor1,
+                        GreenColor2
+                    )
                 )
-                PromoSection(modifier = Modifier.padding(16.dp))
+            )
+        )
+        AddressSection(
+            Modifier
+                .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
+                .background(brush = Brush.linearGradient(listOf(GreenColor1, GreenColor2)))
+        )
+        Spacer(modifier = Modifier.height(25.dp))
 
-                Spacer(modifier = Modifier.height(10.dp))
+        //Promo
+        Text(
+            text = "Paket Promosi",
+            fontFamily = poppins,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            color = TextColorBlack,
+            modifier = Modifier.padding(start = 16.dp)
+        )
+        PromoSection(
+            rootNavController = rootNavController, modifier = Modifier.padding(16.dp)
+        )
 
-                //Reguler
-                Text(
-                    text = "Paket Reguler",
-                    fontFamily = poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    color = TextColorBlack,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-                RegulerSection(modifier = Modifier.padding(16.dp))
-                Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-                //Terapis
-                Text(
-                    text = "Terapis Kami",
-                    fontFamily = poppins,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    color = TextColorBlack,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
+        //Reguler
+        Text(
+            text = "Paket Reguler",
+            fontFamily = poppins,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            color = TextColorBlack,
+            modifier = Modifier.padding(start = 16.dp)
+        )
+        RegulerSection(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+        //Terapis
+        Text(
+            text = "Terapis Kami",
+            fontFamily = poppins,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            color = TextColorBlack,
+            modifier = Modifier.padding(start = 16.dp)
+        )
 
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(5) {
-                        TerapisSection(modifier = Modifier.fillMaxWidth())
-                    }
-                }
+        Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
-
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(5) {
+                TerapisSection(modifier = Modifier.fillMaxWidth())
             }
+        }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+    }
 
 
 }
 
 @Composable
-fun HeaderSection(modifier: Modifier) {
-    Box(modifier = modifier.fillMaxWidth().padding(start = 16.dp, top = 50.dp, end = 16.dp, bottom = 16.dp)
-        ) {
+fun HeaderSection(
+    rootNavController: NavHostController = rememberNavController(),
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 50.dp, end = 16.dp, bottom = 16.dp)
+    ) {
         Column {
             Text(
                 text = "Hai, Username",
@@ -155,7 +166,7 @@ fun HeaderSection(modifier: Modifier) {
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = TextColorWhite,
-                modifier=Modifier
+                modifier = Modifier
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -164,25 +175,28 @@ fun HeaderSection(modifier: Modifier) {
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = TextColorWhite,
-                modifier=Modifier
+                modifier = Modifier
             )
         }
 
-     IconButton(
-         onClick = {},
-         modifier=Modifier
-         .clip(CircleShape)
-         .background(Color.White)
-         .size(40.dp)
-         .align(Alignment.TopEnd)) {
-         Icon(
-             painterResource(R.drawable.ic_notif),
-             contentDescription = "Icon",
-             tint = Color.Black,
-             modifier = Modifier.size(20.dp)
+        IconButton(
+            onClick = {
+                rootNavController.navigate(Screen.Notifikasi.route)
+            },
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(Color.White)
+                .size(40.dp)
+                .align(Alignment.TopEnd)
+        ) {
+            Icon(
+                painterResource(R.drawable.ic_notif),
+                contentDescription = "Icon",
+                tint = Color.Black,
+                modifier = Modifier.size(20.dp)
 
-         )
-     }
+            )
+        }
     }
 }
 
@@ -198,7 +212,8 @@ fun AddressSection(modifier: Modifier) {
             painterResource(R.drawable.ic_location),
             contentDescription = "Location",
             tint = TextColorWhite,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier
+                .size(16.dp)
                 .align(Alignment.CenterVertically)
         )
 
@@ -215,7 +230,8 @@ fun AddressSection(modifier: Modifier) {
             painterResource(R.drawable.ic_buka),
             contentDescription = "Location",
             tint = TextColorWhite,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier
+                .size(16.dp)
                 .align(Alignment.CenterVertically)
         )
         Text(
@@ -230,7 +246,10 @@ fun AddressSection(modifier: Modifier) {
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun PromoSection(modifier: Modifier) {
+fun PromoSection(
+    rootNavController: NavHostController = rememberNavController(),
+    modifier: Modifier
+) {
     // Konten Paket Promosi
     val items = listOf(
         "Traditional",
@@ -245,6 +264,9 @@ fun PromoSection(modifier: Modifier) {
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = modifier
             .fillMaxWidth()
+            .clickable {
+                rootNavController.navigate(Screen.DetailPaket.route)
+            }
     ) {
         Column(modifier = Modifier) {
             GlideImage(
@@ -267,20 +289,7 @@ fun PromoSection(modifier: Modifier) {
                         fontWeight = FontWeight.Normal,
                     )
                     Spacer(modifier = Modifier.width(5.dp))
-                    Icon(
-                        painterResource(R.drawable.ic_rate),
-                        contentDescription = "Location",
-                        tint = Yellow,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(2.dp))
-                    Text(
-                        text = "4.5",
-                        color = TextColorBlack,
-                        fontSize = 12.sp,
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.Normal,
-                    )
+                    Rating(rate = "4.5")
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 Row {
@@ -294,54 +303,10 @@ fun PromoSection(modifier: Modifier) {
                             .align(Alignment.CenterVertically)
                     )
                     Spacer(modifier = Modifier.width(5.dp))
-                    Box (modifier = Modifier
-                        .border(width = 1.dp, brush = Brush.linearGradient(colors = listOf(
-                            GreenColor1, GreenColor2)), shape = RoundedCornerShape(5.dp)
-                        )
-                        .padding(5.dp)
-                        .align(Alignment.CenterVertically)
-                    ){
-                        Text(
-                            text = "Diskon 50%",
-                            color = GreenColor1,
-                            fontSize = 12.sp,
-                            fontFamily = poppins,
-                            fontWeight = FontWeight.Normal,
-                            style = TextStyle(
-                                brush = Brush.linearGradient(colors = listOf(
-                                    GreenColor1, GreenColor2))
-                            )
-                        )
-                    }
+                    DiskonBox(text = "Diskon 20%")
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-                FlowRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    maxItemsInEachRow = 4,
-                ) {
-                    items.forEach { text ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp) // Ukuran titik
-                                    .clip(CircleShape)
-                                    .background(DisabledColor) // Warna titik hijau gelap
-                            )
-                            Spacer(modifier = Modifier.width(4.dp)) // Jarak antara titik dan teks
-                            Text(
-                                text = text,
-                                color = TextColorBlack,
-                                fontFamily = poppins,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Normal,
-                            )
-                        }
-                    }
-                }
+                ServiceRow(items = items,4)
             }
         }
     }
@@ -386,20 +351,7 @@ fun RegulerSection(modifier: Modifier) {
                         fontWeight = FontWeight.Normal,
                     )
                     Spacer(modifier = Modifier.width(5.dp))
-                    Icon(
-                        painterResource(R.drawable.ic_rate),
-                        contentDescription = "Location",
-                        tint = Yellow,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(2.dp))
-                    Text(
-                        text = "4.5",
-                        color = TextColorBlack,
-                        fontSize = 12.sp,
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.Normal,
-                    )
+                    Rating(rate = "4.5")
                 }
                 Spacer(modifier = Modifier.height(5.dp))
                 Row {
@@ -415,33 +367,7 @@ fun RegulerSection(modifier: Modifier) {
                     Spacer(modifier = Modifier.width(5.dp))
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-                FlowRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    maxItemsInEachRow = 4,
-                ) {
-                    items.forEach { text ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp) // Ukuran titik
-                                    .clip(CircleShape)
-                                    .background(DisabledColor) // Warna titik hijau gelap
-                            )
-                            Spacer(modifier = Modifier.width(4.dp)) // Jarak antara titik dan teks
-                            Text(
-                                text = text,
-                                color = TextColorBlack,
-                                fontFamily = poppins,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Normal,
-                            )
-                        }
-                    }
-                }
+               ServiceRow(items = items,4)
             }
         }
     }
@@ -489,7 +415,8 @@ fun TerapisSection(modifier: Modifier) {
                         painterResource(R.drawable.ic_time),
                         contentDescription = "Location",
                         tint = TextColorBlack,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier
+                            .size(16.dp)
                             .align(Alignment.CenterVertically)
                     )
                     Spacer(modifier = Modifier.width(2.dp))
@@ -502,33 +429,7 @@ fun TerapisSection(modifier: Modifier) {
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-                FlowRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    maxItemsInEachRow = 3,
-                ) {
-                    items.forEach { text ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .clip(CircleShape)
-                                    .background(DisabledColor)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = text,
-                                color = TextColorBlack,
-                                fontFamily = poppins,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Normal,
-                            )
-                        }
-                    }
-                }
+                ServiceRow(items = items,3)
             }
         }
     }

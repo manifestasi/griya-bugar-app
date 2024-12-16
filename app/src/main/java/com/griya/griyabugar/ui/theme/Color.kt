@@ -24,6 +24,7 @@ val GreenColor4 = Color(0xFF269E41)
 val Yellow = Color(0xFFFFA322)
 
 val DisabledColor = Color(0xFF73856B)
+val FontOff = Color(0xFFD3CCCC)
 val BackgroundColor = Color(0xFFFDFDFD)
 
 val TextColor1 = Color(0xFF208737)

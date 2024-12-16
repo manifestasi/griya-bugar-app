@@ -1,5 +1,6 @@
 package com.griya.griyabugar
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -12,6 +13,8 @@ import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
+import com.griya.griyabugar.ui.screen.main.home.NotifikasiScreen
+import com.griya.griyabugar.ui.screen.main.home.detailpaket.DetailPaketScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
@@ -106,6 +109,18 @@ fun GriyaBugarApp(
 
         composable(Screen.EditProfile.route) {
             EditProfileScreen(
+                rootNavControll = navController
+            )
+        }
+
+        composable(Screen.Notifikasi.route) {
+            NotifikasiScreen(
+                rootNavControll = navController
+            )
+        }
+
+        composable(Screen.DetailPaket.route) {
+            DetailPaketScreen(
                 rootNavControll = navController
             )
         }
