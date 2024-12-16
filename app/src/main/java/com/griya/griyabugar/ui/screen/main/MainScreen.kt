@@ -12,6 +12,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.data.model.BottomNavItem
+import com.griya.griyabugar.ui.components.appbar.AppBarBasic
 import com.griya.griyabugar.ui.components.loading.LoadingAnimation
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.main.home.HomeScreen
@@ -40,10 +42,23 @@ fun MainScreen(
 ){
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            BottomNavigationBar(navController = navController)
+            BottomNavigationBar(
+                navController = navController,
+                currentRoute = currentRoute
+            )
+        },
+        topBar = {
+            if (currentRoute == Screen.MyAccount.route){
+                AppBarBasic(
+                    title = "Akun Saya"
+                )
+            }
         }
 
     ) { innerPadding ->
@@ -80,10 +95,13 @@ fun MainScreen(
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController){
+fun BottomNavigationBar(
+    navController: NavHostController,
+    currentRoute: String?
+){
     NavigationBar {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
+//        val navBackStackEntry by navController.currentBackStackEntryAsState()
+//        val currentRoute = navBackStackEntry?.destination?.route
         val bottomNavItems = listOf(
             BottomNavItem(Screen.Home.route, Icons.Default.Home, "Beranda"),
             BottomNavItem(Screen.Order.route, Icons.Default.Person, "Pemesanan"),

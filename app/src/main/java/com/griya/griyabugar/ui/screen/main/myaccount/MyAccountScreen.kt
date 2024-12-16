@@ -1,6 +1,5 @@
 package com.griya.griyabugar.ui.screen.main.myaccount
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,7 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
-import com.griya.griyabugar.ui.components.loading.LoadingAnimation
+import com.griya.griyabugar.ui.components.dialog.QuestionDialog
 import com.griya.griyabugar.ui.components.profile.MenuItemProfile
 import com.griya.griyabugar.ui.components.profile.image.CircleImageProfile
 import com.griya.griyabugar.ui.navigation.Screen
@@ -63,6 +60,7 @@ fun MyAccountScreen(
 
     var isError by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
+    var showQuestionDialog by rememberSaveable { mutableStateOf(false) }
 
     if (isError){
         ErrorDialog(
@@ -73,6 +71,47 @@ fun MyAccountScreen(
             },
             title = "Oops",
             description = errorMessage
+        )
+    }
+
+    if (showQuestionDialog){
+        QuestionDialog(
+            onDismiss = {},
+            title = "Keluar Akun",
+            description = "Apakah anda yakin keluar akun?",
+            btnClickYes = {
+                coroutineScope.launch {
+                    myAccounViewModel.logoutAccount().collect { event ->
+                        when (event){
+                            is Resource.Loading -> {
+                                onLoadingChange(true)
+                            }
+
+                            is Resource.Success -> {
+                                onLoadingChange(false)
+
+                                /* Keluar dari aplikasi */
+                                finishAffinity(context)
+                            }
+
+                            is Resource.Error -> {
+                                onLoadingChange(false)
+                                isError = true
+                                errorMessage = event.errorMessage
+                                showQuestionDialog = false
+                            }
+
+                            else -> {
+                                onLoadingChange(false)
+                            }
+                        }
+                    }
+                }
+                showQuestionDialog = false
+            },
+            btnClickNo = {
+                showQuestionDialog = false
+            }
         )
     }
 
@@ -128,7 +167,9 @@ fun MyAccountScreen(
         MenuItemProfile(
             name = "Ubah Kata Sandi",
             icon = R.drawable.placeholder_image_2,
-            onClick = {}
+            onClick = {
+                rootNavController.navigate(Screen.ChangePassword2.route)
+            }
         )
 
         Spacer(Modifier.height(20.dp))
@@ -145,7 +186,9 @@ fun MyAccountScreen(
         MenuItemProfile(
             name = "Informasi SPA",
             icon = R.drawable.placeholder_image_2,
-            onClick = {}
+            onClick = {
+                rootNavController.navigate(Screen.InformasiGriya.route)
+            }
         )
 
         Spacer(Modifier.height(16.dp))
@@ -169,34 +212,9 @@ fun MyAccountScreen(
 
         MenuItemProfile(
             name = "Keluar",
-            icon = R.drawable.placeholder_image_2,
+            icon = R.drawable.ic_exit,
             onClick = {
-                coroutineScope.launch {
-                    myAccounViewModel.logoutAccount().collect { event ->
-                        when (event){
-                            is Resource.Loading -> {
-                                 onLoadingChange(true)
-                            }
-
-                            is Resource.Success -> {
-                                onLoadingChange(false)
-
-                                /* Keluar dari aplikasi */
-                                finishAffinity(context)
-                            }
-
-                            is Resource.Error -> {
-                                onLoadingChange(false)
-                                isError = true
-                                errorMessage = event.errorMessage
-                            }
-
-                            else -> {
-                                onLoadingChange(false)
-                            }
-                        }
-                    }
-                }
+                showQuestionDialog = true
             }
         )
     }

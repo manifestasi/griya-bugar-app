@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
@@ -14,6 +15,7 @@ import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.ChangePasswordScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
+import com.griya.griyabugar.ui.screen.main.myaccount.informasigriya.InformasiGriyaScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.screen.welcome.WelcomeScreen
@@ -131,9 +133,17 @@ fun GriyaBugarApp(
             )
         }
 
-        composable(Screen.OldPassword.route){
+        composable(Screen.ChangePassword2.route){
             ChangePasswordScreen(
                 rootNavControll = navController
+            )
+        }
+
+        composable(Screen.InformasiGriya.route){
+            InformasiGriyaScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }

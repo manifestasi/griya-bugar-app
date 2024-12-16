@@ -10,13 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -36,18 +32,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
-import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
-fun ErrorDialog(
+fun SuccessDialog(
     onDismiss: () -> Unit,
     title: String,
     description: String,
@@ -72,8 +66,8 @@ fun ErrorDialog(
                 Spacer(Modifier.height(37.dp))
 
                 Image(
-                    painter = painterResource(R.drawable.icon_x),
-                    contentDescription = "icon x"
+                    painter = painterResource(R.drawable.icon_v),
+                    contentDescription = "icon verify"
                 )
 
                 Spacer(Modifier.height(18.dp))
@@ -158,19 +152,5 @@ fun ErrorDialog(
                 Spacer(Modifier.height(30.dp))
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ErrorDialogPreview(){
-    GriyaBugarTheme {
-        ErrorDialog(
-            onDismiss = {},
-            title = "Masuk akun gagal",
-            description = "pastikan kamu aman",
-            buttonText = "Coba lagi",
-            buttonOnClick = {}
-        )
     }
 }

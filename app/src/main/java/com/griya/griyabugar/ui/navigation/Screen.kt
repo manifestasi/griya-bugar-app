@@ -18,6 +18,9 @@ sealed class Screen(val route: String) {
     /* Profile screen */
     object EditProfile: Screen("editProfile")
 
-    /* Change password */
-    object OldPassword : Screen("oldPassword")
+    /* change pass when login */
+    object ChangePassword2 : Screen("changePassword2")
+
+    /* informasi griya screen */
+    object InformasiGriya : Screen("informasiGriya")
 }
