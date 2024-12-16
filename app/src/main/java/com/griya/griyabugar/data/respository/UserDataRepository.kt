@@ -41,122 +41,122 @@ class UserDataRepository @Inject constructor (
 
         trySend(UploadResult.Loading)
 
-        val uuidUser = firebaseAuth.currentUser?.uid ?: ""
+        val uuidUser = firebaseAuth.currentUser?.uid
+        if (uuidUser.isNullOrEmpty()) {
+            trySend(UploadResult.Error("User not logged in"))
+            close()
+            return@callbackFlow
+        }
 
-        if (uri != null){
-            val realPath = ImageProcess.getRealPathFromUri(context, uri)
-            val compressImage = ImageProcess.compressImage(realPath)
+        try {
+            if (uri != null) {
+                val realPath = ImageProcess.getRealPathFromUri(context, uri)
+                val compressImage = ImageProcess.compressImage(realPath)
 
-            val requestId = mediaManager.upload(compressImage.absolutePath)
-                .option("public_id", "folder_profile/${uuidUser}")
-                .option("overwrite", true)
-                .option("resource_type", "image")
-                .policy(UploadPolicy.defaultPolicy())
-                .callback(object : UploadCallback{
-                    override fun onStart(requestId: String?) {
-                        trySend(UploadResult.Loading)
-                    }
+                val requestId = mediaManager.upload(compressImage.absolutePath)
+                    .option("public_id", "folder_profile/${uuidUser}")
+                    .option("overwrite", true)
+                    .option("resource_type", "image")
+                    .policy(UploadPolicy.defaultPolicy())
+                    .callback(object : UploadCallback {
+                        override fun onStart(requestId: String?) {
+                            trySend(UploadResult.Loading)
+                        }
 
-                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-                        val progress = (bytes.toDouble() / totalBytes) * 100
-                        trySend(UploadResult.Progress(progress.toInt()))
-                    }
+                        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                            val progress = (bytes.toDouble() / totalBytes) * 100
+                            trySend(UploadResult.Progress(progress.toInt()))
+                        }
 
-                    override fun onSuccess(
-                        requestId: String?,
-                        resultData: MutableMap<Any?, Any?>?
-                    ) {
-                        val url = resultData?.get("secure_url").toString()
+                        override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                            val url = resultData?.get("secure_url").toString()
 
+                            firestore.collection(AuthRepository.COLLECTION_USER)
+                                .document(uuidUser)
+                                .get()
+                                .addOnSuccessListener { snapshot ->
+                                    val data = snapshot.data
+                                    firestore.collection(AuthRepository.COLLECTION_USER)
+                                        .document(uuidUser)
+                                        .set(
+                                            DataUser(
+                                                nama = nama,
+                                                noTelepon = noTelepon,
+                                                email = email,
+                                                role = data?.get("role").toString(),
+                                                kelamin = kelamin,
+                                                foto = url
+                                            )
+                                        )
+                                        .addOnSuccessListener {
+                                            trySend(UploadResult.Success("Update profile successful"))
+                                            close()
+                                        }
+                                        .addOnFailureListener {
+                                            trySend(UploadResult.Error(it.message.toString()))
+                                            close()
+                                        }
+                                }
+                                .addOnFailureListener {
+                                    trySend(UploadResult.Error(it.message.toString()))
+                                    close()
+                                }
+                        }
 
+                        override fun onError(requestId: String?, error: ErrorInfo?) {
+                            trySend(UploadResult.Error(error?.description ?: "Unknown error"))
+                            close()
+                        }
+
+                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                            trySend(UploadResult.Error("Upload rescheduled"))
+                            close()
+                        }
+                    }).dispatch()
+
+                awaitClose { mediaManager.cancelRequest(requestId) }
+            } else {
+                firestore.collection(AuthRepository.COLLECTION_USER)
+                    .document(uuidUser)
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        val data = snapshot.data
+                        val foto = data?.get("foto")?.toString() ?: ""
                         firestore.collection(AuthRepository.COLLECTION_USER)
                             .document(uuidUser)
-                            .get()
+                            .set(
+                                DataUser(
+                                    nama = nama,
+                                    noTelepon = noTelepon,
+                                    email = email,
+                                    role = data?.get("role").toString(),
+                                    kelamin = kelamin,
+                                    foto = foto
+                                )
+                            )
                             .addOnSuccessListener {
-
-                                val data = it.data
-                                firestore.collection(AuthRepository.COLLECTION_USER)
-                                    .document(uuidUser)
-                                    .set(
-                                        DataUser(
-                                            nama = nama,
-                                            noTelepon = noTelepon,
-                                            email = email,
-                                            role = data?.get("role").toString(),
-                                            kelamin = kelamin,
-                                            foto = url
-                                        )
-                                    )
-                                    .addOnSuccessListener {
-                                        trySend(UploadResult.Success(
-                                            "Update profile successfull"
-                                        )).isSuccess
-                                        close() // Menutup flow setelah sukses
-                                    }
-                                    .addOnFailureListener {
-                                        trySend(UploadResult.Error(it.message.toString()))
-                                        close()
-                                    }
-
+                                trySend(UploadResult.Success("Update profile successful"))
+                                close()
                             }
                             .addOnFailureListener {
                                 trySend(UploadResult.Error(it.message.toString()))
                                 close()
                             }
-
-
                     }
-
-                    override fun onError(requestId: String?, error: ErrorInfo?) {
-                        trySend(UploadResult.Error(error?.description ?: "Unknown error"))
+                    .addOnFailureListener {
+                        trySend(UploadResult.Error(it.message.toString()))
                         close()
                     }
 
-                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                        trySend(UploadResult.Error("Upload rescheduled"))
-                    }
-
-                }).dispatch()
-
-            // Pembersihan ketika flow selesai atau dibatalkan
-            awaitClose { mediaManager.cancelRequest(requestId) }
-        } else {
-            firestore.collection(AuthRepository.COLLECTION_USER)
-                .document(uuidUser)
-                .get()
-                .addOnSuccessListener {
-
-                    val data = it.data
-                    firestore.collection(AuthRepository.COLLECTION_USER)
-                        .document(uuidUser)
-                        .set(
-                            DataUser(
-                                nama = nama,
-                                noTelepon = noTelepon,
-                                email = email,
-                                role = data?.get("role").toString(),
-                                kelamin = kelamin,
-                                foto = data?.get("foto").toString()
-                            )
-                        )
-                        .addOnSuccessListener {
-                            trySend(UploadResult.Success(
-                                "Update profile successfull"
-                            )).isSuccess
-                            close() // Menutup flow setelah sukses
-                        }
-                        .addOnFailureListener {
-                            trySend(UploadResult.Error(it.message.toString()))
-                            close()
-                        }
-
-                }
-                .addOnFailureListener {
-                    trySend(UploadResult.Error(it.message.toString()))
-                    close()
-                }
+                awaitClose { /* No operation */ }
+            }
+        } catch (e: Exception) {
+            Log.e("UploadDataProfile", "Error: ${e.message}", e)
+            trySend(UploadResult.Error("Unexpected error occurred: ${e.message}"))
+            close()
         }
     }
+
 
     fun getDataProfile(): Flow<Resource<DataUser?>> = flow {
         emit(Resource.Loading)

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.griya.griyabugar.R
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.ui.components.Field.DropDownField
@@ -210,19 +213,15 @@ fun EditProfileScreen(
                             url = imageUrl
                         )
 
-                        Canvas(
+                        Image(
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(32.dp)
                                 .align(Alignment.BottomEnd)
-                                .offset(
-                                    x = (-4).dp,
-                                )
-                        ){
-                            drawCircle(
-                                color = Gray,
-                                radius = size.minDimension / 2
-                            )
-                        }
+                                .offset(x = (-4).dp),
+                            painter = painterResource(R.drawable.icon_pencil_profile),
+                            contentDescription = "pencil"
+                        )
+
                     }
                 }
 
