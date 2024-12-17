@@ -138,7 +138,9 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             items(5) {
-                TerapisSection(modifier = Modifier.fillMaxWidth())
+                TerapisSection(
+                    rootNavController = rootNavController,
+                    modifier = Modifier.fillMaxWidth())
             }
         }
 
@@ -375,7 +377,9 @@ fun RegulerSection(modifier: Modifier) {
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun TerapisSection(modifier: Modifier) {
+fun TerapisSection(
+    rootNavController: NavHostController = rememberNavController(),
+    modifier: Modifier) {
     val items = listOf(
         "Traditional",
         "Shiatsu",
@@ -389,6 +393,9 @@ fun TerapisSection(modifier: Modifier) {
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
             .width(260.dp)
+            .clickable {
+                rootNavController.navigate(Screen.DetailTerapis.route)
+            }
     ) {
         Column(modifier = Modifier) {
             GlideImage(

@@ -15,6 +15,7 @@ import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
 import com.griya.griyabugar.ui.screen.main.home.NotifikasiScreen
 import com.griya.griyabugar.ui.screen.main.home.detailpaket.DetailPaketScreen
+import com.griya.griyabugar.ui.screen.main.home.detailterapis.DetailTerapisScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
@@ -121,6 +122,12 @@ fun GriyaBugarApp(
 
         composable(Screen.DetailPaket.route) {
             DetailPaketScreen(
+                rootNavControll = navController
+            )
+        }
+
+        composable(Screen.DetailTerapis.route) {
+            DetailTerapisScreen(
                 rootNavControll = navController
             )
         }

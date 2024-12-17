@@ -21,7 +21,7 @@ import com.griya.griyabugar.ui.theme.poppins
 fun Rating(
     rate:String,
     modifier: Modifier = Modifier) {
-    Row(){
+    Row(modifier = modifier){
         Icon(
             painterResource(R.drawable.ic_rate),
             contentDescription = "Location",
