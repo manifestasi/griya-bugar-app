@@ -156,7 +156,7 @@ fun MyAccountScreen(
 
         MenuItemProfile(
             name = "Edit Profile",
-            icon = R.drawable.placeholder_image_2,
+            icon = R.drawable.ic_profil,
             onClick = {
                 rootNavController.navigate(Screen.EditProfile.route)
             }
@@ -166,7 +166,7 @@ fun MyAccountScreen(
 
         MenuItemProfile(
             name = "Ubah Kata Sandi",
-            icon = R.drawable.placeholder_image_2,
+            icon = R.drawable.ic_key,
             onClick = {
                 rootNavController.navigate(Screen.ChangePassword2.route)
             }
@@ -185,7 +185,7 @@ fun MyAccountScreen(
 
         MenuItemProfile(
             name = "Informasi SPA",
-            icon = R.drawable.placeholder_image_2,
+            icon = R.drawable.ic_house,
             onClick = {
                 rootNavController.navigate(Screen.InformasiGriya.route)
             }
@@ -195,7 +195,7 @@ fun MyAccountScreen(
 
         MenuItemProfile(
             name = "Hubungi SPA",
-            icon = R.drawable.placeholder_image_2,
+            icon = R.drawable.ic_headset,
             onClick = {}
         )
 
