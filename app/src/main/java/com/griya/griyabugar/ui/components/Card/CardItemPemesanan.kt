@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness1
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
@@ -34,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,14 +46,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
+import com.griya.griyabugar.ui.theme.GreenMain
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
+import com.griya.griyabugar.ui.theme.HijauMuda
 import com.griya.griyabugar.ui.theme.MainColor
+import com.griya.griyabugar.ui.theme.abu
+import java.util.Locale
 
 @Composable
 fun TagCardPemesanan(
     title: String,
     label:String,
-    color: Color= MainColor
+    color: Color= Color.White,
+    borderColor: Color = GreenMain,
+    borderWidth: Dp = 1.dp
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -65,6 +74,7 @@ fun TagCardPemesanan(
 
         Card(
             shape = RoundedCornerShape(5.dp),
+            border = BorderStroke(color = borderColor, width = borderWidth),
             modifier = Modifier.height(intrinsicSize = IntrinsicSize.Min),
             colors = CardColors(
                 containerColor = color,
@@ -79,7 +89,7 @@ fun TagCardPemesanan(
             ){
                 Text(label,
                     fontFamily = FontFamily((listOf((Font(R.font.poppins_regular))))),
-                    color = Color.Black,
+                    color = GreenMain,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -96,7 +106,7 @@ fun CardItemPemesanan(
     cornerSize: Dp = 10.dp,
     isBorder:Boolean = true,
     elevation: Dp = 5.dp,
-    borderColor: Color = Color.Black,
+    borderColor: Color = abu,
     borderWidth:Dp = 1.dp,
     height:Dp = 150.dp,
     width:Float = 0.9f,
@@ -105,6 +115,8 @@ fun CardItemPemesanan(
     tanggal:String,
     jam:String,
     isTagged:Boolean = false,
+    label: String="Selesai",
+    jenis_card:String = "PROMOSI",
     items_servis:List<String>
 ){
         Card(
@@ -119,7 +131,9 @@ fun CardItemPemesanan(
              disabledContentColor = color
          ),
          border = if (isBorder) BorderStroke(width = borderWidth, color = borderColor) else null,
-        modifier = modifier.height(height).fillMaxWidth(width)
+        modifier = modifier
+            .height(height)
+            .fillMaxWidth(width)
 
         ) {
 
@@ -132,28 +146,35 @@ fun CardItemPemesanan(
                 Column (
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxHeight().padding(5.dp)
+                    modifier = Modifier.fillMaxHeight()
+                        .background(
+                            color = GreenMain
+                        )
                 ){
+
                     Icon(
-                        imageVector = Icons.Filled.Info,
-                        contentDescription = "icon",
-                        tint = MainColor,
+                        painter = painterResource(if(jenis_card == "PROMOSI") R.drawable.promo else R.drawable.reguler_icon),
+                        contentDescription = "img",
+                        tint = Color.White,
                         modifier = Modifier.size(30.dp)
                     )
 
-                    Text("Promosi",
+                    Text(
+                        jenis_card[0] +  jenis_card.substring(1).lowercase(),
                         fontFamily = FontFamily((listOf((Font(R.font.poppins_regular))))),
-                        color = Color.Black,
+                        color = Color.White,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                        )
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(5.dp)
+                    )
+
                 }
 
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(1.dp)
-                        .background(color = Color.Black)
+                        .background(color = abu)
                 )
 
                 Column(
@@ -162,7 +183,7 @@ fun CardItemPemesanan(
                     modifier = Modifier.padding(10.dp)
                 ) {
                     if(isTagged){
-                        TagCardPemesanan(title = title, label = "Selesai")
+                        TagCardPemesanan(title = title, label = label)
                     }else{
                         Text(title,
                             fontFamily = FontFamily((listOf((Font(R.font.poppins_regular))))),
@@ -177,7 +198,7 @@ fun CardItemPemesanan(
                     )
                     Text(harga,
                         fontFamily = FontFamily((listOf((Font(R.font.poppins_regular))))),
-                        color = Color.Black,
+                        color = GreenMain,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                     )
@@ -220,10 +241,10 @@ fun CardItemPemesanan(
                                 verticalAlignment = Alignment.CenterVertically
                             ){
                                 Icon(
-                                    imageVector = Icons.Filled.KeyboardArrowRight,
+                                    imageVector = Icons.Filled.Brightness1,
                                     contentDescription = "asdad",
                                     modifier = Modifier.size(10.dp),
-                                    tint = MainColor
+                                    tint = abu
                                 )
 
                                 Text("$item",

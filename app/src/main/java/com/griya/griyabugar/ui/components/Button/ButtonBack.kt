@@ -38,7 +38,7 @@ fun ButtonBack(
         contentAlignment = alignment
     ){
         IconButton(
-            onClick = {},
+            onClick = onClick,
             modifier = Modifier.size(size)
         ) {
             Icon(

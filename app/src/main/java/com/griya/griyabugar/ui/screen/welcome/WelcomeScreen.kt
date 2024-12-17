@@ -83,7 +83,6 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(25.dp))
             BoxButton(
                 text = "Masuk",
-                color = MainColor,
                 fontColor = Color.White,
                 width = 0.98f,
                 onClick = onNavigateToLogin,
@@ -91,10 +90,8 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(10.dp))
             BoxButton(
                 text = "Daftar",
-                color = Color.White,
                 fontColor = Color.Black,
                 width = 0.98f,
-                isBorder = true,
                 onClick = onNavigateToRegister,
             )
         }

@@ -91,7 +91,6 @@ fun ChangePasswdLayout(
 
         BoxButton(
             text = "Selanjutnya",
-            color = MainColor,
             fontColor = Color.White,
             width = 0.9f,
             modifier = Modifier.padding(top = 30.dp),

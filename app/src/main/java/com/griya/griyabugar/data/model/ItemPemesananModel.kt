@@ -5,5 +5,6 @@ data class ItemPemesananModel (
     val tanggal : String,
     val jam : String,
     val item_servis : List<String>,
-    val harga : String
+    val harga : String,
+    val jenis_card : String
 )

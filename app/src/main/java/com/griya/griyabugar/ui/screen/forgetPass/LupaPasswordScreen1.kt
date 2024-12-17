@@ -110,7 +110,6 @@ fun LupaPasswordScreen1(){
                 BoxButton(
                     onClick = {},
                     text = "Simpan",
-                    color = MainColor,
                     fontColor = Color.White,
                     width = 0.9f
                 )

@@ -144,7 +144,6 @@ fun ForgetPasswordPart2(
                         onNavigationChangePassword()
                     },
                     text = "Simpan",
-                    color = MainColor,
                     fontColor = Color.White,
                     width = 0.9f
                 )

@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ShoppingCart
@@ -28,14 +30,22 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiComposable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.Tab
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -49,165 +59,106 @@ import com.griya.griyabugar.data.model.ItemPemesananModel
 import com.griya.griyabugar.ui.components.Button.BoxButton
 import com.griya.griyabugar.ui.components.Button.OptionButton
 import com.griya.griyabugar.ui.components.Card.CardItemPemesanan
+import com.griya.griyabugar.ui.components.appbar.AppBar
+import com.griya.griyabugar.ui.theme.GreenMain
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.MainColor
+import com.griya.griyabugar.ui.theme.poppins
+import kotlinx.coroutines.launch
 
-
+/*
+*  Function untuk membuat Tab Layout Pager
+* */
 @Composable
-fun PemesananItemScreen(
-    modifier: Modifier=Modifier,
-    items_content:List<ItemPemesananModel>
-){
+fun TabBarPemesanan(
+    modifier:Modifier = Modifier,
+    items_content_menunggu: List<ItemPemesananModel>,
+    items_content_selesai: List<ItemPemesananModel>,
+    items_content_batal: List<ItemPemesananModel>
+    
+    ){
 
-    /*
-    * state button, default MENUNGGU = 1
-    * */
-    val state_btn = remember { mutableStateOf(1) }
+    var tabs = listOf("MENUNGGU", "SELESAI", "BATAL")
+    var pagerState = rememberPagerState(0){3}
+    var coroutineScope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Row (
-            modifier = Modifier.fillMaxWidth().padding(
-                top = 20.dp,
-                start = 10.dp
-            ),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            /*
-            * Button Menunggu
-            * */
-            Button(
-                onClick = {
-                    state_btn.value = 1
-                },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(if(state_btn.value == 1) MainColor else Color.White) ,
-                border = if(state_btn.value != 1) BorderStroke(width = 1.dp, color = Color.Black) else null,
-                modifier = modifier
-                    .height(50.dp).wrapContentSize()
-            ) {
-                Text("MENUNGGU",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(listOf(Font(R.font.poppins_regular)))
+
+    Column (modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+
+        TabRow(
+            modifier = Modifier,
+            contentColor = GreenMain,
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                    height = 4.dp,
+                    color = GreenMain
                 )
-            }
-
-            Spacer(modifier = Modifier.width(10.dp))
-
-            /*
-            * Button Selesai
-            * */
-            Button(
-                onClick = {
-                    state_btn.value = 2
-
-                },
-                border = if(state_btn.value != 2) BorderStroke(width = 1.dp, color = Color.Black) else null,
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(if(state_btn.value == 2) MainColor else Color.White),
-                modifier = modifier
-                    .height(50.dp).wrapContentSize()
-            ) {
-                Text("SELESAI",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(listOf(Font(R.font.poppins_regular))))
-            }
-
-            Spacer(modifier = Modifier.width(10.dp))
-
-            /*
-            * Button Batal
-            * */
-            Button(
-                onClick = {
-                    state_btn.value = 3
-
-                },
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(if(state_btn.value == 3) MainColor else Color.White),
-                border = if(state_btn.value != 3) BorderStroke(width = 1.dp, color = Color.Black) else null,
-                modifier = modifier
-                    .height(50.dp).wrapContentSize()
-            ) {
-                Text("BATAL",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(listOf(Font(R.font.poppins_regular)))
+            },
+            selectedTabIndex = pagerState.currentPage) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    selectedContentColor = GreenMain,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    text = {
+                        Text(
+                            text = title,
+                            fontFamily = poppins,
+                            fontSize = 16.sp
+                        )
+                    }
                 )
             }
         }
-        /*
-        * Scroll View untuk Item Card
-        * */
-        LazyColumn (
-            modifier = Modifier.padding(top = 10.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ){
-            items(items_content){
-                    item ->
-                CardItemPemesanan(modifier = Modifier.padding(top = 20.dp).clickable {
-
-                },
-                    title = "${item.title}",
-                    harga = "${item.harga}",
-                    tanggal = "${item.tanggal}",
-                    jam = "${item.jam}",
-                    items_servis = item.item_servis
-                )
+        HorizontalPager(
+            state = pagerState,
+            beyondViewportPageCount = tabs.size,
+            modifier = Modifier.padding(10.dp)
+        ) {
+            page ->
+            when (page){
+                0 -> MenungguScreen(items_content= items_content_menunggu)
+                1 -> SelesaiScreen(items_content= items_content_selesai)
+                2 -> BatalScreen(items_content= items_content_batal)
             }
         }
     }
-
 }
 
+/*
+* Gunakan function ini sebagai screen pemesanan.
+* */
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PemesananScreen(
     modifier:Modifier = Modifier,
-    items_content:List<ItemPemesananModel>
+    items_content_menunggu:List<ItemPemesananModel>,
+    items_content_selesai:List<ItemPemesananModel>,
+    items_content_batal:List<ItemPemesananModel>
 ){
 
     Scaffold (
         topBar = {
-            TopAppBar(
-                modifier = Modifier,
-                title = {
-                    Row(
-                        modifier = modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("Pemesanan",
-                            color = Color.Black,
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily((listOf((Font(R.font.poppins_regular))))),
-                            textAlign = TextAlign.Start,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Icon(
-                            imageVector = Icons.Rounded.ShoppingCart,
-                            contentDescription = "icon_appbar",
-                            tint = MainColor,
-                            modifier = Modifier
-                                .size(35.dp)
-                                .padding(end = 10.dp)
-                        )
-                    }
-                }
+            AppBar(
+                title = "Pemesanan"
             )
         },
         content = {
-            innerPadding ->
-            PemesananItemScreen(
-                modifier = Modifier.padding(innerPadding),
-                items_content = items_content
-                )
+                innerPadding ->
+            TabBarPemesanan(
+                modifier = modifier.padding(innerPadding),
+                items_content_menunggu = items_content_menunggu,
+                items_content_selesai = items_content_selesai,
+                items_content_batal = items_content_batal
+            )
         }
     )
 }
@@ -217,8 +168,7 @@ fun PemesananScreen(
 @Composable
 fun PemesananPreview(){
     /*
-    * hanya sebagai contoh data, untuk asli buat controler , untuk
-    * masing-masing skenario pilihan (state button) button
+    * hanya sebagai contoh data, untuk asli buat controler
     * */
     var pemesanan_list = listOf(
         ItemPemesananModel(
@@ -230,7 +180,8 @@ fun PemesananPreview(){
                 "Body Scrum",
                 "Tradisional"
             ),
-            harga = "Rp.500,000"
+            harga = "Rp.500,000",
+            jenis_card = "PROMOSI"
         ),
         ItemPemesananModel(
             title = "Paket 3 Jam",
@@ -241,12 +192,19 @@ fun PemesananPreview(){
                 "Body Scrum",
                 "Tradisional"
             ),
-            harga = "Rp.1,500,000"
+            harga = "Rp.1,500,000",
+            jenis_card = "REGULER"
+
         ),
 
         )
     GriyaBugarTheme {
-        PemesananScreen(modifier = Modifier,
-            items_content = pemesanan_list )
+        PemesananScreen(
+            modifier = Modifier,
+            items_content_menunggu = pemesanan_list,
+            items_content_selesai = listOf(),
+            items_content_batal = listOf(),
+        )
+
     }
 }
