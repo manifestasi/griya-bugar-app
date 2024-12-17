@@ -33,8 +33,8 @@ import com.griya.griyabugar.ui.theme.MainColor
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
-    onNavigateToLogin: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToLogin: @Composable () -> Unit,
+    onNavigateToRegister: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -102,8 +102,8 @@ fun WelcomeScreen(
 @Composable
 fun MainWelcomeScreen(
     modifier: Modifier,
-    onNavigateToLogin: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToLogin: @Composable () -> Unit,
+    onNavigateToRegister: @Composable () -> Unit
 ){
     Scaffold { innerPadding->
         WelcomeScreen(
