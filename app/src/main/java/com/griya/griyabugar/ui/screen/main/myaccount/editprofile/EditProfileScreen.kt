@@ -83,7 +83,9 @@ fun EditProfileScreen(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        imageUrl = uri.toString() // Simpan URI gambar yang dipilih
+        if (uri != null){
+            imageUrl = uri.toString() // Simpan URI gambar yang dipilih
+        }
         imageUri = uri
     }
 

@@ -17,6 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GriyaBugar"
         tools:targetApi="31">
+
+        <!-- Launcher Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,8 +26,17 @@
             android:theme="@style/Theme.GriyaBugar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Deep Link Intent-Filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="griyabugar.page.link" />
             </intent-filter>
         </activity>
     </application>

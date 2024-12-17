@@ -6,7 +6,7 @@ sealed class Screen(val route: String) {
     object Register: Screen("register")
     object Splash: Screen("splash")
     object ForgotPassword: Screen("forgotPassword")
-    object ChangePassword: Screen("changePassword")
+    object ChangePassword: Screen("changePassword?link={link}")
     object Welcome: Screen("welcome")
 
     /* Main screen */

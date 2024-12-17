@@ -27,8 +27,8 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
 fun ButtonBack(
-    alignment: Alignment=Alignment.TopStart,
     modifier: Modifier = Modifier,
+    alignment: Alignment=Alignment.TopStart,
     size: Dp = 30.dp,
     padding:Dp = 10.dp,
     onClick: () -> Unit
@@ -38,7 +38,7 @@ fun ButtonBack(
         contentAlignment = alignment
     ){
         IconButton(
-            onClick = {},
+            onClick = onClick,
             modifier = Modifier.size(size)
         ) {
             Icon(

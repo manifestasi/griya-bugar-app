@@ -1,48 +1,47 @@
 package com.griya.griyabugar.ui.screen.forgetPass
 
+import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.griya.griyabugar.R
-import com.griya.griyabugar.ui.components.Button.BoxButton
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.ui.components.Button.ButtonBack
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
-import com.griya.griyabugar.ui.components.Field.PasswordTextField
+import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.register.ButtonConfirm
 import com.griya.griyabugar.ui.components.register.PasswordField
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
-import com.griya.griyabugar.ui.theme.MainColor
 import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
 fun ForgetPasswordPart2(
     modifier: Modifier = Modifier,
     onNavigationBack: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    link: String? = null,
+    forgetPassViewModel: ForgetPassViewModel = hiltViewModel(),
 ){
 
     Surface(
@@ -50,10 +49,68 @@ fun ForgetPasswordPart2(
     ) {
         var oldPass by rememberSaveable { mutableStateOf("") }
         var newPass by rememberSaveable { mutableStateOf("") }
+        var oobCode by rememberSaveable { mutableStateOf("") }
+
+        var isLoading by rememberSaveable { mutableStateOf(false) }
+        var isError by rememberSaveable { mutableStateOf(false) }
+        var isSuccess by rememberSaveable { mutableStateOf(false) }
+        var errorMessage by rememberSaveable { mutableStateOf("") }
+        var successMessage by rememberSaveable { mutableStateOf("") }
 
         var visibility_state_old by rememberSaveable { mutableStateOf(false) }
         var visibility_state_new by rememberSaveable { mutableStateOf(false) }
 
+        LaunchedEffect(Unit) {
+            val uri = Uri.parse(link ?: "")
+
+            val getOobCode = uri.getQueryParameter("oobCode")
+
+            oobCode = getOobCode ?: ""
+
+            forgetPassViewModel.updatePasswordWithOobCodeEvent.collect { event ->
+                when(event){
+                    is Resource.Loading -> {
+                        isLoading = true
+                    }
+                    is Resource.Success -> {
+                        isLoading = false
+                        isSuccess = true
+                        successMessage = event.data
+                    }
+                    is Resource.Error -> {
+                        isLoading = false
+                        isError = true
+                        errorMessage = event.errorMessage
+                    }
+                    else -> {}
+                }
+            }
+        }
+
+        if (isError){
+            ErrorDialog(
+                onDismiss = {},
+                title = "Oops..",
+                description = errorMessage,
+                buttonText = "Coba lagi",
+                buttonOnClick = {
+                    isError = false
+                }
+            )
+        }
+
+        if (isSuccess){
+            SuccessDialog(
+                onDismiss = {},
+                title = "Sukses",
+                description = successMessage,
+                buttonText = "Lanjutkan",
+                buttonOnClick = {
+                    isSuccess = false
+                    onNavigateToLogin()
+                }
+            )
+        }
 
         Box(
             modifier = Modifier
@@ -168,9 +225,15 @@ fun ForgetPasswordPart2(
 //                )
                 ButtonConfirm(
                     onClick = {
-                        onNavigateToLogin()
+                        forgetPassViewModel.updatePasswordWithOobCode(
+                            oobCode,
+                            newPass,
+                            oldPass
+                        )
                     },
-                    name = "Simpan"
+                    name = "Simpan",
+                    isLoading = isLoading,
+                    isDisabled = isLoading
                 )
 
             }

@@ -4,9 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
@@ -93,7 +96,20 @@ fun GriyaBugarApp(
                 }
             )
         }
-        composable(Screen.ChangePassword.route){
+        composable(
+            route = Screen.ChangePassword.route,
+            arguments = listOf(
+                navArgument("link"){
+                    type = NavType.StringType
+                }
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://griyabugar.page.link?link={link}"
+                }
+            )
+        ){ backStackEntry ->
+            val link = backStackEntry.arguments?.getString("link")
             ForgetPasswordPart2(
                 onNavigationBack = {
                     navController.popBackStack()
@@ -105,7 +121,8 @@ fun GriyaBugarApp(
                         }
                         launchSingleTop = true
                     }
-                }
+                },
+                link = link
             )
         }
         composable(Screen.Welcome.route){

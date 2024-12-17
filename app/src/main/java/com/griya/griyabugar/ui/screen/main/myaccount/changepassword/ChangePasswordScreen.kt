@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
 import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.enteremailpass.EnterEmailPassScreen
+import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.enternewpass.EnterNewPassScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.enteroldpass.EnterOldPassScreen
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
@@ -51,12 +52,21 @@ fun ChangePasswordScreen(
                 EnterOldPassScreen(
                     onNavigateToEnterEmail = {
                         changePassNavController.navigate(ChangePassScreen.EmailEnter.route)
+                    },
+                    onNavigateToEnterNewPass = {
+                        changePassNavController.navigate(ChangePassScreen.NewPasswordEnter.route)
                     }
                 )
             }
 
             composable(ChangePassScreen.EmailEnter.route){
                 EnterEmailPassScreen()
+            }
+
+            composable(ChangePassScreen.NewPasswordEnter.route){
+                EnterNewPassScreen(
+                    rootNavController = rootNavControll
+                )
             }
         }
     }

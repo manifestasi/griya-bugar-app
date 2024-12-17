@@ -43,13 +43,12 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
 import com.griya.griyabugar.util.finishAffinity
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun MyAccountScreen(
     rootNavController: NavHostController = rememberNavController(),
-    myAccounViewModel: MyAccounViewModel = hiltViewModel(),
+    myAccountViewModel: MyAccountViewModel = hiltViewModel(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     isLoading: Boolean = false,
     onLoadingChange: (Boolean) -> Unit
@@ -81,7 +80,7 @@ fun MyAccountScreen(
             description = "Apakah anda yakin keluar akun?",
             btnClickYes = {
                 coroutineScope.launch {
-                    myAccounViewModel.logoutAccount().collect { event ->
+                    myAccountViewModel.logoutAccount().collect { event ->
                         when (event){
                             is Resource.Loading -> {
                                 onLoadingChange(true)

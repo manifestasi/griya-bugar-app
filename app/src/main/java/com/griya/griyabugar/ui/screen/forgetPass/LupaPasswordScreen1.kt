@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,10 +26,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.ui.components.Button.BoxButton
 import com.griya.griyabugar.ui.components.Button.ButtonBack
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
 import com.griya.griyabugar.ui.components.Field.EmailTextField
+import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.register.ButtonConfirm
 import com.griya.griyabugar.ui.components.register.TextField
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
@@ -38,9 +43,62 @@ import com.griya.griyabugar.ui.theme.poppins
 @Composable
 fun LupaPasswordScreen1(
     onNavigationBack: () -> Unit,
-    onNavigateToChangePassword: () -> Unit
+    onNavigateToChangePassword: () -> Unit,
+    forgetPassViewModel: ForgetPassViewModel = hiltViewModel()
 ){
     var email by rememberSaveable { mutableStateOf("") }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var isError by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+    var isSuccess by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        forgetPassViewModel.sendForgotPasswordLinkEvent.collect { event ->
+            when (event){
+                is Resource.Loading -> {
+                    isLoading = true
+                }
+                is Resource.Success -> {
+                    isLoading = false
+                    isSuccess = true
+                }
+                is Resource.Error -> {
+                    isLoading = false
+                    isError = true
+                    errorMessage = event.errorMessage
+                }
+                else -> {
+                    isLoading = false
+                }
+            }
+        }
+    }
+
+    if(isSuccess){
+        SuccessDialog(
+            title = "Email Terkirim",
+            description = "Cek email anda untuk ubah kata sandi",
+            buttonText = "Ok",
+            buttonOnClick = {
+                isSuccess = false
+            },
+            onDismiss = {}
+        )
+    }
+
+    if(isError){
+        ErrorDialog(
+            onDismiss = {},
+            buttonText = "Coba lagi",
+            title = "Kirim email link gagal",
+            description = errorMessage,
+            buttonOnClick = {
+                isError = false
+            }
+        )
+    }
+
+
 
     Box(
         modifier = Modifier
@@ -128,9 +186,11 @@ fun LupaPasswordScreen1(
 
             ButtonConfirm(
                 onClick = {
-                    onNavigateToChangePassword()
+                    forgetPassViewModel.sendForgotPasswordLink(email)
                 },
-                name = "Simpan",
+                name = "Kirim",
+                isDisabled = isLoading,
+                isLoading = isLoading,
             )
 
         }

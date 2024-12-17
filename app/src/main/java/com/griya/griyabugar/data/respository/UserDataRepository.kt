@@ -116,7 +116,7 @@ class UserDataRepository @Inject constructor (
 
                 awaitClose { mediaManager.cancelRequest(requestId) }
             } else {
-                firestore.collection(AuthRepository.COLLECTION_USER)
+                val listener = firestore.collection(AuthRepository.COLLECTION_USER)
                     .document(uuidUser)
                     .get()
                     .addOnSuccessListener { snapshot ->
