@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.griya.griyabugar.ui.theme.CircleColor
+import com.griya.griyabugar.ui.theme.GreenColor1
+import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
@@ -21,7 +25,8 @@ fun CircleElement(
     offsetX:Int=100,
     offsetY:Int=-100,
     startAngle:Float=180f,
-    endAngle:Float=-90f
+    endAngle:Float=-90f,
+    color: Color = CircleColor
 ){
     Box(modifier = Modifier.fillMaxSize()){
         Canvas(
@@ -31,7 +36,12 @@ fun CircleElement(
                 .offset(x = (offsetX).dp, y = (offsetY).dp)
         ) {
             drawArc(
-                color = CircleColor,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        GreenColor1,
+                        GreenColor2
+                    )
+                ),
                 startAngle = startAngle,
                 sweepAngle = endAngle,
                 useCenter = true

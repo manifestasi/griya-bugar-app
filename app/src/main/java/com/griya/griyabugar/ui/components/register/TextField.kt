@@ -15,10 +15,12 @@ import androidx.compose.ui.unit.dp
 fun TextField(
     onChange: (String) -> Unit,
     value: String = "",
-    placeHolder: String
+    placeHolder: String,
+    readOnly: Boolean = false
 ){
     OutlinedTextField(
         value = value,
+        readOnly = readOnly,
         onValueChange = {
             onChange(it)
         },

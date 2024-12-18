@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -13,46 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GriyaBugar"
         tools:targetApi="31">
-        <activity
-            android:name=".ui.components.Button.ButtonBack"
-            android:exported="false"
-            android:label="@string/title_activity_button_back"
-            android:theme="@style/Theme.GriyaBugar" />
-        <activity
-            android:name=".ui.components.Field.TextFieldTemplate"
-            android:exported="false"
-            android:label="@string/title_activity_text_field_template"
-            android:theme="@style/Theme.GriyaBugar" />
-        <activity
-            android:name=".ui.screen.forgetPass.ForgetPassword"
-            android:exported="false"
-            android:label="@string/title_activity_forget_password"
-            android:theme="@style/Theme.GriyaBugar" />
-        <activity
-            android:name=".ui.components.CircleElement"
-            android:exported="false"
-            android:label="@string/title_activity_circle_element"
-            android:theme="@style/Theme.GriyaBugar" />
-        <activity
-            android:name=".ui.components.CircleBackground.CircleCard"
-            android:exported="false"
-            android:label="@string/title_activity_circle_card"
-            android:theme="@style/Theme.GriyaBugar" />
-        <activity
-            android:name=".ui.components.CircleBackground.CircleBackground"
-            android:exported="false"
-            android:label="@string/title_activity_circle_background"
-            android:theme="@style/Theme.GriyaBugar" />
-        <activity
-            android:name=".ui.components.ButtonBox"
-            android:exported="false"
-            android:label="@string/title_activity_button_box"
-            android:theme="@style/Theme.GriyaBugar" />
-        <activity
-            android:name=".ui.screen.welcome.WelcomeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_welcome"
-            android:theme="@style/Theme.GriyaBugar" />
+
+        <!-- Launcher Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -60,8 +26,17 @@
             android:theme="@style/Theme.GriyaBugar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Deep Link Intent-Filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="griyabugar.page.link" />
             </intent-filter>
         </activity>
     </application>

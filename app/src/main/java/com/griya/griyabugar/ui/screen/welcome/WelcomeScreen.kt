@@ -26,21 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.components.Button.BoxButton
+import com.griya.griyabugar.ui.components.Button.ButtonBorder
+import com.griya.griyabugar.ui.components.Button.ButtonGradient
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
+import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
+import com.griya.griyabugar.ui.theme.GreenColor3
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.MainColor
-
-//class WelcomeActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            GriyaBugarTheme {
-//                MainWelcomeScreen(modifier=Modifier)
-//            }
-//        }
-//    }
-//}
+import com.griya.griyabugar.ui.theme.TextColor2
 
 @Composable
 fun WelcomeScreen(
@@ -48,6 +41,10 @@ fun WelcomeScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
+    UpdateStatusBarColor(
+        darkIcons = true
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -71,11 +68,11 @@ fun WelcomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter = painterResource(R.drawable.rafiki),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(200.dp)
+                    .fillMaxWidth(0.8f)
+                    .height(239.dp)
             )
             Spacer(modifier = Modifier.height(30.dp))
             Text(
@@ -93,22 +90,27 @@ fun WelcomeScreen(
                 fontSize = 12.sp
             )
             Spacer(modifier = Modifier.height(25.dp))
-            BoxButton(
-                text = "Masuk",
-                color = MainColor,
-                fontColor = Color.White,
-                width = 0.98f,
-                onClick = onNavigateToLogin,
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            BoxButton(
-                text = "Daftar",
-                color = Color.White,
-                fontColor = Color.Black,
-                width = 0.98f,
-                isBorder = true,
-                onClick = onNavigateToRegister,
-            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 3.dp)
+            ) {
+                ButtonGradient(
+                    onClick = {
+                        onNavigateToLogin()
+                    },
+                    name = "Masuk"
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                ButtonBorder(
+                    text = "Daftar",
+                    color = Color.White,
+                    fontColor = TextColor2,
+                    onClick = onNavigateToRegister,
+                    borderColor = GreenColor3
+                )
+            }
         }
     }
 }

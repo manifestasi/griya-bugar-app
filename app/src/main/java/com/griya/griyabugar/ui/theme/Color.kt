@@ -16,3 +16,31 @@ val Brown = Color(0xFF8F8080)
 //tambahkan konfigurasi color di sini, copy dari figma dan tambahkan 0xFF
 val MainColor = Color(0xFF8F8080)
 val CircleColor = Color(0xFFD9D9D9)
+
+val MainColor2 = Color(0xFF32D705)
+val SecondaryColor2 = Color(0xFF2BA62B)
+
+val GreenColor1 = Color(0xFF107D28)
+val GreenColor2 = Color(0xFF1CE148)
+val GreenColor3 = Color(0xFF168D21)
+val GreenColor4 = Color(0xFF32D705)
+val GreenColor5 = Color(0xFF28BA3E)
+val GreenColor6 = Color(0xFF269E41)
+
+val OrangeColor = Color(0xFFFD5412)
+val Yellow = Color(0xFFFFA322)
+
+val DisabledColor = Color(0xFF73856B)
+val FontOff = Color(0xFFD3CCCC)
+val BackgroundColor = Color(0xFFFDFDFD)
+
+val TextColor1 = Color(0xFF208737)
+val TextColor2 = Color(0xFF107D28)
+val GreenMain = Color(0xFF269E41)
+val HijauTua = Color(0xFF107D28)
+val HijauMuda = Color(0xFF1CE148)
+val HijauTua2 = Color(0xFF168D21)
+val abu = Color(0xFF73856B)
+val orange = Color(0xFFFFD700)
+val TextColorWhite = Color(0xFFF8F8F8)
+val TextColorBlack = Color(0xFF1A1A1A)

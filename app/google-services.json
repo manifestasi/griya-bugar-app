@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "182198576148",
+    "project_id": "griyabugar-d664a",
+    "storage_bucket": "griyabugar-d664a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:182198576148:android:ee6b293c659d85eb28b301",
+        "android_client_info": {
+          "package_name": "com.griya.griyabugar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8JpAWiRagUFqhoIDGzz8bYxOuKDjB-n8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

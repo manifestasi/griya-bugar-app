@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
 //    alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -81,7 +82,16 @@ dependencies {
     // hilt adnroid
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // icon extended
     implementation(libs.androidx.material.icons.extended)
+
+    //firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
+
+    implementation(libs.cloudinary.android)
 }
