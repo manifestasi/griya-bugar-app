@@ -1,5 +1,6 @@
 package com.griya.griyabugar.data.respository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.ActionCodeSettings
@@ -67,6 +68,7 @@ class AuthRepository @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
+    @SuppressLint("LongLogTag")
     fun changePassword(
         password: String,
         oldPassword: String
@@ -138,6 +140,7 @@ class AuthRepository @Inject constructor(
     }.flowOn(Dispatchers.IO)
 
 
+    @SuppressLint("LongLogTag")
     fun sendForgotPasswordLink(email: String): Flow<Resource<String>> = callbackFlow {
 
         trySend(Resource.Loading)

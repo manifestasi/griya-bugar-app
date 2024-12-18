@@ -27,7 +27,7 @@ fun InformasiGriyaScreen(
         topBar = {
             AppBarWithBackButton(
                 title = "Informasi Griya Bugar",
-                onClickBack = {}
+                onClickBack = onNavigateBack
             )
         }
     ) { innerPaddding ->

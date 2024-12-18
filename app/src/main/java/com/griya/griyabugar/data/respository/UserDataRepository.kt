@@ -1,5 +1,6 @@
 package com.griya.griyabugar.data.respository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -158,6 +159,7 @@ class UserDataRepository @Inject constructor (
     }
 
 
+    @SuppressLint("LongLogTag")
     fun getDataProfile(): Flow<Resource<DataUser?>> = flow {
         emit(Resource.Loading)
 

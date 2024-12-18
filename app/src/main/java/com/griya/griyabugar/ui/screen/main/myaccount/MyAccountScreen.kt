@@ -1,5 +1,7 @@
 package com.griya.griyabugar.ui.screen.main.myaccount
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,6 +63,30 @@ fun MyAccountScreen(
     var isError by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var showQuestionDialog by rememberSaveable { mutableStateOf(false) }
+    var imageUrl by rememberSaveable { mutableStateOf("") }
+    var emaiL by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        myAccountViewModel.getDataProfile.collect { event ->
+            when (event){
+                is Resource.Loading -> {
+                    emaiL = "Loading..."
+                    name = "Loading..."
+                }
+                is Resource.Success -> {
+                    emaiL = event.data?.email ?: ""
+                    name = event.data?.nama ?: ""
+                    imageUrl = event.data?.foto ?: ""
+                }
+                is Resource.Error -> {
+                    isError = true
+                    errorMessage = event.errorMessage
+                }
+                else -> {}
+            }
+        }
+    }
 
     if (isError){
         ErrorDialog(
@@ -128,21 +155,24 @@ fun MyAccountScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            CircleImageProfile(url = "")
+            /* image profile */
+            CircleImageProfile(url = imageUrl)
+
             Spacer(Modifier.width(26.dp))
+
             Column(
                 modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Messi123",
+                    text = name,
                     style = TextStyle(
                         fontFamily = poppins,
                         fontSize = 20.sp
                     )
                 )
                 Text(
-                    text = "messislayer@gmail.com",
+                    text = emaiL,
                     style = TextStyle(
                         fontFamily = poppins,
                         fontSize = 12.sp
@@ -195,7 +225,11 @@ fun MyAccountScreen(
         MenuItemProfile(
             name = "Hubungi SPA",
             icon = R.drawable.ic_headset,
-            onClick = {}
+            onClick = {
+                val url = "https://wa.me/62882005002819"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(intent)
+            }
         )
 
         Spacer(Modifier.height(20.dp))
