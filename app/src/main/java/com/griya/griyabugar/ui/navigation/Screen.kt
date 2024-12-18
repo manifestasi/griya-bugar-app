@@ -23,4 +23,14 @@ sealed class Screen(val route: String) {
 
     /* informasi griya screen */
     object InformasiGriya : Screen("informasiGriya")
+
+    /* Notifikasi screen */
+    object Notifikasi: Screen("notifikasi")
+
+    /*Detail Paket screen*/
+    object DetailPaket: Screen("detailPaket")
+
+   /*Detail Terapis screen*/
+    object DetailTerapis: Screen("detailTerapis")
+
 }

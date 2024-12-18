@@ -1,4 +1,4 @@
-package com.griya.griyabugar.ui.screen.pemesanan
+package com.griya.griyabugar.ui.screen.main.order
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

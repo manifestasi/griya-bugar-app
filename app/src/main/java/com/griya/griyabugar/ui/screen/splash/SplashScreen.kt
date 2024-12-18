@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.griya.griyabugar.R
+import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.theme.GreenColor5
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import kotlinx.coroutines.delay
@@ -27,6 +28,11 @@ fun SplashScreen(
     onNavigateToMain: () -> Unit,
     splashViewModel: SplashViewModel = hiltViewModel()
 ){
+
+    UpdateStatusBarColor(
+        darkIcons = false
+    )
+
     LaunchedEffect(true) {
         delay(2000)
         if(splashViewModel.getCurrentUser() !== null){

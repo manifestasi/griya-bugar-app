@@ -1,5 +1,6 @@
 package com.griya.griyabugar
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +18,9 @@ import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.ChangePasswordScreen
+import com.griya.griyabugar.ui.screen.main.home.NotifikasiScreen
+import com.griya.griyabugar.ui.screen.main.home.detailpaket.DetailPaketScreen
+import com.griya.griyabugar.ui.screen.main.home.detailterapis.DetailTerapisScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.informasigriya.InformasiGriyaScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
@@ -32,6 +36,7 @@ fun GriyaBugarApp(
 
 //    val navBackStackEntry by navController.currentBackStackEntryAsState()
 //    val currentRoute = navBackStackEntry?.destination?.route
+
 
     NavHost(
         navController = navController,
@@ -161,6 +166,24 @@ fun GriyaBugarApp(
                 onNavigateBack = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable(Screen.Notifikasi.route) {
+            NotifikasiScreen(
+                rootNavControll = navController
+            )
+        }
+
+        composable(Screen.DetailPaket.route) {
+            DetailPaketScreen(
+                rootNavControll = navController
+            )
+        }
+
+        composable(Screen.DetailTerapis.route) {
+            DetailTerapisScreen(
+                rootNavControll = navController
             )
         }
     }

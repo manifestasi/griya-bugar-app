@@ -29,6 +29,7 @@ import com.griya.griyabugar.ui.components.Button.BoxButton
 import com.griya.griyabugar.ui.components.Button.ButtonBorder
 import com.griya.griyabugar.ui.components.Button.ButtonGradient
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
+import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.theme.GreenColor3
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.MainColor
@@ -40,6 +41,10 @@ fun WelcomeScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
+    UpdateStatusBarColor(
+        darkIcons = true
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
