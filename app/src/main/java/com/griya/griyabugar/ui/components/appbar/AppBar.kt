@@ -41,9 +41,8 @@ import com.griya.griyabugar.ui.theme.HijauTua
 import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
-fun AppBarWithBackButton(
+fun AppBar(
     title: String,
-    onClickBack: () -> Unit
 ){
     Card(
         modifier = Modifier
@@ -77,7 +76,7 @@ fun AppBarWithBackButton(
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
@@ -87,53 +86,25 @@ fun AppBarWithBackButton(
                             HijauMuda
                         )
                     )
-                )
+                ),
+            contentAlignment = Alignment.BottomStart
 
-//            .drawBehind {
-//                val strokeWidth = 2.dp.toPx() // Ketebalan garis bawah
-//                val y = size.height - strokeWidth / 2 // Posisi garis di bagian bawah
-//                drawLine(
-//                    color = Brown, // Warna garis bawah
-//                    start = Offset(0f, y), // Titik awal garis (kiri bawah)
-//                    end = Offset(size.width, y), // Titik akhir garis (kanan bawah)
-//                    strokeWidth = strokeWidth
-//                )
-//            }
         ) {
 
             Spacer(Modifier.height(26.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontFamily = poppins,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                ),
+                modifier = Modifier.padding(10.dp)
+            )
 
-                IconButton(onClick = {onClickBack()}) {
-                    Icon(
-                        modifier = Modifier.size(32.dp),
-                        imageVector = Icons.Default.KeyboardArrowLeft,
-                        contentDescription = "arrow back",
-                        tint = Color.White
-                    )
-                }
-
-                Spacer(Modifier.width(22.dp))
-
-                Text(
-                    text = title,
-                    style = TextStyle(
-                        fontFamily = poppins,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                )
-
-            }
-
-            Spacer(Modifier.height(26.dp))
+            Spacer(Modifier.height(10.dp))
 
         }
     }
@@ -141,11 +112,10 @@ fun AppBarWithBackButton(
 
 @Preview(showBackground = true)
 @Composable
-fun AppBarWithBackButtonPreview(){
+fun AppBar(){
     GriyaBugarTheme {
-        AppBarWithBackButton(
+        AppBar(
             title = "test title",
-            onClickBack = {}
         )
     }
 }

@@ -34,18 +34,6 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.MainColor
 import com.griya.griyabugar.ui.theme.TextColor2
 
-//class WelcomeActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            GriyaBugarTheme {
-//                MainWelcomeScreen(modifier=Modifier)
-//            }
-//        }
-//    }
-//}
-
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
