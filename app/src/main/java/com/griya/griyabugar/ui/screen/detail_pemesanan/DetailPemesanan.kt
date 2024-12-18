@@ -53,7 +53,7 @@ import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.components.Button.BoxButton
 import com.griya.griyabugar.ui.components.Button.BoxButtonBorder
 import com.griya.griyabugar.ui.components.Button.BoxButtonBorderDP
-import com.griya.griyabugar.ui.components.Dialog.RateDialog
+import com.griya.griyabugar.ui.components.dialog.RateDialog
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
 import com.griya.griyabugar.ui.components.profile.image.CircleImageProfile
 import com.griya.griyabugar.ui.theme.GreenMain

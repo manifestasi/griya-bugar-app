@@ -161,16 +161,16 @@ fun ErrorDialog(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ErrorDialogPreview(){
-    GriyaBugarTheme {
-        ErrorDialog(
-            onDismiss = {},
-            title = "Masuk akun gagal",
-            description = "pastikan kamu aman",
-            buttonText = "Coba lagi",
-            buttonOnClick = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ErrorDialogPreview(){
+//    GriyaBugarTheme {
+//        ErrorDialog(
+//            onDismiss = {},
+//            title = "Masuk akun gagal",
+//            description = "pastikan kamu aman",
+//            buttonText = "Coba lagi",
+//            buttonOnClick = {}
+//        )
+//    }
+//}
