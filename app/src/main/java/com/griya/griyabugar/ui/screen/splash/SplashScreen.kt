@@ -30,21 +30,21 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     onNavigateToWelcome: () -> Unit,
     onNavigateToMain: () -> Unit,
-//    splashViewModel: SplashViewModel = hiltViewModel()
+    splashViewModel: SplashViewModel = hiltViewModel()
 ){
 
     UpdateStatusBarColor(
         darkIcons = false
     )
 
-//    LaunchedEffect(true) {
-//        delay(2000)
-//        if(splashViewModel.getCurrentUser() !== null){
-//            onNavigateToMain()
-//        } else {
-//            onNavigateToWelcome()
-//        }
-//    }
+    LaunchedEffect(true) {
+        delay(2000)
+        if(splashViewModel.getCurrentUser() !== null){
+            onNavigateToMain()
+        } else {
+            onNavigateToWelcome()
+        }
+    }
 
     Box(
         modifier = Modifier
