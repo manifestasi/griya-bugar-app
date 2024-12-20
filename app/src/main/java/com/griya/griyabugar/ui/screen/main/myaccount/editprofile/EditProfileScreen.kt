@@ -202,8 +202,8 @@ fun EditProfileScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp)
                     .background(Color.White)
+                    .padding(horizontal = 16.dp)
             ) {
 
                 Spacer(Modifier.height(32.dp))

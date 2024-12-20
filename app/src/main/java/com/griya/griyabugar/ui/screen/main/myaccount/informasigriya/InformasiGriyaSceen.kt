@@ -37,10 +37,10 @@ fun InformasiGriyaScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPaddding)
+                .background(Color.White)
                 .padding(
                     horizontal = 16.dp
                 )
-                .background(Color.White)
         ) {
 
             Spacer(Modifier.height(32.dp))
