@@ -15,6 +15,9 @@ sealed class Screen(val route: String) {
     object Order: Screen("main/order")
     object MyAccount: Screen("main/myaccount")
 
+    /* CMS Screen / Admin Screen / Dashboard */
+    object CMS : Screen("cms")
+
     /* Profile screen */
     object EditProfile: Screen("editProfile")
 
@@ -32,5 +35,4 @@ sealed class Screen(val route: String) {
 
    /*Detail Terapis screen*/
     object DetailTerapis: Screen("detailTerapis")
-
 }

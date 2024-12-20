@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
+import com.griya.griyabugar.ui.screen.cms.CmsScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
@@ -57,6 +58,12 @@ fun GriyaBugarApp(
                         }
                         launchSingleTop = true
                     }
+                },
+                onNavigateToCms = {
+                    navController.navigate(Screen.CMS.route){
+                        popUpTo(Screen.CMS.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -86,6 +93,12 @@ fun GriyaBugarApp(
                 onNavigateToMain = {
                     navController.navigate(Screen.Main.route){
                         popUpTo(Screen.Splash.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToCms = {
+                    navController.navigate(Screen.CMS.route){
+                        popUpTo(Screen.CMS.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
@@ -185,6 +198,10 @@ fun GriyaBugarApp(
             DetailTerapisScreen(
                 rootNavControll = navController
             )
+        }
+
+        composable(Screen.CMS.route){
+            CmsScreen()
         }
     }
 

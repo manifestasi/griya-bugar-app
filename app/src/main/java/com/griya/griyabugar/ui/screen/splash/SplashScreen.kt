@@ -14,24 +14,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.griya.griyabugar.R
+import com.griya.griyabugar.data.respository.AuthRepository
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement2
 import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.theme.GreenColor3
 import com.griya.griyabugar.ui.theme.GreenColor5
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
+import com.griya.griyabugar.util.Preferences
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
     onNavigateToWelcome: () -> Unit,
     onNavigateToMain: () -> Unit,
+    onNavigateToCms: () -> Unit,
     splashViewModel: SplashViewModel = hiltViewModel()
 ){
+
+    val context = LocalContext.current
 
     UpdateStatusBarColor(
         darkIcons = false
@@ -40,7 +46,14 @@ fun SplashScreen(
     LaunchedEffect(true) {
         delay(2000)
         if(splashViewModel.getCurrentUser() !== null){
-            onNavigateToMain()
+            val role = Preferences.getFromPreferences(context, AuthRepository.ROLE)
+            if (role != null){
+                if (role == AuthRepository.CUSTOMER){
+                    onNavigateToMain()
+                } else if (role == AuthRepository.ADMIN){
+                    onNavigateToCms()
+                }
+            }
         } else {
             onNavigateToWelcome()
         }
@@ -103,7 +116,8 @@ fun SplashPreview() {
     GriyaBugarTheme {
         SplashScreen(
             onNavigateToWelcome = {},
-            onNavigateToMain = {}
+            onNavigateToMain = {},
+            onNavigateToCms = {}
         )
     }
 }

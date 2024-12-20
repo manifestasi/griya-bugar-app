@@ -236,7 +236,7 @@ class AuthRepository @Inject constructor(
     fun loginAccount(
         email: String,
         password: String
-    ): Flow<Resource<FirebaseUser?>> = flow {
+    ): Flow<Resource<DataUser?>> = flow {
 
         emit(Resource.Loading)
 
@@ -264,13 +264,15 @@ class AuthRepository @Inject constructor(
 
             val dataUser = getData?.toObject(DataUser::class.java)
 
-            if ((dataUser?.role ?: "") != "customer"){
+            if (dataUser == null){
                 firebaseAuth.signOut()
 
                 throw Exception("Oops, maaf kamu tidak di izinkan masuk")
             }
 
-            emit(Resource.Success(result.user))
+            Preferences.saveToPreferences(context = context, ROLE, dataUser.role ?: "")
+
+            emit(Resource.Success(dataUser))
         } catch (e: Exception){
             Log.e("loginAccount", "Error: ${e.message}")
             emit(Resource.Error(e.message ?: "Unknown error"))
@@ -300,5 +302,8 @@ class AuthRepository @Inject constructor(
     companion object {
         const val COLLECTION_USER = "user"
         const val EMAIL_USER = "email"
+        const val CUSTOMER = "customer"
+        const val ADMIN = "admin"
+        const val ROLE = "role"
     }
 }

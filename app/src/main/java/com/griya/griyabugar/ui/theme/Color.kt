@@ -20,6 +20,8 @@ val CircleColor = Color(0xFFD9D9D9)
 val MainColor2 = Color(0xFF32D705)
 val SecondaryColor2 = Color(0xFF2BA62B)
 
+val RedColor1 = Color(0xFFE33333)
+
 val GreenColor1 = Color(0xFF107D28)
 val GreenColor2 = Color(0xFF1CE148)
 val GreenColor3 = Color(0xFF168D21)
