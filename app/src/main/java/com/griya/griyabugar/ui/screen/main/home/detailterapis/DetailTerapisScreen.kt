@@ -35,8 +35,8 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.griya.griyabugar.R
-import com.griya.griyabugar.ui.components.promo.BackButton
-import com.griya.griyabugar.ui.components.promo.ServiceRow
+import com.griya.griyabugar.ui.components.home.BackButton
+import com.griya.griyabugar.ui.components.home.ServiceRow
 import com.griya.griyabugar.ui.screen.main.home.detailpaket.getStartOfCurrentWeek
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.FontOff

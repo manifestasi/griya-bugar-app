@@ -25,16 +25,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -42,12 +43,13 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.components.Button.ButtonGradient
-import com.griya.griyabugar.ui.components.promo.BackButton
-import com.griya.griyabugar.ui.components.promo.DiskonBox
-import com.griya.griyabugar.ui.components.promo.Rating
-import com.griya.griyabugar.ui.components.promo.ServiceRow
+import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.home.BackButton
+import com.griya.griyabugar.ui.components.home.DiskonBox
+import com.griya.griyabugar.ui.components.home.InputJamDialog
+import com.griya.griyabugar.ui.components.home.Rating
+import com.griya.griyabugar.ui.components.home.ServiceRow
 import com.griya.griyabugar.ui.theme.BackgroundColor
-import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.FontOff
 import com.griya.griyabugar.ui.theme.GreenColor3
 import com.griya.griyabugar.ui.theme.GreenColor4
@@ -61,6 +63,7 @@ import java.util.Locale
 fun DetailPaketScreen(
     rootNavControll: NavHostController = rememberNavController()
 ) {
+
     Box() {
         HeaderSection(
             navController = rootNavControll, modifier = Modifier
@@ -93,9 +96,13 @@ private fun HeaderSection(
 
 @SuppressLint("NewApi")
 @Composable
-private fun ContentSection(modifier: Modifier = Modifier) {
+private fun ContentSection(
+    modifier: Modifier = Modifier) {
+    var showJamDialog by remember { mutableStateOf(false) }
+    var selectedTime by remember { mutableStateOf("10.00") }
     var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
     var currentWeekStart by remember { mutableStateOf(getStartOfCurrentWeek()) }
+    var isError by rememberSaveable { mutableStateOf(false) }
     val items = listOf(
         "Traditional",
         "Shiatsu",
@@ -225,7 +232,7 @@ private fun ContentSection(modifier: Modifier = Modifier) {
 
                 Row(modifier = Modifier) {
                     Text(
-                        text = "10.00 WIB",
+                        text = "$selectedTime WIB",
                         color = TextColorBlack,
                         fontSize = 20.sp,
                         fontFamily = poppins,
@@ -234,7 +241,9 @@ private fun ContentSection(modifier: Modifier = Modifier) {
                             .align(Alignment.CenterVertically)
                     )
                     Spacer(modifier = Modifier.width(5.dp))
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        showJamDialog=true
+                    }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_edit),
                             contentDescription = null,
@@ -249,10 +258,46 @@ private fun ContentSection(modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ButtonGradient(onClick = {}, name = "Pesan")
+                ButtonGradient(onClick = {
+                    isError = true
+                }, name = "Pesan")
             }
         }
 
+    }
+
+    // Tampilkan Dialog ketika showJamDialog bernilai true
+    if (showJamDialog) {
+        Dialog(onDismissRequest = { showJamDialog = false }) {
+            InputJamDialog(
+                input = selectedTime,
+                modifier = Modifier
+                    .background(BackgroundColor)
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                onSave = {newTime ->
+                    selectedTime = newTime // Update jam yang dipilih
+                    showJamDialog = false // Tutup dialog
+                },
+                onCancel = {
+                    showJamDialog = false
+                }
+            )
+        }
+    }
+
+    if (isError){
+        ErrorDialog(
+            onDismiss = {
+                isError = false
+            },
+            title = "Pesanan gagal",
+            buttonText = "Coba lagi",
+            description = "Pesanan Anda Tidak dapat diproses",
+            buttonOnClick = {
+                isError = false
+            }
+        )
     }
 }
 
