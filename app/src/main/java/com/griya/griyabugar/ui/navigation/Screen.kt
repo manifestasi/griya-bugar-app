@@ -6,7 +6,7 @@ sealed class Screen(val route: String) {
     object Register: Screen("register")
     object Splash: Screen("splash")
     object ForgotPassword: Screen("forgotPassword")
-    object ChangePassword: Screen("changePassword")
+    object ChangePassword: Screen("changePassword?link={link}")
     object Welcome: Screen("welcome")
 
     /* Main screen */
@@ -15,8 +15,17 @@ sealed class Screen(val route: String) {
     object Order: Screen("main/order")
     object MyAccount: Screen("main/myaccount")
 
+    /* CMS Screen / Admin Screen / Dashboard */
+    object CMS : Screen("cms")
+
     /* Profile screen */
     object EditProfile: Screen("editProfile")
+
+    /* change pass when login */
+    object ChangePassword2 : Screen("changePassword2")
+
+    /* informasi griya screen */
+    object InformasiGriya : Screen("informasiGriya")
 
     /* Notifikasi screen */
     object Notifikasi: Screen("notifikasi")
@@ -26,5 +35,4 @@ sealed class Screen(val route: String) {
 
    /*Detail Terapis screen*/
     object DetailTerapis: Screen("detailTerapis")
-
 }

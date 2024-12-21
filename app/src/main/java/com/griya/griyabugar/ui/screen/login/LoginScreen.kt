@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.griya.griyabugar.R
 import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.respository.AuthRepository
 import com.griya.griyabugar.ui.components.CircleElemen.CircleElement
 import com.griya.griyabugar.ui.components.Field.EmailTextField
 import com.griya.griyabugar.ui.components.Field.PasswordTextField
@@ -53,6 +54,7 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onNavigateToForgotPassword: () -> Unit,
     onNavigateToMain: () -> Unit,
+    onNavigateToCms: () -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
 
@@ -86,6 +88,7 @@ fun LoginScreen(
                     onNavigateToRegister = onNavigateToRegister,
                     onNavigateToForgotPassword = onNavigateToForgotPassword,
                     onNavigateToMain = onNavigateToMain,
+                    onNavigateToCms = onNavigateToCms,
                     loginViewModel = loginViewModel,
                     context = context
                 )
@@ -120,6 +123,7 @@ private fun MainSection (
     onNavigateToRegister: () -> Unit,
     onNavigateToForgotPassword: () -> Unit,
     onNavigateToMain: () -> Unit,
+    onNavigateToCms: () -> Unit,
     loginViewModel: LoginViewModel,
     context: Context
 ) {
@@ -132,6 +136,16 @@ private fun MainSection (
     var isLoading by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var isError by rememberSaveable { mutableStateOf(false) }
+    var isDisabled by rememberSaveable { mutableStateOf(false) }
+
+    if (
+        email.isEmpty() ||
+        password.isEmpty()
+    ){
+        isDisabled = true
+    } else {
+        isDisabled = false
+    }
 
     LaunchedEffect(Unit) {
         loginViewModel.loginEvent.collect { event ->
@@ -144,7 +158,12 @@ private fun MainSection (
                 is Resource.Success -> {
                     isLoading = false
                     Toast.makeText(context, "Login berhasil", Toast.LENGTH_SHORT).show()
-                    onNavigateToMain()
+
+                    if (event.data?.role == AuthRepository.CUSTOMER) {
+                        onNavigateToMain()
+                    } else if (event.data?.role == AuthRepository.ADMIN) {
+                        onNavigateToCms()
+                    }
                 }
 
                 is Resource.Empty -> {
@@ -236,7 +255,7 @@ private fun MainSection (
             },
             name = "Masuk",
             isLoading = isLoading,
-            isDisabled = isLoading
+            isDisabled = isLoading || isDisabled
         )
         Spacer(Modifier.height(10.dp))
         Row(modifier = Modifier.align(CenterHorizontally)) {
@@ -267,7 +286,8 @@ fun HeaderPreview(modifier: Modifier = Modifier) {
         LoginScreen(
             onNavigateToRegister = {},
             onNavigateToForgotPassword = {},
-            onNavigateToMain = {}
+            onNavigateToMain = {},
+            onNavigateToCms = {}
         )
     }
 }

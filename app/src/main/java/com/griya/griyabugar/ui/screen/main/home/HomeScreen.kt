@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -50,7 +51,8 @@ import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
-import com.griya.griyabugar.ui.theme.GreenColor4
+import com.griya.griyabugar.ui.theme.GreenColor6
+import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
@@ -69,18 +71,6 @@ fun HomeScreen(
             .background(BackgroundColor)
             .verticalScroll(scrollState)
     ) {
-        //Header
-        HeaderSection(
-            rootNavController = rootNavController,
-            Modifier.background(
-                brush = Brush.linearGradient(
-                    listOf(
-                        GreenColor1,
-                        GreenColor2
-                    )
-                )
-            )
-        )
         AddressSection(
             Modifier
                 .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
@@ -144,57 +134,6 @@ fun HomeScreen(
     }
 
 
-}
-
-@Composable
-fun HeaderSection(
-    rootNavController: NavHostController = rememberNavController(),
-    modifier: Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, top = 50.dp, end = 16.dp, bottom = 16.dp)
-    ) {
-        Column {
-            Text(
-                text = "Hai, Username",
-                fontFamily = poppins,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = TextColorWhite,
-                modifier = Modifier
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Ayo rawat tubuhmu dengan terapi",
-                fontFamily = poppins,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = TextColorWhite,
-                modifier = Modifier
-            )
-        }
-
-        IconButton(
-            onClick = {
-                rootNavController.navigate(Screen.Notifikasi.route)
-            },
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(Color.White)
-                .size(40.dp)
-                .align(Alignment.TopEnd)
-        ) {
-            Icon(
-                painterResource(R.drawable.ic_notif),
-                contentDescription = "Icon",
-                tint = Color.Black,
-                modifier = Modifier.size(20.dp)
-
-            )
-        }
-    }
 }
 
 @Composable
@@ -292,7 +231,7 @@ fun PromoSection(
                 Row {
                     Text(
                         text = "Rp200.000",
-                        color = GreenColor4,
+                        color = GreenColor6,
                         fontSize = 16.sp,
                         fontFamily = poppins,
                         fontWeight = FontWeight.SemiBold,
@@ -354,7 +293,7 @@ fun RegulerSection(modifier: Modifier) {
                 Row {
                     Text(
                         text = "Rp200.000",
-                        color = GreenColor4,
+                        color = GreenColor6,
                         fontSize = 16.sp,
                         fontFamily = poppins,
                         fontWeight = FontWeight.SemiBold,
@@ -437,10 +376,10 @@ fun TerapisSection(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun HomePreview(){
+    GriyaBugarTheme {
+        HomeScreen()
+    }
 }

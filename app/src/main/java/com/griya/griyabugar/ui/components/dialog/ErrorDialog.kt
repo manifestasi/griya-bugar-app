@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.griya.griyabugar.R
-import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
@@ -63,10 +62,9 @@ fun ErrorDialog(
             color = MaterialTheme.colorScheme.surface,
             modifier = Modifier
                 .width(346.dp)
-                .height(292.dp)
         ) {
             Column(
-                Modifier.fillMaxSize(),
+                Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -163,16 +161,16 @@ fun ErrorDialog(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ErrorDialogPreview(){
-    GriyaBugarTheme {
-        ErrorDialog(
-            onDismiss = {},
-            title = "Masuk akun gagal",
-            description = "pastikan kamu aman",
-            buttonText = "Coba lagi",
-            buttonOnClick = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ErrorDialogPreview(){
+//    GriyaBugarTheme {
+//        ErrorDialog(
+//            onDismiss = {},
+//            title = "Masuk akun gagal",
+//            description = "pastikan kamu aman",
+//            buttonText = "Coba lagi",
+//            buttonOnClick = {}
+//        )
+//    }
+//}

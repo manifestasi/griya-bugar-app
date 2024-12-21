@@ -5,18 +5,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
+import com.griya.griyabugar.ui.screen.cms.CmsScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
+import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.ChangePasswordScreen
 import com.griya.griyabugar.ui.screen.main.home.NotifikasiScreen
 import com.griya.griyabugar.ui.screen.main.home.detailpaket.DetailPaketScreen
 import com.griya.griyabugar.ui.screen.main.home.detailterapis.DetailTerapisScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
+import com.griya.griyabugar.ui.screen.main.myaccount.informasigriya.InformasiGriyaScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.screen.welcome.WelcomeScreen
@@ -30,6 +37,7 @@ fun GriyaBugarApp(
 
 //    val navBackStackEntry by navController.currentBackStackEntryAsState()
 //    val currentRoute = navBackStackEntry?.destination?.route
+
 
     NavHost(
         navController = navController,
@@ -45,7 +53,16 @@ fun GriyaBugarApp(
                 },
                 onNavigateToMain = {
                     navController.navigate(Screen.Main.route){
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToCms = {
+                    navController.navigate(Screen.CMS.route){
+                        popUpTo(Screen.CMS.route) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
@@ -54,11 +71,14 @@ fun GriyaBugarApp(
             RegisterScreen(
                 onNavigateToMain = {
                     navController.navigate(Screen.Main.route){
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
                     }
                 },
                 onNavigateToLogin = {
-                    navController.navigate(Screen.Login)
+                    navController.navigate(Screen.Login.route)
                 }
             )
         }
@@ -67,26 +87,60 @@ fun GriyaBugarApp(
                 onNavigateToWelcome = {
                     navController.navigate(Screen.Welcome.route){
                         popUpTo(Screen.Splash.route) { inclusive = true }
+                        launchSingleTop = true
                     }
                 },
                 onNavigateToMain = {
                     navController.navigate(Screen.Main.route){
                         popUpTo(Screen.Splash.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToCms = {
+                    navController.navigate(Screen.CMS.route){
+                        popUpTo(Screen.CMS.route) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             )
         }
         composable(Screen.ForgotPassword.route){
-            LupaPasswordScreen1()
+            LupaPasswordScreen1(
+                onNavigationBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToChangePassword = {
+                    navController.navigate(Screen.ChangePassword.route)
+                }
+            )
         }
-        composable(Screen.ChangePassword.route){
+        composable(
+            route = Screen.ChangePassword.route,
+            arguments = listOf(
+                navArgument("link"){
+                    type = NavType.StringType
+                }
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://griyabugar.page.link?link={link}"
+                }
+            )
+        ){ backStackEntry ->
+            val link = backStackEntry.arguments?.getString("link")
             ForgetPasswordPart2(
                 onNavigationBack = {
                     navController.popBackStack()
                 },
-                onNavigationChangePassword = {
-                    navController.navigate(Screen.ChangePassword.route)
-                }
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login.route){
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+                link = link
             )
         }
         composable(Screen.Welcome.route){
@@ -114,6 +168,20 @@ fun GriyaBugarApp(
             )
         }
 
+        composable(Screen.ChangePassword2.route){
+            ChangePasswordScreen(
+                rootNavControll = navController
+            )
+        }
+
+        composable(Screen.InformasiGriya.route){
+            InformasiGriyaScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable(Screen.Notifikasi.route) {
             NotifikasiScreen(
                 rootNavControll = navController
@@ -130,6 +198,10 @@ fun GriyaBugarApp(
             DetailTerapisScreen(
                 rootNavControll = navController
             )
+        }
+
+        composable(Screen.CMS.route){
+            CmsScreen()
         }
     }
 

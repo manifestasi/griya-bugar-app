@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.model.DataUser
 import com.griya.griyabugar.data.respository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,8 +18,8 @@ class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _loginEvent = MutableSharedFlow<Resource<FirebaseUser?>>()
-    val loginEvent: SharedFlow<Resource<FirebaseUser?>> = _loginEvent
+    private val _loginEvent = MutableSharedFlow<Resource<DataUser?>>()
+    val loginEvent: SharedFlow<Resource<DataUser?>> = _loginEvent
 
     fun loginAccunt(email: String, password: String){
         viewModelScope.launch {

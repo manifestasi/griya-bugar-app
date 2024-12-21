@@ -52,7 +52,7 @@ import com.griya.griyabugar.ui.components.home.ServiceRow
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.FontOff
 import com.griya.griyabugar.ui.theme.GreenColor3
-import com.griya.griyabugar.ui.theme.GreenColor4
+import com.griya.griyabugar.ui.theme.GreenColor6
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
@@ -145,7 +145,7 @@ private fun ContentSection(
             Row(modifier = Modifier) {
                 Text(
                     text = "Rp200.000",
-                    color = GreenColor4,
+                    color = GreenColor6,
                     fontSize = 24.sp,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Medium,
@@ -247,7 +247,7 @@ private fun ContentSection(
                         Icon(
                             painter = painterResource(R.drawable.ic_edit),
                             contentDescription = null,
-                            tint = GreenColor4,
+                            tint = GreenColor6,
                             modifier = Modifier
                                 .size(25.dp)
                                 .align(Alignment.CenterVertically)

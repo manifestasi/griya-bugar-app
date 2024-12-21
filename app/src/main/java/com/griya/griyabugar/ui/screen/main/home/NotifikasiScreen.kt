@@ -30,10 +30,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
+import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton2
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.DisabledColor
-import com.griya.griyabugar.ui.theme.GreenColor4
+import com.griya.griyabugar.ui.theme.GreenColor6
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.poppins
 
@@ -49,12 +50,14 @@ fun NotifikasiScreen(
                 .padding(bottom = innerPadding.calculateBottomPadding())
                 .background(BackgroundColor)
         ) {
-            AppBarWithBackButton2(
+
+            AppBarWithBackButton(
                 title = "Notifikasi",
                 onClickBack = {
                     rootNavControll.popBackStack()
                 }
             )
+
             if (count == 0) {
                 NotifikasiKosong(modifier = Modifier)
             } else {
@@ -104,7 +107,7 @@ private fun NotifikasiItem(modifier: Modifier = Modifier) {
                     fontFamily = poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
-                    color = GreenColor4,
+                    color = GreenColor6,
                     modifier = Modifier
                 )
                 Spacer(modifier = Modifier.height(5.dp))

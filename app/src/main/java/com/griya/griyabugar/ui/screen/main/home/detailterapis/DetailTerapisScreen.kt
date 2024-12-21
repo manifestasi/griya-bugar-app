@@ -40,7 +40,7 @@ import com.griya.griyabugar.ui.components.home.ServiceRow
 import com.griya.griyabugar.ui.screen.main.home.detailpaket.getStartOfCurrentWeek
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.FontOff
-import com.griya.griyabugar.ui.theme.GreenColor4
+import com.griya.griyabugar.ui.theme.GreenColor6
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.poppins
 import java.time.LocalDate
@@ -159,7 +159,7 @@ private fun ContentSection(modifier: Modifier = Modifier) {
                     Icon(
                         painter = painterResource(R.drawable.ic_time),
                         contentDescription = null,
-                        tint = GreenColor4,
+                        tint = GreenColor6,
                         modifier = Modifier
                             .size(25.dp)
                             .align(Alignment.CenterVertically)
