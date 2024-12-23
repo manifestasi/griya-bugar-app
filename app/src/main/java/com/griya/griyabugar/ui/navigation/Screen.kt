@@ -19,6 +19,7 @@ sealed class Screen(val route: String) {
     object CMS : Screen("cms")
     object EditTerapis : Screen("editTerapis")
     object PreviewTerapis : Screen("previewTerapis")
+    object AddTerapis : Screen("addTerapis")
 
     /* Profile screen */
     object EditProfile: Screen("editProfile")

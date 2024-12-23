@@ -13,12 +13,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -31,29 +38,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
+import com.griya.griyabugar.util.formatTimeInput
 
 @Composable
 fun ClockInputDialog(
     title: String,
     onDismiss: () -> Unit,
     btnClickCancel: () -> Unit,
-    btnClickAccept: () -> Unit
+    btnClickAccept: (String) -> Unit
 ){
+    var input by rememberSaveable { mutableStateOf("") }
+
     Dialog(
         onDismissRequest = onDismiss
     ) {
         Surface(
             shape = RoundedCornerShape(5.dp),
-            color = MaterialTheme.colorScheme.surface,
+            color = Color.White,
             modifier = Modifier
                 .width(346.dp)
         ) {
@@ -63,7 +75,7 @@ fun ClockInputDialog(
                 verticalArrangement = Arrangement.Center
             ) {
 
-                Spacer(Modifier.height(37.dp))
+                Spacer(Modifier.height(32.dp))
 
                 Text(
                     text = title,
@@ -71,7 +83,45 @@ fun ClockInputDialog(
                         fontFamily = poppins,
                         fontWeight = FontWeight(500),
                         fontSize = 20.sp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = Color.Black
+                    )
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier
+                        .width(258.dp),
+                    value = input,
+                    onValueChange = {
+                        input = formatTimeInput(it)
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number // Hanya angka
+                    ),
+                    placeholder = {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "HH.MM",
+                            style = TextStyle(
+                                textAlign = TextAlign.Center,
+                                fontFamily = poppins,
+                                fontSize = 24.sp,
+                                color = DisabledColor
+                            )
+                        )
+                    },
+                    singleLine = true,
+                    textStyle = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontSize = 24.sp,
+                        fontFamily = poppins,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Black,
+                        cursorColor = Color.Black
                     )
                 )
 
@@ -110,7 +160,9 @@ fun ClockInputDialog(
                     Spacer(Modifier.width(16.dp))
 
                     Button(
-                        onClick = btnClickAccept,
+                        onClick = {
+                            btnClickAccept(input)
+                        },
                         modifier = Modifier
                             .height(44.dp)
                             .width(121.dp)

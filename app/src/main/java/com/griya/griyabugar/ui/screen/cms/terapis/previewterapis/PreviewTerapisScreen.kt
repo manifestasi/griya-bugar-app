@@ -66,7 +66,8 @@ fun PreviewTerapisScreen(
 ){
     Box() {
         HeaderSection(
-            navController = rootNavController, modifier = Modifier
+            navController = rootNavController, modifier = Modifier,
+            sharedViewModel = sharedViewModel
         )
         ContentSection(
             modifier = Modifier.padding(
@@ -81,12 +82,15 @@ fun PreviewTerapisScreen(
 @Composable
 private fun HeaderSection(
     navController: NavHostController = rememberNavController(),
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    sharedViewModel: SharedViewModel
 ) {
+    val fotoDetail = sharedViewModel.fotoDetailTerapis
+
     Box(modifier = modifier.fillMaxWidth()) {
 
         GlideImage(
-            model = R.drawable.img_terapis,
+            model = fotoDetail,
             contentDescription = "image",
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,11 +109,13 @@ private fun ContentSection(
     modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel
 ) {
-    val getHariItems = sharedViewModel.hari ?: emptyList()
-    val hari = getHariItems.joinToString(", ")
+    val hari = sharedViewModel.hari.joinToString(", ")
 
-    val getLayananItem = sharedViewModel.layanan ?: emptyList()
-    val service = getLayananItem.map { it.name }
+    val service = sharedViewModel.layanan.map { it.name }
+    val namaTerapis = sharedViewModel.namaTerapis
+    val jamDatang = sharedViewModel.jamDatang
+    val jamPulang = sharedViewModel.jamPulang
+    val fotoDepan = sharedViewModel.fotoDepanTerapis
 
     var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
     var currentWeekStart by remember { mutableStateOf(getStartOfCurrentWeek()) }
@@ -129,7 +135,7 @@ private fun ContentSection(
     ) {
         Column(modifier = Modifier.padding(top = 30.dp, start = 16.dp, end = 16.dp)) {
             Text(
-                text = "Agelica",
+                text = namaTerapis,
                 color = TextColorBlack,
                 fontSize = 24.sp,
                 fontFamily = poppins,
@@ -196,7 +202,7 @@ private fun ContentSection(
                     )
 
                     Text(
-                        text = "10.00 - 20.00 WIB",
+                        text = "$jamDatang - $jamPulang WIB",
                         color = TextColorBlack,
                         fontSize = 20.sp,
                         fontFamily = poppins,
@@ -224,7 +230,8 @@ private fun ContentSection(
             Spacer(Modifier.height(16.dp))
 
             TerapisSection(
-                service = service
+                service = service,
+                fotoDepan = fotoDepan
             )
 
             Spacer(Modifier.height(102.dp))
@@ -237,7 +244,8 @@ private fun ContentSection(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TerapisSection(
-    service: List<String>
+    service: List<String>,
+    fotoDepan: String
 ) {
 //    val items = listOf(
 //        "Traditional",
@@ -256,7 +264,7 @@ fun TerapisSection(
     ) {
         Column(modifier = Modifier) {
             GlideImage(
-                model = "https://i.pinimg.com/236x/70/6f/ce/706fceeef69b7ff27985902fc4860612.jpg",
+                model = fotoDepan,
                 contentDescription = "image",
                 modifier = Modifier
                     .fillMaxWidth()

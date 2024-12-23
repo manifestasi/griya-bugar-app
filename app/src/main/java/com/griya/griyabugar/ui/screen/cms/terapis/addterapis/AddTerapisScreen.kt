@@ -1,4 +1,4 @@
-package com.griya.griyabugar.ui.screen.cms.terapis.editterapis
+package com.griya.griyabugar.ui.screen.cms.terapis.addterapis
 
 import android.net.Uri
 import androidx.activity.ComponentActivity
@@ -7,7 +7,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -43,21 +42,15 @@ import com.griya.griyabugar.ui.components.register.ButtonConfirm
 import com.griya.griyabugar.ui.components.register.TextField
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.SharedViewModel
+import com.griya.griyabugar.ui.screen.cms.terapis.editterapis.ImageType
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-
-enum class ImageType {
-    FOTO_DEPAN, FOTO_DETAIL
-}
 
 @Composable
-fun EditTerapisScreen(
+fun AddTerapisScreen(
     rootNavController: NavHostController = rememberNavController(),
     sharedViewModel: SharedViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 ){
-
     var fotoDepanUrl by rememberSaveable { mutableStateOf("") }
     var fotoDepanUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
@@ -96,13 +89,13 @@ fun EditTerapisScreen(
         }
     }
 
-    var selectedService by rememberSaveable { mutableStateOf(
-        listOf("1", "2")
+    var selectedService: List<String> by rememberSaveable { mutableStateOf(
+        listOf()
     ) }
 
-    var selectedDays by rememberSaveable {
+    var selectedDays: List<String> by rememberSaveable {
         mutableStateOf(
-            listOf("Kamis", "Minggu")
+            listOf()
         )
     }
 
@@ -332,7 +325,7 @@ fun EditTerapisScreen(
                 Spacer(Modifier.height(32.dp))
 
                 ButtonConfirm(
-                    name = "Simpan",
+                    name = "Tambah",
                     isLoading = false,
                     isDisabled = isDisabled,
                     rounded = 5.dp,
@@ -366,10 +359,10 @@ fun EditTerapisScreen(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
-fun EditTerapisPreview(){
+fun AddTerapisPreview(){
     GriyaBugarTheme {
-        EditTerapisScreen()
+        AddTerapisScreen()
     }
 }

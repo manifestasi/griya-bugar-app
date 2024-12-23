@@ -7,6 +7,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor() : ViewModel() {
-    var layanan: List<DataService>? = null
-    var hari: List<String>? = null
+    var layanan: List<DataService> = emptyList()
+    var hari: List<String> = emptyList()
+    var namaTerapis: String = ""
+    var jamDatang: String = ""
+    var jamPulang: String = ""
+    var fotoDepanTerapis: String = ""
+    var fotoDetailTerapis: String = ""
+
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
+import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GreenColor3
@@ -33,14 +34,22 @@ fun ButtonBorderWithTextGradient(
     text:String,
     fontSize: TextUnit = 16.sp,
     height: Dp = 55.dp,
-    rounded: Dp =10.dp,
-    onClick: ()->Unit,
+    rounded: Dp = 10.dp,
+    isDisabled: Boolean = false,
+    onClick: ()-> Unit,
 ){
+    val borderColor = if (isDisabled) DisabledColor else GreenColor3
     Button (
         onClick = onClick,
         shape = RoundedCornerShape(rounded),
-        colors = ButtonDefaults.buttonColors(Color.White),
-        border = BorderStroke(3.dp, GreenColor3),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.White,
+            disabledContentColor = Color.White,
+            disabledContainerColor = Color.White
+        ) ,
+        border = BorderStroke(3.dp, borderColor),
+        enabled = !isDisabled,
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
@@ -54,10 +63,17 @@ fun ButtonBorderWithTextGradient(
                 fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
                 brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        GreenColor1,
-                        GreenColor2
-                    )
+                    colors = if (isDisabled){
+                        listOf(
+                            DisabledColor,
+                            DisabledColor
+                        )
+                    } else {
+                        listOf(
+                            GreenColor1,
+                            GreenColor2
+                        )
+                    }
                 )
             )
         )

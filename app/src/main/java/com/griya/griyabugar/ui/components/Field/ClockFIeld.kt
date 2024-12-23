@@ -34,6 +34,7 @@ fun ClockField(
         value = value,
         onValueChange = {},
         readOnly = true,
+        enabled = false,
         trailingIcon = {
             Icon(
                 modifier = Modifier.size(24.dp),

@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerValue
@@ -45,6 +47,7 @@ import com.griya.griyabugar.data.model.NavDrawerItem
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
 import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.navigation.NavDrawScreen
+import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.layanan.LayananScreen
 import com.griya.griyabugar.ui.screen.cms.paket.PaketScreen
 import com.griya.griyabugar.ui.screen.cms.pelanggan.PelangganScreen
@@ -63,7 +66,7 @@ fun CmsScreen(
 ){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Pelanggan.route) }
+    var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Terapis.route) }
 
     UpdateStatusBarColor(
         darkIcons = false
@@ -94,7 +97,21 @@ fun CmsScreen(
                         }
                     }
                 )
-            }
+            },
+            floatingActionButton = {
+                if (selectedItem == NavDrawScreen.Terapis.route){
+                    Image(
+                        modifier = Modifier
+                            .offset(y = (-40).dp)
+                            .size(64.dp)
+                            .clickable {
+                            rootNavController.navigate(Screen.AddTerapis.route)
+                        },
+                        painter = painterResource(R.drawable.img_fab),
+                        contentDescription = "fab"
+                    )
+                }
+            },
         ) { innerPadding ->
 
             if (selectedItem == NavDrawScreen.Pelanggan.route){

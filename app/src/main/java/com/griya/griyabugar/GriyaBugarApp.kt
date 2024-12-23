@@ -14,6 +14,7 @@ import androidx.navigation.navDeepLink
 import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.CmsScreen
+import com.griya.griyabugar.ui.screen.cms.terapis.addterapis.AddTerapisScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.editterapis.EditTerapisScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.previewterapis.PreviewTerapisScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
@@ -218,6 +219,12 @@ fun GriyaBugarApp(
 
         composable(Screen.PreviewTerapis.route){
             PreviewTerapisScreen(
+                rootNavController = navController
+            )
+        }
+
+        composable(Screen.AddTerapis.route){
+            AddTerapisScreen(
                 rootNavController = navController
             )
         }
