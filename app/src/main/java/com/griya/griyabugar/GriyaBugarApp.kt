@@ -14,6 +14,8 @@ import androidx.navigation.navDeepLink
 import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.CmsScreen
+import com.griya.griyabugar.ui.screen.cms.terapis.editterapis.EditTerapisScreen
+import com.griya.griyabugar.ui.screen.cms.terapis.previewterapis.PreviewTerapisScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
@@ -61,7 +63,9 @@ fun GriyaBugarApp(
                 },
                 onNavigateToCms = {
                     navController.navigate(Screen.CMS.route){
-                        popUpTo(Screen.CMS.route) { inclusive = true }
+                        popUpTo(0) {
+                            inclusive = true
+                        }
                         launchSingleTop = true
                     }
                 }
@@ -98,7 +102,7 @@ fun GriyaBugarApp(
                 },
                 onNavigateToCms = {
                     navController.navigate(Screen.CMS.route){
-                        popUpTo(Screen.CMS.route) { inclusive = true }
+                        popUpTo(Screen.Splash.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
@@ -201,7 +205,21 @@ fun GriyaBugarApp(
         }
 
         composable(Screen.CMS.route){
-            CmsScreen()
+            CmsScreen(
+                rootNavController = navController
+            )
+        }
+
+        composable(Screen.EditTerapis.route) {
+            EditTerapisScreen(
+                rootNavController = navController
+            )
+        }
+
+        composable(Screen.PreviewTerapis.route){
+            PreviewTerapisScreen(
+                rootNavController = navController
+            )
         }
     }
 

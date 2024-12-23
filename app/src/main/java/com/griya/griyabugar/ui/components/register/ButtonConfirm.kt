@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.ui.theme.Brown
@@ -40,7 +41,8 @@ fun ButtonConfirm(
     onClick: () -> Unit,
     name: String,
     isLoading: Boolean = false,
-    isDisabled: Boolean = false
+    isDisabled: Boolean = false,
+    rounded: Dp = 10.dp
 ){
     Button(
         onClick = {
@@ -52,7 +54,7 @@ fun ButtonConfirm(
             .height(55.dp)
             .drawBehind {
                 val shadowColor = Color(0x28000000)
-                val shadowRadius = 10.dp.toPx()
+                val shadowRadius = rounded.toPx()
                 val offsetX = 0.dp.toPx()
                 val offsetY = (2.5).dp.toPx()
                 drawRoundRect(
@@ -65,7 +67,7 @@ fun ButtonConfirm(
                     blendMode = BlendMode.SrcOver,
                 )
             },
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(rounded),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
         ),

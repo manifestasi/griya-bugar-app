@@ -17,6 +17,8 @@ sealed class Screen(val route: String) {
 
     /* CMS Screen / Admin Screen / Dashboard */
     object CMS : Screen("cms")
+    object EditTerapis : Screen("editTerapis")
+    object PreviewTerapis : Screen("previewTerapis")
 
     /* Profile screen */
     object EditProfile: Screen("editProfile")

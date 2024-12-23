@@ -94,4 +94,7 @@ dependencies {
     implementation(libs.firebase.auth)
 
     implementation(libs.cloudinary.android)
+
+    // serializable
+    implementation(libs.kotlinx.serialization.json)
 }
