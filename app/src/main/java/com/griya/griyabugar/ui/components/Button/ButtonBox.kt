@@ -49,7 +49,7 @@ fun BoxButton(
     height: Dp = 55.dp,
     rounded:Dp=10.dp,
     modifier: Modifier = Modifier,
-    onClick: @Composable ()->Unit,
+    onClick: ()->Unit,
 ){
  Box (
 
@@ -59,7 +59,7 @@ fun BoxButton(
              brush = Brush.horizontalGradient(colors = color),
              shape = RoundedCornerShape(rounded)
          ).clickable {
-            onClick
+            onClick()
          },
      contentAlignment = Alignment.Center
 
@@ -83,7 +83,7 @@ fun BoxButton(
 @Composable
 fun GradientBoxButton(
     text:String,
-    color:List<Color> = listOf(HijauTua, HijauMuda) ,
+    color:List<Color> = listOf(HijauTua, HijauMuda),
     fontColor:Color=Color.Black,
     fontSize:TextUnit = 16.sp,
     width:Dp = 100.dp,
@@ -133,7 +133,7 @@ fun BoxButtonBorder(
     height: Dp = 55.dp,
     rounded:Dp=10.dp,
     modifier: Modifier = Modifier,
-    onClick: @Composable ()->Unit,
+    onClick:  ()->Unit,
 ){
     Box (
         modifier = modifier
@@ -144,7 +144,7 @@ fun BoxButtonBorder(
                 shape = RoundedCornerShape(rounded)
                 )
             .clickable {
-                onClick
+                onClick()
             },
         contentAlignment = Alignment.Center
 

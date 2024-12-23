@@ -108,7 +108,7 @@ fun CardItemPemesanan(
     elevation: Dp = 5.dp,
     borderColor: Color = abu,
     borderWidth:Dp = 1.dp,
-    height:Dp = 150.dp,
+    height:Dp = 160.dp,
     width:Float = 0.9f,
     title:String,
     harga:String,
@@ -227,6 +227,9 @@ fun CardItemPemesanan(
                        )
                    }
 
+                    /*
+                    *  untuk list layanan
+                    * */
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         horizontalArrangement = Arrangement.spacedBy(2.dp),

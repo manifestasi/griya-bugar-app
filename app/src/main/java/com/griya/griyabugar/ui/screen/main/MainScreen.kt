@@ -91,39 +91,11 @@ fun MainScreen(
             }
 
             composable(Screen.Order.route){
-                var pemesanan_list = listOf(
-                    ItemPemesananModel(
-                        title = "Paket 2 Jam",
-                        tanggal = "10-09-1965",
-                        jam = "04.00-05.00",
-                        item_servis = listOf(
-                            "SPA",
-                            "Body Scrum",
-                            "Tradisional"
-                        ),
-                        harga = "Rp.500,000",
-                        jenis_card = "PROMOSI"
-                    ),
-                    ItemPemesananModel(
-                        title = "Paket 3 Jam",
-                        tanggal = "10-11-1965",
-                        jam = "04.00-05.00",
-                        item_servis = listOf(
-                            "SPA",
-                            "Body Scrum",
-                            "Tradisional"
-                        ),
-                        harga = "Rp.1,500,000",
-                        jenis_card = "REGULER"
 
-                    ),
-
-                    )
                 PemesananScreen(
                     modifier = Modifier,
-                    items_content_menunggu = pemesanan_list,
-                    items_content_selesai = listOf(),
-                    items_content_batal = listOf(),
+                    rootNavControll = rootNavController
+
                 )
             }
 

@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
+import com.griya.griyabugar.ui.screen.detail_pemesanan.DetailPemesananScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
@@ -23,6 +24,7 @@ import com.griya.griyabugar.ui.screen.main.home.detailpaket.DetailPaketScreen
 import com.griya.griyabugar.ui.screen.main.home.detailterapis.DetailTerapisScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.informasigriya.InformasiGriyaScreen
+import com.griya.griyabugar.ui.screen.main.order.PemesananScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.screen.welcome.WelcomeScreen
@@ -186,6 +188,28 @@ fun GriyaBugarApp(
                 rootNavControll = navController
             )
         }
+
+        composable(Screen.Order.route) {
+            PemesananScreen(
+                rootNavControll = navController
+            )
+
+        }
+
+        composable(
+           route = Screen.DetailOrder.route,
+            arguments = listOf(navArgument("uuid_doc") {
+                type = NavType.StringType
+            })
+            ) {
+            p ->
+            val uuid_doc = p.arguments?.getString("uuid_doc")
+            DetailPemesananScreen(
+                rootNavControll = navController,
+                uuid_doc = uuid_doc
+            )
+        }
+        
     }
 
 }

@@ -32,8 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.griya.griyabugar.ui.components.Button.BoxButtonBorderDP
 import com.griya.griyabugar.ui.components.Button.GradientBoxButton
+import com.griya.griyabugar.ui.screen.main.order.PemesananViewModel
 import com.griya.griyabugar.ui.theme.GreenMain
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.abu
@@ -47,7 +49,9 @@ fun RateDialog(
     modifier:Modifier = Modifier,
     width:Float = 0.9f,
     onBatalClick : () -> Unit,
-    onSimpanClick : ()-> Unit
+    onSimpanClick :  ()-> Unit,
+    pemesananViewModel:PemesananViewModel = hiltViewModel(),
+    uuid_doc:String?
     ){
     var rating by remember { mutableStateOf(0) }
 
@@ -115,6 +119,23 @@ fun RateDialog(
                             text = "Simpan",
                             onClick = {
                                 onSimpanClick()
+                                pemesananViewModel.updateData(
+                                    uuid = uuid_doc!!,
+                                    field = "status",
+                                    new_value = "SELESAI"
+                                )
+
+                                pemesananViewModel.updateData(
+                                    uuid = uuid_doc,
+                                    field = "rating",
+                                    new_value = rating
+                                )
+
+                                pemesananViewModel.updateData(
+                                    uuid = uuid_doc,
+                                    field = "rated",
+                                    new_value = true
+                                )
                             },
                             fontColor = Color.White,
                             rounded = 6.dp,
@@ -124,7 +145,7 @@ fun RateDialog(
                         GradientBoxButton(
                             text = "Simpan",
                             onClick = {
-                                onSimpanClick()
+//                                onSimpanClick()
                             },
                             fontColor = Color.LightGray,
                             rounded = 6.dp,
@@ -132,14 +153,8 @@ fun RateDialog(
                             color = listOf(abu, abu)
                         )
                     }
-
-
                 }
             }
-
-
-
-
         }
     }
 }
@@ -157,6 +172,7 @@ fun RateDialogPreview(){
                 onDismissRequest = {},
                 onBatalClick = {},
                 onSimpanClick = {},
+                uuid_doc = ""
             )
         }
 
