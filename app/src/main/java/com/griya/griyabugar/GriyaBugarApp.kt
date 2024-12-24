@@ -16,6 +16,7 @@ import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.detail_pemesanan.DetailPemesananScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
+import com.griya.griyabugar.ui.screen.layanan_cms.LayananCMSScreen
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.ChangePasswordScreen
@@ -190,9 +191,14 @@ fun GriyaBugarApp(
         }
 
         composable(Screen.Order.route) {
-            PemesananScreen(
+//            PemesananScreen(
+//                rootNavControll = navController
+//            )
+
+            LayananCMSScreen(
                 rootNavControll = navController
             )
+
 
         }
 
@@ -209,6 +215,16 @@ fun GriyaBugarApp(
                 uuid_doc = uuid_doc
             )
         }
+
+//        /*
+//        * layanan CMS
+//        * */
+//        composable(Screen.LayananCMS.route) {
+//            LayananCMSScreen(
+//                rootNavControll = navController
+//            )
+//
+//        }
         
     }
 

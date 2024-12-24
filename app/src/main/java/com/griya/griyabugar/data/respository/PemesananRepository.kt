@@ -26,7 +26,7 @@ class PemesananRepository @Inject constructor(
 
         if (user_id == null) {
             trySend(Resource.Error("User tidak ditemukan!"))
-            close() // Menutup flow jika user_id tidak ditemukan
+            close()
             return@callbackFlow
         }
 
@@ -61,7 +61,6 @@ class PemesananRepository @Inject constructor(
             }
 
         awaitClose {
-            // Bersihkan listener ketika Flow tidak lagi digunakan
             listenerRegistration.remove()
         }
     }

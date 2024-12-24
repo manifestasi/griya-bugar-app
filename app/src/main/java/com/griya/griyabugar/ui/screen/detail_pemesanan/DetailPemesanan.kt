@@ -733,7 +733,9 @@ fun DetailPemesananScreen(
                 topBar = {
                     AppBarWithBackButton(
                         title = "Detail Pemesanan",
-                        onClickBack = {}
+                        onClickBack = {
+                            rootNavControll.popBackStack()
+                        }
                     )
 
                 },

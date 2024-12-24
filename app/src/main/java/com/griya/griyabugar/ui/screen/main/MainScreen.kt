@@ -24,6 +24,7 @@ import com.griya.griyabugar.ui.components.bottomnavbar.BottomNavigationBar
 import com.griya.griyabugar.ui.components.loading.LoadingAnimation
 import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.navigation.Screen
+import com.griya.griyabugar.ui.screen.layanan_cms.LayananCMSScreen
 import com.griya.griyabugar.ui.screen.main.home.HomeScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.MyAccountScreen
 import com.griya.griyabugar.ui.screen.main.order.PemesananScreen
@@ -92,10 +93,13 @@ fun MainScreen(
 
             composable(Screen.Order.route){
 
-                PemesananScreen(
-                    modifier = Modifier,
+//                PemesananScreen(
+//                    modifier = Modifier,
+//                    rootNavControll = rootNavController
+//
+//                )
+                LayananCMSScreen(
                     rootNavControll = rootNavController
-
                 )
             }
 
