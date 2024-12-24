@@ -111,7 +111,7 @@ private fun ContentSection(
 ) {
     val hari = sharedViewModel.hari.joinToString(", ")
 
-    val service = sharedViewModel.layanan.map { it.name }
+    val service = sharedViewModel.layanan.map { it.nama }
     val namaTerapis = sharedViewModel.namaTerapis
     val jamDatang = sharedViewModel.jamDatang
     val jamPulang = sharedViewModel.jamPulang

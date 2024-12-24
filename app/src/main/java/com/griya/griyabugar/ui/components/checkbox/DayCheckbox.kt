@@ -43,32 +43,36 @@ fun DayCheckBox(
     }
 
     FlowRow(
-        modifier = Modifier.fillMaxWidth().padding(end = 43.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(58.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         maxItemsInEachRow = 2
     ) {
         items.forEach { item ->
             Row(verticalAlignment = Alignment.CenterVertically) {
 
-                CustomCheckbox(
-                    checked = checkedStates[item] ?: false,
-                    onCheckedChange = { isChecked ->
-                        checkedStates[item] = isChecked
+                Row(
+                    modifier = Modifier.width(140.dp)
+                ) {
+                    CustomCheckbox(
+                        checked = checkedStates[item] ?: false,
+                        onCheckedChange = { isChecked ->
+                            checkedStates[item] = isChecked
 
-                        onSelectionChange(checkedStates.filterValues { it }.keys.toList())
-                    }
-                )
-
-                Spacer(Modifier.width(12.dp))
-
-                Text(
-                    text = item,
-                    style = TextStyle(
-                        fontFamily = poppins,
-                        fontSize = 16.sp
+                            onSelectionChange(checkedStates.filterValues { it }.keys.toList())
+                        }
                     )
-                )
+
+                    Spacer(Modifier.width(12.dp))
+
+                    Text(
+                        text = item,
+                        style = TextStyle(
+                            fontFamily = poppins,
+                            fontSize = 16.sp
+                        )
+                    )
+                }
 
             }
         }

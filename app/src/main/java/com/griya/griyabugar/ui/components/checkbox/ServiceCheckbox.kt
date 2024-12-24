@@ -45,32 +45,36 @@ fun ServiceCheckBox(
     }
 
     FlowRow(
-        modifier = Modifier.fillMaxWidth().padding(end = 43.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(58.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         maxItemsInEachRow = maxItem
     ) {
         items.forEach { item ->
             Row(verticalAlignment = Alignment.CenterVertically) {
 
-                CustomCheckbox(
-                    checked = checkedStates[item.id] ?: false,
-                    onCheckedChange = { isChecked ->
-                        checkedStates[item.id] = isChecked
+                Row(
+                    modifier = Modifier.width(140.dp)
+                ) {
+                    CustomCheckbox(
+                        checked = checkedStates[item.id] ?: false,
+                        onCheckedChange = { isChecked ->
+                            checkedStates[item.id] = isChecked
 
-                        onSelectionChange(checkedStates.filterValues { it }.keys.toList())
-                    }
-                )
-
-                Spacer(Modifier.width(12.dp))
-
-                Text(
-                    text = item.name,
-                    style = TextStyle(
-                        fontFamily = poppins,
-                        fontSize = 16.sp
+                            onSelectionChange(checkedStates.filterValues { it }.keys.toList())
+                        }
                     )
-                )
+
+                    Spacer(Modifier.width(12.dp))
+
+                    Text(
+                        text = item.nama,
+                        style = TextStyle(
+                            fontFamily = poppins,
+                            fontSize = 16.sp,
+                        )
+                    )
+                }
 
             }
         }
@@ -83,23 +87,23 @@ fun MultipleCheckboxPreview(){
     val data = listOf(
         DataService(
             id = "1",
-            name = "kerokan"
+            nama = "kerokan"
         ),
         DataService(
             id = "2",
-            name = "shiatsu2"
+            nama = "shiatsu2"
         ),
         DataService(
             id = "3",
-            name = "shiatsu3"
+            nama = "shiatsu3"
         ),
         DataService(
             id = "4",
-            name = "shiatsu4"
+            nama = "shiatsu4"
         ),
         DataService(
             id = "5",
-            name = "shiatsu5"
+            nama = "shiatsu5"
         ),
     )
     GriyaBugarTheme {

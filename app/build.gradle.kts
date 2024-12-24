@@ -97,4 +97,7 @@ dependencies {
 
     // serializable
     implementation(libs.kotlinx.serialization.json)
+
+    //gson
+    implementation(libs.gson)
 }

@@ -1,6 +1,7 @@
 package com.griya.griyabugar.ui.screen.cms.terapis.addterapis
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,8 +17,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -30,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.DataService
 import com.griya.griyabugar.ui.components.Button.ButtonBorderWithTextGradient
 import com.griya.griyabugar.ui.components.Field.ClockField
@@ -38,6 +44,8 @@ import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
 import com.griya.griyabugar.ui.components.checkbox.DayCheckBox
 import com.griya.griyabugar.ui.components.checkbox.ServiceCheckBox
 import com.griya.griyabugar.ui.components.dialog.ClockInputDialog
+import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.register.ButtonConfirm
 import com.griya.griyabugar.ui.components.register.TextField
 import com.griya.griyabugar.ui.navigation.Screen
@@ -45,12 +53,18 @@ import com.griya.griyabugar.ui.screen.SharedViewModel
 import com.griya.griyabugar.ui.screen.cms.terapis.editterapis.ImageType
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddTerapisScreen(
     rootNavController: NavHostController = rememberNavController(),
-    sharedViewModel: SharedViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+    scope: CoroutineScope = rememberCoroutineScope(),
 ){
+    val context = LocalContext.current
+    val sharedViewModel: SharedViewModel = hiltViewModel(context as ComponentActivity)
+    val addTerapisViewModel: AddTerapisViewModel = hiltViewModel()
+
     var fotoDepanUrl by rememberSaveable { mutableStateOf("") }
     var fotoDepanUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
@@ -68,6 +82,13 @@ fun AddTerapisScreen(
     var jamPulang by rememberSaveable { mutableStateOf("") }
 
     var isDisabled by rememberSaveable { mutableStateOf(false) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var isError by rememberSaveable { mutableStateOf(false) }
+
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    var isSucces by rememberSaveable { mutableStateOf(false) }
+    var successMessage by rememberSaveable { mutableStateOf("") }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -89,6 +110,10 @@ fun AddTerapisScreen(
         }
     }
 
+//    var dataService: List<DataService> by rememberSaveable { mutableStateOf(emptyList()) }
+
+    val dataService by addTerapisViewModel.dataService.collectAsState()
+
     var selectedService: List<String> by rememberSaveable { mutableStateOf(
         listOf()
     ) }
@@ -97,6 +122,10 @@ fun AddTerapisScreen(
         mutableStateOf(
             listOf()
         )
+    }
+
+    LaunchedEffect(Unit) {
+        addTerapisViewModel.getAlllayanan()
     }
 
     if(showClockDialog){
@@ -127,6 +156,31 @@ fun AddTerapisScreen(
         )
     }
 
+    if (isError){
+        ErrorDialog(
+            onDismiss = {},
+            title = "Gagal",
+            description = errorMessage,
+            buttonText = "Coba Lagi",
+            buttonOnClick = {
+                isError = false
+            }
+        )
+    }
+
+    if (isSucces){
+        SuccessDialog(
+            onDismiss = {},
+            title = "Berhasil",
+            description = successMessage,
+            buttonText = "Selesai",
+            buttonOnClick = {
+                isSucces = false
+                rootNavController.popBackStack()
+            }
+        )
+    }
+
     if (
         namaTerapis.isEmpty()
         ||
@@ -146,29 +200,6 @@ fun AddTerapisScreen(
     } else {
         isDisabled = false
     }
-
-    val data = listOf(
-        DataService(
-            id = "1",
-            name = "kerokan"
-        ),
-        DataService(
-            id = "2",
-            name = "shiatsu2"
-        ),
-        DataService(
-            id = "3",
-            name = "shiatsu3"
-        ),
-        DataService(
-            id = "4",
-            name = "shiatsu4"
-        ),
-        DataService(
-            id = "5",
-            name = "shiatsu5"
-        ),
-    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -299,7 +330,7 @@ fun AddTerapisScreen(
                 ServiceCheckBox(
                     maxItem = 2,
                     selectedService = selectedService,
-                    items = data,
+                    items = dataService,
                     onSelectionChange = { selected ->
                         selectedService = selected
                     }
@@ -326,10 +357,39 @@ fun AddTerapisScreen(
 
                 ButtonConfirm(
                     name = "Tambah",
-                    isLoading = false,
-                    isDisabled = isDisabled,
+                    isLoading = isLoading,
+                    isDisabled = isDisabled || isLoading,
                     rounded = 5.dp,
-                    onClick = {},
+                    onClick = {
+                        scope.launch {
+                            addTerapisViewModel.addTerapis(
+                                nama = namaTerapis,
+                                jam_pulang = jamPulang,
+                                jam_masuk = jamDatang,
+                                foto_depan = fotoDepanUri!!,
+                                foto_detail = fotoDetailUri!!,
+                                layanan = selectedService,
+                                hari_kerja = selectedDays
+                            ).collect { event ->
+                                when (event){
+                                    is UploadResult.Loading -> {
+                                        isLoading = true
+                                    }
+                                    is UploadResult.Success -> {
+                                        isLoading = false
+                                        isSucces = true
+                                        successMessage = event.data
+                                    }
+                                    is UploadResult.Error -> {
+                                        isLoading = false
+                                        errorMessage = event.errorMessage
+                                        isError = true
+                                    }
+                                    else -> {}
+                                }
+                            }
+                        }
+                    },
                 )
 
                 Spacer(Modifier.height(12.dp))
@@ -339,7 +399,7 @@ fun AddTerapisScreen(
                     rounded = 5.dp,
                     isDisabled = isDisabled,
                     onClick = {
-                        sharedViewModel.layanan = data.filter { it.id in selectedService }
+                        sharedViewModel.layanan = dataService.filter { it.id in selectedService }
                         sharedViewModel.hari = selectedDays
                         sharedViewModel.namaTerapis = namaTerapis
                         sharedViewModel.jamDatang = jamDatang

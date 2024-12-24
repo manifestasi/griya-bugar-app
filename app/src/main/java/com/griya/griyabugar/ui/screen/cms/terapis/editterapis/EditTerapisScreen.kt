@@ -157,23 +157,23 @@ fun EditTerapisScreen(
     val data = listOf(
         DataService(
             id = "1",
-            name = "kerokan"
+            nama = "kerokan"
         ),
         DataService(
             id = "2",
-            name = "shiatsu2"
+            nama = "shiatsu2"
         ),
         DataService(
             id = "3",
-            name = "shiatsu3"
+            nama = "shiatsu3"
         ),
         DataService(
             id = "4",
-            name = "shiatsu4"
+            nama = "shiatsu4"
         ),
         DataService(
             id = "5",
-            name = "shiatsu5"
+            nama = "shiatsu5"
         ),
     )
 
