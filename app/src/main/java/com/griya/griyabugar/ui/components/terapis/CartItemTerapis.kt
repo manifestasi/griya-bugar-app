@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
+import com.griya.griyabugar.data.model.DataTerapis
 import com.griya.griyabugar.ui.components.promo.ServiceRow
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.GreenColor3
@@ -35,7 +36,7 @@ import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
 fun CardItemTerapis(
-    items: List<String>,
+    items: DataTerapis,
     onClickEdit: () -> Unit,
     onClickDelete: () -> Unit
 ){
@@ -93,7 +94,7 @@ fun CardItemTerapis(
             ) {
 
                 Text(
-                    text = "Angelica",
+                    text = items.nama,
                     style = TextStyle(
                         fontFamily = poppins,
                         fontSize = 16.sp,
@@ -115,7 +116,7 @@ fun CardItemTerapis(
                     Spacer(Modifier.width(8.dp))
 
                     Text(
-                        text = "10.00-12.00",
+                        text = "${items.jam_masuk}-${items.jam_pulang}",
                         style = TextStyle(
                             fontFamily = poppins,
                             fontSize = 12.sp
@@ -125,7 +126,7 @@ fun CardItemTerapis(
 
                 Spacer(Modifier.height(12.dp))
 
-                ServiceRow(items = items,3)
+                ServiceRow(items = items.layanan,3)
             }
 
         }

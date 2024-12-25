@@ -14,5 +14,4 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     var jamPulang: String = ""
     var fotoDepanTerapis: String = ""
     var fotoDetailTerapis: String = ""
-
 }

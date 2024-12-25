@@ -36,7 +36,7 @@ fun ServiceCheckBox(
     items: List<DataService>,
     onSelectionChange: (List<String>) -> Unit
 ){
-    val checkedStates: MutableMap<String, Boolean> by rememberSaveable {
+    val checkedStates: MutableMap<String, Boolean> by rememberSaveable(selectedService) {
         mutableStateOf(
             items.associate { item ->
                 item.id to (item.id in selectedService)

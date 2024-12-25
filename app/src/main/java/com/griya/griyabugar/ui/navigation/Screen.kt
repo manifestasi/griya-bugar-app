@@ -17,7 +17,10 @@ sealed class Screen(val route: String) {
 
     /* CMS Screen / Admin Screen / Dashboard */
     object CMS : Screen("cms")
-    object EditTerapis : Screen("editTerapis")
+    object EditTerapis : Screen("editTerapis/{id}"){
+        const val id = "id"
+        fun createRoute(id: String) = "editTerapis/$id"
+    }
     object PreviewTerapis : Screen("previewTerapis")
     object AddTerapis : Screen("addTerapis")
 

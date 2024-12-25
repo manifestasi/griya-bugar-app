@@ -211,8 +211,15 @@ fun GriyaBugarApp(
             )
         }
 
-        composable(Screen.EditTerapis.route) {
+        composable(
+            Screen.EditTerapis.route,
+            arguments = listOf(
+                navArgument(Screen.EditTerapis.id) { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString(Screen.EditTerapis.id) ?: ""
             EditTerapisScreen(
+                id = id,
                 rootNavController = navController
             )
         }

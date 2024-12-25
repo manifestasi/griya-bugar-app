@@ -66,7 +66,8 @@ fun CmsScreen(
 ){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Terapis.route) }
+    var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Pelanggan.route) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
 
     UpdateStatusBarColor(
         darkIcons = false
@@ -123,7 +124,7 @@ fun CmsScreen(
             } else if (selectedItem == NavDrawScreen.Terapis.route){
                 TerapisScreen(
                     innerPadding = innerPadding,
-                    rootNavController = rootNavController
+                    rootNavController = rootNavController,
                 )
             }
 

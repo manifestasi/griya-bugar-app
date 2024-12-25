@@ -34,7 +34,7 @@ fun DayCheckBox(
 
     val items = Days.getData
 
-    val checkedStates: MutableMap<String, Boolean> by rememberSaveable {
+    val checkedStates: MutableMap<String, Boolean> by rememberSaveable(selectedDays) {
         mutableStateOf(
             items.associate { item ->
                 item to (item in selectedDays)
