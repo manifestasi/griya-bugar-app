@@ -30,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +55,7 @@ import com.griya.griyabugar.data.model.PaketModelWithLayanan
 import com.griya.griyabugar.ui.components.Button.ButtonDelete
 import com.griya.griyabugar.ui.components.Button.ButtonEdit
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
+import com.griya.griyabugar.ui.components.dialog.ErrorDialog
 import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.ServiceRow
 import com.griya.griyabugar.ui.navigation.Screen
@@ -72,9 +76,9 @@ fun PaketScreen(
     viewModel: PaketScreenViewModel = hiltViewModel()
 ) {
     val paketState by viewModel.paketState.collectAsState()
-    val gradient = Brush.linearGradient(
-        colors = listOf(GreenColor1, GreenColor2)
-    )
+    var isError by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         topBar = {
             AppBarWithDrawer("Paket") { }
@@ -93,6 +97,7 @@ fun PaketScreen(
         },
         containerColor = BackgroundColor,
         content = { paddingValues ->
+
             when (paketState) {
                 is Resource.Loading -> {
                     CircularProgressIndicator(
@@ -119,13 +124,8 @@ fun PaketScreen(
                 }
 
                 is Resource.Error -> {
-                    Text(
-                        text = "Error: ${(paketState as Resource.Error).errorMessage}",
-                        color = Color.Red,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize()
-                    )
+                    isError = true
+                    errorMessage = (paketState as Resource.Error).errorMessage
                 }
 
                 Resource.Empty -> {
@@ -133,8 +133,21 @@ fun PaketScreen(
                 }
             }
 
+            if (isError){
+                ErrorDialog(
+                    onDismiss = {},
+                    buttonText = "Oke",
+                    buttonOnClick = {
+                        isError = false
+                    },
+                    title = "Oops",
+                    description = errorMessage
+                )
+            }
 
         }
+
+
     )
 }
 
@@ -142,15 +155,15 @@ fun PaketScreen(
 fun GradientFloatingActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    gradientColors: List<Color> = listOf(GreenColor1, GreenColor2), // Warna gradien
+    gradientColors: List<Color> = listOf(GreenColor1, GreenColor2),
     content: @Composable () -> Unit
 ) {
     Box(
         modifier = modifier
-            .size(56.dp) // Ukuran FAB standar
-            .clip(CircleShape) // Membuat bentuk lingkaran
-            .background(Brush.linearGradient(gradientColors)) // Background gradien
-            .clickable(onClick = onClick), // Aksi klik
+            .size(56.dp)
+            .clip(CircleShape)
+            .background(Brush.linearGradient(gradientColors))
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         content()
@@ -170,6 +183,7 @@ fun PaketItem(
     val kategoriPaket = paketModel.kategori
     val harga = paketModel.harga?.let { formatCurrencyIndonesia(it) }
     val diskon = paketModel.diskon
+    val fotodepan = paketModel.fotoDepan
 
     if (kategoriPaket == "PROMOSI") kategori = 1 else 0
 
@@ -185,7 +199,7 @@ fun PaketItem(
     ) {
         Column(modifier = Modifier) {
             GlideImage(
-                model = R.drawable.img_paket,
+                model = fotodepan?:R.drawable.img_paket,
                 contentDescription = "image",
                 modifier = Modifier
                     .fillMaxWidth()

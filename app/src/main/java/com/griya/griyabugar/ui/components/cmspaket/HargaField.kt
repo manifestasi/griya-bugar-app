@@ -27,6 +27,7 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 
 @Composable
 fun HargaField(
+    enabled: Boolean = true,
     onChange: (String) -> Unit,
     value: String
 ){
@@ -80,7 +81,8 @@ fun HargaField(
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Color.Black,
             cursorColor = Color.Black
-        )
+        ),
+        enabled = enabled
     )
 }
 

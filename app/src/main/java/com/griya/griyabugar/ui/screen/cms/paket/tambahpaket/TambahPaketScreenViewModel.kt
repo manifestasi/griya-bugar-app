@@ -1,9 +1,11 @@
 package com.griya.griyabugar.ui.screen.cms.paket.tambahpaket
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.Layanan
 import com.griya.griyabugar.data.model.PaketModel
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
@@ -25,6 +27,11 @@ class TambahPaketScreenViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<Resource<Unit>>(Resource.Empty)
     val uiState: StateFlow<Resource<Unit>> = _uiState
 
+    private val _uploadState = MutableStateFlow<UploadResult<Unit>>(UploadResult.Idle)
+    val uploadState: StateFlow<UploadResult<Unit>> = _uploadState
+    init {
+        loadLayanan()
+    }
     // Fungsi untuk memuat layanan
     fun loadLayanan() {
         viewModelScope.launch {
@@ -33,11 +40,16 @@ class TambahPaketScreenViewModel @Inject constructor(
         }
     }
 
-    // Fungsi untuk menambahkan paket
-    fun addPaket(paket: PaketModel) {
+    fun addPaketWithImages(paket: PaketModel, fotoDepanUri: Uri?, fotoDetailUri: Uri?) {
         viewModelScope.launch {
-            _uiState.value = Resource.Loading
-            _uiState.value = paketRepository.addPaket(paket)
+            paketRepository.addPaketWithImages(paket, fotoDepanUri, fotoDetailUri).collect { result ->
+                _uploadState.value = result
+            }
         }
     }
+
+    fun resetUploadState() {
+        _uploadState.value = UploadResult.Idle
+    }
+
 }

@@ -19,13 +19,16 @@ import com.griya.griyabugar.data.model.PaketModel
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
 import com.griya.griyabugar.util.ImageProcess
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import javax.inject.Inject
 
 
@@ -130,5 +133,87 @@ class PaketRepository @Inject constructor (
             Resource.Error(e.message ?: "Terjadi kesalahan saat menambahkan paket.")
         }
     }
+    fun addPaketWithImages(
+        paket: PaketModel,
+        fotoDepanUri: Uri?,
+        fotoDetailUri: Uri?
+    ): Flow<UploadResult<Unit>> = callbackFlow {
+
+        trySend(UploadResult.Loading)
+
+        val uuidPaket = UUID.randomUUID().toString()
+
+        val uploadImage = { uri: Uri?, folder: String, callback: (String?) -> Unit ->
+            if (uri != null) {
+                val realPath = ImageProcess.getRealPathFromUri(context, uri)
+                val compressImage = ImageProcess.compressImage(realPath)
+
+                mediaManager.upload(compressImage.absolutePath)
+                    .option("public_id", "$folder/${uuidPaket}")
+                    .option("overwrite", true)
+                    .option("resource_type", "image")
+                    .callback(object : UploadCallback {
+                        override fun onStart(requestId: String?) {
+                            trySend(UploadResult.Loading)
+                        }
+
+                        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                            val progress = ((bytes.toDouble() / totalBytes) * 100).toInt()
+                            trySend(UploadResult.Progress(progress))
+                        }
+
+                        override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                            val url = resultData?.get("secure_url").toString()
+                            callback(url)
+                        }
+
+                        override fun onError(requestId: String?, error: ErrorInfo?) {
+                            trySend(UploadResult.Error(error?.description ?: "Unknown upload error"))
+                            callback(null)
+                        }
+
+                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                            trySend(UploadResult.Reschedule)
+                            callback(null)
+                        }
+                    }).dispatch()
+            } else {
+                callback(null)
+            }
+        }
+
+        // Upload foto depan
+        uploadImage(fotoDepanUri, "folder_paket_depan") { fotoDepanUrl ->
+            uploadImage(fotoDetailUri, "folder_paket_detail") { fotoDetailUrl ->
+                if (fotoDepanUrl == null || fotoDetailUrl == null) {
+                    trySend(UploadResult.Error("Failed to upload images"))
+                    close()
+                } else {
+                    // Tambahkan paket ke Firestore
+                    val paketWithImages = paket.copy(
+                        fotoDepan = fotoDepanUrl,
+                        fotoDetail = fotoDetailUrl
+                    )
+
+                    firestore.collection("paket")
+                        .add(paketWithImages)
+                        .addOnSuccessListener {
+                            trySend(UploadResult.Success(Unit))
+                            close()
+                        }
+                        .addOnFailureListener { e ->
+                            trySend(UploadResult.Error(e.message ?: "Failed to add package"))
+                            close()
+                        }
+                }
+            }
+        }
+
+        // Tunggu hingga callback selesai atau flow ditutup
+        awaitClose { /* No operation */ }
+    }
+
+
+
 
 }
