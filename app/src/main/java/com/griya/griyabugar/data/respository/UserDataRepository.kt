@@ -52,7 +52,7 @@ class UserDataRepository @Inject constructor (
         try {
             if (uri != null) {
                 val realPath = ImageProcess.getRealPathFromUri(context, uri)
-                val compressImage = ImageProcess.compressImage(realPath)
+                val compressImage = ImageProcess.compressImage(context, realPath)
 
                 val requestId = mediaManager.upload(compressImage.absolutePath)
                     .option("public_id", "folder_profile/${uuidUser}")

@@ -116,14 +116,14 @@ fun EditTerapisScreen(
             ImageType.FOTO_DEPAN -> {
                 if (uri != null){
                     fotoDepanUrl = uri.toString()
+                    fotoDepanUri = uri
                 }
-                fotoDepanUri = uri
             }
             ImageType.FOTO_DETAIL -> {
                 if (uri != null){
                     fotoDetailUrl = uri.toString()
+                    fotoDetailUri = uri
                 }
-                fotoDetailUri = uri
             }
             else -> {}
         }

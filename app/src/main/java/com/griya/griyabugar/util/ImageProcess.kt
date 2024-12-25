@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
 
 object ImageProcess {
 
@@ -30,12 +31,14 @@ object ImageProcess {
         return filePath
     }
 
-    fun compressImage(imageFilePath: String, quality: Int = 80): File {
+    fun compressImage(context: Context, imageFilePath: String, quality: Int = 80): File {
         // Load gambar ke dalam Bitmap
         val bitmap = BitmapFactory.decodeFile(imageFilePath)
 
         // Buat file sementara untuk menyimpan gambar yang telah dikompres
-        val compressedFile = File(imageFilePath.substringBeforeLast("/") + "/compressed_image.jpg")
+        val compressedFileName = "compressed_image_${System.currentTimeMillis()}.jpg"
+        val compressedFile = File(imageFilePath.substringBeforeLast("/") + "/$compressedFileName")
+//        val compressedFile = File(context.cacheDir, "compressed/${UUID.randomUUID()}.jpg")
 
         // Kompres bitmap ke file sementara
         val outputStream = FileOutputStream(compressedFile)

@@ -114,14 +114,14 @@ class TerapisRespository @Inject constructor(
             // Jika foto_depan tidak null, upload gambar
             if (foto_depan != null) {
                 val realPathFotoDepan = ImageProcess.getRealPathFromUri(context, foto_depan)
-                val compressFotoDepan = ImageProcess.compressImage(realPathFotoDepan)
+                val compressFotoDepan = ImageProcess.compressImage(context, realPathFotoDepan)
                 resultFotoDepan = uploadImage(compressFotoDepan.absolutePath)
             }
 
             // Jika foto_detail tidak null, upload gambar
             if (foto_detail != null) {
                 val realPathFotoDetail = ImageProcess.getRealPathFromUri(context, foto_detail)
-                val compressFotoDetail = ImageProcess.compressImage(realPathFotoDetail)
+                val compressFotoDetail = ImageProcess.compressImage(context, realPathFotoDetail)
                 resultFotoDetail = uploadImage(compressFotoDetail.absolutePath)
             }
 
@@ -215,20 +215,20 @@ class TerapisRespository @Inject constructor(
         trySend(UploadResult.Loading)
 
         try {
+            Log.d("addTerapis", "foto_depan_uri: ${foto_depan}")
+            Log.d("addTerapis", "foto_detail_uri: ${foto_detail}")
+
             val realPathFotoDepan = ImageProcess.getRealPathFromUri(context, foto_depan)
-            val compressFotoDepan = ImageProcess.compressImage(realPathFotoDepan)
+            val compressFotoDepan = ImageProcess.compressImage(context, realPathFotoDepan)
 
             val realPathFotoDetail = ImageProcess.getRealPathFromUri(context, foto_detail)
-            val compressFotoDetail = ImageProcess.compressImage(realPathFotoDetail)
+            val compressFotoDetail = ImageProcess.compressImage(context, realPathFotoDetail)
 
-            val deffered1 = async {
-                uploadImage(compressFotoDepan.absolutePath)
-            }
-            val defferd2 = async {
-                uploadImage(compressFotoDetail.absolutePath)
-            }
+            Log.d("addTerapis", "absolutepath1: ${compressFotoDepan.absolutePath}")
+            Log.d("addTerapis", "absolutepath2: ${compressFotoDetail.absolutePath}")
 
-            val (result1, result2) = awaitAll(deffered1, defferd2)
+            val result1 = uploadImage(compressFotoDepan.absolutePath)
+            val result2 = uploadImage(compressFotoDetail.absolutePath)
 
             Log.d("addTerapis", "Result1: $result1")
             Log.d("addTerapis", "Result2: $result2")
