@@ -39,6 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
 import com.griya.griyabugar.data.model.NavDrawerItem
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
@@ -57,7 +59,9 @@ import com.griya.griyabugar.ui.theme.poppins
 import kotlinx.coroutines.launch
 
 @Composable
-fun CmsScreen(){
+fun CmsScreen(
+    rootNavController: NavHostController = rememberNavController()
+){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Pelanggan.route) }
@@ -97,7 +101,7 @@ fun CmsScreen(){
             if (selectedItem == NavDrawScreen.Pelanggan.route){
                 PelangganScreen(innerPadding)
             } else if (selectedItem == NavDrawScreen.Paket.route){
-                PaketScreen(innerPadding)
+                PaketScreen(innerPadding,rootNavController)
             } else if (selectedItem == NavDrawScreen.Layanan.route){
                 LayananScreen(innerPadding)
             } else if (selectedItem == NavDrawScreen.Terapis.route){

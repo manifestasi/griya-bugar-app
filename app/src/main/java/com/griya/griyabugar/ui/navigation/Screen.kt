@@ -35,4 +35,7 @@ sealed class Screen(val route: String) {
 
    /*Detail Terapis screen*/
     object DetailTerapis: Screen("detailTerapis")
+
+    /*CMS tambah paket screen*/
+    object TambahPaket: Screen("tambahPaket")
 }

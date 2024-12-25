@@ -14,6 +14,7 @@ import androidx.navigation.navDeepLink
 import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.CmsScreen
+import com.griya.griyabugar.ui.screen.cms.paket.tambahpaket.TambahPaketScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.login.LoginScreen
@@ -201,7 +202,15 @@ fun GriyaBugarApp(
         }
 
         composable(Screen.CMS.route){
-            CmsScreen()
+            CmsScreen(
+                rootNavController = navController
+            )
+        }
+
+        composable(Screen.TambahPaket.route){
+           TambahPaketScreen(
+               rootNavController = navController
+           )
         }
     }
 
