@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.CmsScreen
+import com.griya.griyabugar.ui.screen.cms.paket.editpaket.EditPaketScreen
 import com.griya.griyabugar.ui.screen.cms.paket.previewpaket.PreviewPaketScreen
 import com.griya.griyabugar.ui.screen.cms.paket.tambahpaket.TambahPaketScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
@@ -211,6 +212,23 @@ fun GriyaBugarApp(
                rootNavController = navController
            )
         }
+
+        composable(
+            route = Screen.EditPaket.route,
+            arguments = listOf(navArgument("paketId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val paketId = backStackEntry.arguments?.getString("paketId")
+            if (paketId != null) {
+                EditPaketScreen(
+                    paketId = paketId,
+                    rootNavController = navController
+                )
+            } else {
+                // Tangani error, misalnya navigasi kembali jika paketId null
+                navController.popBackStack()
+            }
+        }
+
 
         composable(Screen.PreviewPaket.route){
             PreviewPaketScreen(

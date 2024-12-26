@@ -1,5 +1,4 @@
-package com.griya.griyabugar.ui.screen.cms.paket.tambahpaket
-
+package com.griya.griyabugar.ui.screen.cms.paket.editpaket
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,26 +16,31 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TambahPaketScreenViewModel @Inject constructor(
+class EditPaketScreenViewModel @Inject constructor(
     private val paketRepository: PaketRepository
 ) : ViewModel() {
 
     private val _layananState = MutableStateFlow<Resource<List<Layanan>>>(Resource.Empty)
     val layananState: StateFlow<Resource<List<Layanan>>> = _layananState
 
-    private val _uiState = MutableStateFlow<Resource<Unit>>(Resource.Empty)
-    val uiState: StateFlow<Resource<Unit>> = _uiState
-
-    private val _uploadState = MutableStateFlow<UploadResult<Unit>>(UploadResult.Idle)
-    val uploadState: StateFlow<UploadResult<Unit>> = _uploadState
+    private val _updateState = MutableStateFlow<UploadResult<Unit>>(UploadResult.Idle)
+    val updateState: StateFlow<UploadResult<Unit>> = _updateState
 
     // StateFlow untuk menyimpan status daftar paket
     private val _paketListState = MutableStateFlow<Resource<List<PaketModel>>>(Resource.Empty)
     val paketListState: StateFlow<Resource<List<PaketModel>>> = _paketListState
 
+
     init {
         loadLayanan()
         fetchPaketList()
+    }
+
+    fun loadLayanan() {
+        viewModelScope.launch {
+            _layananState.value = Resource.Loading
+            _layananState.value = paketRepository.getLayanan()
+        }
     }
     // Fungsi untuk memanggil getPaketList dan mengupdate state
     fun fetchPaketList() {
@@ -47,24 +51,15 @@ class TambahPaketScreenViewModel @Inject constructor(
             _paketListState.value = result // Menyimpan hasil ke StateFlow
         }
     }
-    // Fungsi untuk memuat layanan
-    fun loadLayanan() {
+    fun updatePaketWithImages(paketId:String,paket: PaketModel, fotoDepanUri: Uri?, fotoDetailUri: Uri?) {
         viewModelScope.launch {
-            _layananState.value = Resource.Loading
-            _layananState.value = paketRepository.getLayanan()
-        }
-    }
-
-    fun addPaketWithImages(paket: PaketModel, fotoDepanUri: Uri?, fotoDetailUri: Uri?) {
-        viewModelScope.launch {
-            paketRepository.addPaketWithImages(paket, fotoDepanUri, fotoDetailUri).collect { result ->
-                _uploadState.value = result
+            paketRepository.updatePaketWithImages(paketId,paket, fotoDepanUri, fotoDetailUri).collect { result ->
+                _updateState.value = result
             }
         }
     }
 
     fun resetUploadState() {
-        _uploadState.value = UploadResult.Idle
+        _updateState.value = UploadResult.Idle
     }
-
 }

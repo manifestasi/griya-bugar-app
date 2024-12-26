@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.PaketModel
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
 import com.griya.griyabugar.data.respository.PaketRepository
@@ -22,6 +23,9 @@ class PaketScreenViewModel @Inject constructor(
     private val _paketState = MutableStateFlow<Resource<List<PaketModelWithLayanan>>>(Resource.Loading)
     val paketState: StateFlow<Resource<List<PaketModelWithLayanan>>> = _paketState
 
+    // StateFlow untuk status penghapusan
+    private val _deleteState = MutableStateFlow<UploadResult<Unit>>(UploadResult.Loading)
+    val deleteState: StateFlow<UploadResult<Unit>> = _deleteState
     init {
         // Panggil fungsi untuk memuat data saat ViewModel diinisialisasi
         fetchPaketWithLayananNames()
@@ -31,6 +35,15 @@ class PaketScreenViewModel @Inject constructor(
         viewModelScope.launch {
             paketRepository.getPaketWithLayananName().collect { result ->
                 _paketState.value = result
+            }
+        }
+    }
+
+    // Fungsi untuk menghapus paket
+    fun deletePaket(paketId: String,fotoDepanUrl:String,fotoDetailUrl:String) {
+        viewModelScope.launch {
+            paketRepository.deletePaketWithImages(paketId, fotoDepanUrl, fotoDetailUrl).collect { result ->
+                _deleteState.value=result
             }
         }
     }

@@ -344,7 +344,9 @@ private fun ContenSection(
             }, onSelectionChangedName = { selected ->
                 selectedLayananName.clear()
                 selectedLayananName.addAll(selected)
-            }, viewModel
+            },
+            viewModel,
+            paketId = null
         )
         Spacer(Modifier.height(16.dp))
 
@@ -550,7 +552,8 @@ fun MultiSelectCheckboxGridWithoutScroll(modifier: Modifier = Modifier) {
 fun MultiSelectCheckboxList(
     onSelectionChanged: (List<String>) -> Unit,
     onSelectionChangedName: (List<String>) -> Unit,
-    viewModel: TambahPaketScreenViewModel
+    viewModel: TambahPaketScreenViewModel,
+    paketId: String? // Paket ID yang digunakan untuk memuat data paket
 ) {
     // State untuk menampung layanan dari ViewModel
     val layananState = viewModel.layananState.collectAsState().value
@@ -559,8 +562,34 @@ fun MultiSelectCheckboxList(
     val selectedItems = remember { mutableStateListOf<String>() }
     val selectedItemsName = remember { mutableStateListOf<String>() }
 
+    // Mengambil paket berdasarkan paketId
+    val paket = (viewModel.paketListState.value as? Resource.Success<List<PaketModel>>)
+        ?.data?.find { it.id == paketId }
+
+    // Mengisi data awal ke checkbox jika sudah ada layanan yang dipilih
+    LaunchedEffect(layananState, paket) {
+        if (layananState is Resource.Success && paket != null) {
+            selectedItems.clear() // Clear selectedItems sebelum menambahkan ulang
+            selectedItemsName.clear() // Clear selectedItemsName sebelum menambahkan ulang
+
+            // Menandai layanan yang sudah dipilih dari paket
+            paket.layanan.forEach { layananId ->
+                val layanan = layananState.data.find { it.id == layananId }
+                if (layanan != null) {
+                    selectedItems.add(layanan.id) // Tambahkan ID layanan yang dipilih
+                    selectedItemsName.add(layanan.nama) // Tambahkan nama layanan yang dipilih
+                }
+            }
+
+            // Trigger perubahan ke callback
+            onSelectionChanged(selectedItems)
+            onSelectionChangedName(selectedItemsName)
+        }
+    }
+
+    // Memuat data layanan saat pertama kali composable dipanggil
     LaunchedEffect(Unit) {
-        viewModel.loadLayanan() // Memuat data layanan saat pertama kali composable dipanggil
+        viewModel.loadLayanan()
     }
 
     Column(modifier = Modifier
@@ -582,19 +611,17 @@ fun MultiSelectCheckboxList(
                             isSelected = selectedItems.contains(layanan.id),
                             text = layanan.nama, // Nama layanan yang ditampilkan
                             onClick = {
-                                if (selectedItems.contains(layanan.id) && selectedItemsName.contains(
-                                        layanan.nama
-                                    )
-                                ) {
+                                if (selectedItems.contains(layanan.id)) {
                                     selectedItems.remove(layanan.id)
                                     selectedItemsName.remove(layanan.nama)
                                 } else {
                                     selectedItems.add(layanan.id)
                                     selectedItemsName.add(layanan.nama)
-
-                                    onSelectionChanged(selectedItems)
-                                    onSelectionChangedName(selectedItemsName)
                                 }
+
+                                // Trigger perubahan ke callback
+                                onSelectionChanged(selectedItems)
+                                onSelectionChangedName(selectedItemsName)
                             }
                         )
                     }
@@ -615,8 +642,9 @@ fun MultiSelectCheckboxList(
             )
         }
     }
-
 }
+
+
 
 @Composable
 fun MultiSelectCheckboxList() {

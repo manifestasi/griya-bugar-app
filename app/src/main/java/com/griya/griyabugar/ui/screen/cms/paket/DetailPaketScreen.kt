@@ -149,7 +149,7 @@ private fun ContentSection(
                         .align(Alignment.CenterVertically)
                 )
                 Spacer(Modifier.weight(1f))
-                ButtonSection(Modifier.align(Alignment.CenterVertically))
+               // ButtonSection(Modifier.align(Alignment.CenterVertically))
             }
 
             Spacer(modifier = Modifier.height(5.dp))

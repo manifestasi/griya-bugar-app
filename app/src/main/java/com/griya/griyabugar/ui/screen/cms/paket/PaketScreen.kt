@@ -56,6 +56,7 @@ import com.griya.griyabugar.ui.components.Button.ButtonDelete
 import com.griya.griyabugar.ui.components.Button.ButtonEdit
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.QuestionDialog
 import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.ServiceRow
 import com.griya.griyabugar.ui.navigation.Screen
@@ -76,9 +77,11 @@ fun PaketScreen(
     viewModel: PaketScreenViewModel = hiltViewModel()
 ) {
     val paketState by viewModel.paketState.collectAsState()
+    val deleteState by viewModel.deleteState.collectAsState()
     var isError by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
-
+    var showQuestionDeleteDialog by rememberSaveable { mutableStateOf(false) }
+    var paketId by rememberSaveable { mutableStateOf("") }
     Scaffold(
         topBar = {
             AppBarWithDrawer("Paket") { }
@@ -118,7 +121,30 @@ fun PaketScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(paketList) { paket ->
-                            PaketItem(navController, paket)
+                            PaketItem(onDeleteClick = { Id->
+                                paketId = Id
+                                showQuestionDeleteDialog = true
+                                                      },navController, paket)
+                            if (showQuestionDeleteDialog){
+                                QuestionDialog(
+                                    onDismiss = {},
+                                    title = "Apakah kamu yakin?",
+                                    description = "Apakah kamu yakin ingin menghapusnya?",
+                                    btnClickNo = {
+                                        showQuestionDeleteDialog = false
+                                    },
+                                    btnClickYes = {
+                                        val fotodepan = paket.fotoDepan?:""
+                                        val fotodetail = paket.fotoDetail?:""
+                                        viewModel.deletePaket(
+                                            paketId,
+                                            fotodepan,
+                                            fotodetail
+                                        )
+                                        showQuestionDeleteDialog = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -133,7 +159,7 @@ fun PaketScreen(
                 }
             }
 
-            if (isError){
+            if (isError) {
                 ErrorDialog(
                     onDismiss = {},
                     buttonText = "Oke",
@@ -173,6 +199,7 @@ fun GradientFloatingActionButton(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PaketItem(
+    onDeleteClick: (String) -> Unit,
     rootNavController: NavHostController = rememberNavController(),
     paketModel: PaketModelWithLayanan,
     preview: Boolean = false,
@@ -193,13 +220,10 @@ fun PaketItem(
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = modifier
             .fillMaxWidth()
-            .clickable {
-
-            }
     ) {
         Column(modifier = Modifier) {
             GlideImage(
-                model = fotodepan?:R.drawable.img_paket,
+                model = fotodepan ?: R.drawable.img_paket,
                 contentDescription = "image",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -248,6 +272,14 @@ fun PaketItem(
                 }
                 if (!preview) {
                     ButtonSection(
+                        onEditClick = {
+                            if (paketModel.id != null) {
+                                rootNavController.navigate(Screen.EditPaket.createRoute(paketModel.id))
+                            }
+                        },
+                        onDeleteClick = {
+                            paketModel.id?.let { onDeleteClick(it) }
+                        },
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(10.dp)
@@ -260,11 +292,19 @@ fun PaketItem(
 }
 
 @Composable
-fun ButtonSection(modifier: Modifier = Modifier) {
+fun ButtonSection(
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     Row(modifier = modifier) {
-        ButtonEdit(onClick = {})
+        ButtonEdit(onClick = {
+            onEditClick()
+        })
         Spacer(modifier = Modifier.width(10.dp))
-        ButtonDelete(onClick = {})
+        ButtonDelete(onClick = {
+            onDeleteClick()
+        })
     }
 }
 

@@ -1,6 +1,7 @@
 package com.griya.griyabugar.data.model
 
 data class PaketModel(
+    val id: String? = null, // UUID document
     val title: String? = null,
     val diskon: Int? = null,
     val harga: Int? = null,
@@ -11,6 +12,7 @@ data class PaketModel(
 )
 
 data class PaketModelWithLayanan(
+    val id: String? = null, // UUID document
     val title: String? = null,
     val diskon: Int? = null,
     val harga: Int? = null,
