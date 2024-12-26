@@ -6,6 +6,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.ItemPemesananModel
+import com.griya.griyabugar.data.model.LayananModel
+import com.griya.griyabugar.data.respository.LayananRepository.Companion.LAYANAN_COLLECTION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -144,6 +146,53 @@ class PemesananRepository @Inject constructor(
             listeners
         }
 
+    }.flowOn(Dispatchers.IO)
+
+
+    /*
+    * GET ALL PEMESANAN
+    * */
+
+    fun getPemesananAll():Flow<Resource<List<ItemPemesananModel>>> = callbackFlow {
+        trySend(Resource.Loading)
+        val user_id = firebaseAuth.currentUser?.uid
+
+        if(user_id == null){
+            trySend(Resource.Error("User tidak ditemukan!"))
+            close()
+            return@callbackFlow
+        }
+
+        val listener_result = firestore.collection(PEMESANAN_COLLECTION)
+            .addSnapshotListener { snapshot, error ->
+                if(error != null){
+                    Log.e("getLayananData", "Error: ${error.message}")
+                    trySend(Resource.Error(error.message.toString()))
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val pemesananData = snapshot.documents.mapNotNull {
+                            doc ->
+                        doc.toObject(ItemPemesananModel::class.java)?.copy(
+                            uuid_doc = doc.id
+                        )
+                    }
+
+                    Log.d("getPemesananData", "Data Pemesanan: $pemesananData")
+
+                    if (pemesananData.isNotEmpty()) {
+                        trySend(Resource.Success(pemesananData))
+                    } else {
+                        trySend(Resource.Empty)
+                    }
+                } else {
+                    Log.d("getPemesananData", "Dokumen Kosong")
+                    trySend(Resource.Empty)
+                }
+            }
+        awaitClose {
+            listener_result.remove()
+        }
     }.flowOn(Dispatchers.IO)
 
 

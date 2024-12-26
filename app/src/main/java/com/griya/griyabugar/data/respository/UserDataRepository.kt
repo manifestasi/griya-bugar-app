@@ -183,4 +183,46 @@ class UserDataRepository @Inject constructor (
         }
     }.flowOn(Dispatchers.IO)
 
+    /*
+    * get user by id
+    * */
+
+    fun getUserById(uuid:String):Flow<Resource<DataUser>> = callbackFlow<Resource<DataUser>> {
+        trySend(Resource.Loading)
+        val user_id = firebaseAuth.currentUser?.uid
+
+        if(user_id == null){
+            trySend(Resource.Error("Invalid User!"))
+            close()
+            return@callbackFlow
+        }
+
+        try {
+            val result = firestore.collection(USER_COLLECTION)
+                .whereEqualTo("role", "customer")
+                .get()
+                .await()
+
+            val filteredDocument = result.documents.find { it.id == uuid }
+
+            val data_result = filteredDocument?.toObject(DataUser::class.java)
+
+            if(data_result != null){
+                trySend(Resource.Success(data_result))
+            }else{
+                trySend(Resource.Empty)
+            }
+
+        }catch (e:Exception){
+            trySend(Resource.Error("Gagal get user!"))
+        }
+
+        awaitClose {  }
+
+    }.flowOn(Dispatchers.IO)
+
+    companion object{
+        const val USER_COLLECTION = "user"
+    }
+
 }

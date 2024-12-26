@@ -28,6 +28,7 @@ import com.griya.griyabugar.ui.screen.layanan_cms.LayananCMSScreen
 import com.griya.griyabugar.ui.screen.main.home.HomeScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.MyAccountScreen
 import com.griya.griyabugar.ui.screen.main.order.PemesananScreen
+import com.griya.griyabugar.ui.screen.pelanggan_cms.PelangganCMSScreen
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
@@ -93,14 +94,18 @@ fun MainScreen(
 
             composable(Screen.Order.route){
 
-//                PemesananScreen(
-//                    modifier = Modifier,
-//                    rootNavControll = rootNavController
-//
-//                )
-                LayananCMSScreen(
+                PemesananScreen(
+                    modifier = Modifier,
                     rootNavControll = rootNavController
+
                 )
+//                LayananCMSScreen(
+//                    rootNavControll = rootNavController
+//                )
+//                PelangganCMSScreen(
+//                    rootNavControll = rootNavController
+//                )
+
             }
 
             composable(Screen.MyAccount.route){

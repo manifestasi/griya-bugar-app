@@ -25,7 +25,7 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 fun CircleImageProfile(
     modifier: Modifier = Modifier,
     size: Int = 66,
-    url: String
+    url: String?
 ){
     GlideImage(
         model = url,

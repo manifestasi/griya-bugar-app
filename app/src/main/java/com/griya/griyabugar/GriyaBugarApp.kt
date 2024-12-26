@@ -26,6 +26,7 @@ import com.griya.griyabugar.ui.screen.main.home.detailterapis.DetailTerapisScree
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.informasigriya.InformasiGriyaScreen
 import com.griya.griyabugar.ui.screen.main.order.PemesananScreen
+import com.griya.griyabugar.ui.screen.pelanggan_cms.PelangganCMSScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.screen.welcome.WelcomeScreen
@@ -191,13 +192,16 @@ fun GriyaBugarApp(
         }
 
         composable(Screen.Order.route) {
-//            PemesananScreen(
-//                rootNavControll = navController
-//            )
-
-            LayananCMSScreen(
+            PemesananScreen(
                 rootNavControll = navController
             )
+
+//            LayananCMSScreen(
+//                rootNavControll = navController
+//            )
+//            PelangganCMSScreen(
+//                rootNavControll = navController
+//            )
 
 
         }
@@ -216,15 +220,15 @@ fun GriyaBugarApp(
             )
         }
 
-//        /*
-//        * layanan CMS
-//        * */
-//        composable(Screen.LayananCMS.route) {
-//            LayananCMSScreen(
-//                rootNavControll = navController
-//            )
-//
-//        }
+        /*
+        * layanan CMS
+        * */
+        composable(Screen.LayananCMS.route) {
+            LayananCMSScreen(
+                rootNavControll = navController
+            )
+
+        }
         
     }
 
