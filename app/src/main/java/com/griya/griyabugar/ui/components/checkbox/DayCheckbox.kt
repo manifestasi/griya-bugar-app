@@ -52,7 +52,8 @@ fun DayCheckBox(
             Row(verticalAlignment = Alignment.CenterVertically) {
 
                 Row(
-                    modifier = Modifier.width(140.dp)
+                    modifier = Modifier.width(140.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     CustomCheckbox(
                         checked = checkedStates[item] ?: false,

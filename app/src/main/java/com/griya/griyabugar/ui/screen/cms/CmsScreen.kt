@@ -1,5 +1,6 @@
 package com.griya.griyabugar.ui.screen.cms
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,8 +17,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -25,7 +31,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -40,34 +48,212 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
+import com.griya.griyabugar.data.model.LayananModel
 import com.griya.griyabugar.data.model.NavDrawerItem
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
+import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.LayananInsertDialog
+import com.griya.griyabugar.ui.components.dialog.LayananUpdateDialog
+import com.griya.griyabugar.ui.components.dialog.QuestionDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.navigation.NavDrawScreen
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.layanan.LayananScreen
+import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananCMSScreen
 import com.griya.griyabugar.ui.screen.cms.paket.PaketScreen
 import com.griya.griyabugar.ui.screen.cms.pelanggan.PelangganScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.TerapisScreen
+import com.griya.griyabugar.ui.screen.layanan.LayananViewModel
 import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
+import com.griya.griyabugar.ui.theme.HijauMuda
+import com.griya.griyabugar.ui.theme.HijauTua
 import com.griya.griyabugar.ui.theme.RedColor1
 import com.griya.griyabugar.ui.theme.poppins
 import kotlinx.coroutines.launch
 
 @Composable
 fun CmsScreen(
-    rootNavController: NavHostController = rememberNavController()
+    rootNavController: NavHostController = rememberNavController(),
+    layananViewModel: LayananViewModel = hiltViewModel()
 ){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Pelanggan.route) }
     var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    var showDialogInsert by rememberSaveable { mutableStateOf(false) }
+    var showDialogUpdate by rememberSaveable { mutableStateOf(false) }
+    var showDialogDelete by rememberSaveable { mutableStateOf(false) }
+    var uuid_doc by rememberSaveable { mutableStateOf("") }
+    var name_to_edit by rememberSaveable { mutableStateOf("") }
+    val arr_layanan = remember { mutableStateListOf<LayananModel>() }
+
+    var dialog_state_true_update by remember { mutableStateOf(false) }
+    var dialog_state_failed_update by remember { mutableStateOf(false) }
+
+    var dialog_state_true by remember { mutableStateOf(false) }
+    var dialog_state_failed by remember  { mutableStateOf(false) }
+
+
+    /*
+    * ======================================
+    * Show Dialog
+    * =====================================
+    * */
+
+    /*
+    * Dialog Insert Field
+    * */
+    if(showDialogInsert){
+        LayananInsertDialog(
+            title = "Tambah Layanan",
+            layananViewModel = layananViewModel,
+            onDismiss = {
+                showDialogInsert = false
+            },
+            onBatalClick = {
+                showDialogInsert = false
+            },
+            onSimpanClick = {
+                showDialogInsert = false
+            }
+        )
+    }
+
+    /*
+    * Dialog Update Field
+    * */
+    if(showDialogUpdate){
+        LayananUpdateDialog(
+            title = "Edit Layanan",
+            onDismiss = {
+                showDialogUpdate = false
+            },
+            onBatalClick = {
+                showDialogUpdate = false
+            },
+            onSimpanClick = {
+                showDialogUpdate = false
+            },
+            uuid_doc = uuid_doc,
+            name_to_edit = name_to_edit
+        )
+    }
+
+    if(showDialogDelete){
+        QuestionDialog(
+            onDismiss = {
+                showDialogDelete = false
+            },
+            title = "Konfirmasi",
+            description = "Apakah Anda yakin untuk menghapus ?",
+            btnClickYes = {
+                layananViewModel.deleteData(
+                    uuid_doc = uuid_doc
+                )
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                showDialogDelete = false
+            },
+            btnClickNo = {
+                showDialogDelete = false
+            }
+        )
+    }
+
+    /*
+    *
+    * Dialog untuk insert
+    * */
+
+    if(dialog_state_true){
+        SuccessDialog(
+            onDismiss = {
+                dialog_state_true = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetInsertState()
+
+            },
+            title = "Berhasil",
+            description = "Layanan berhasil ditambahkan",
+            buttonText = "Selesai",
+            buttonOnClick = {
+                dialog_state_true = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetInsertState()
+
+            }
+        )
+
+    }
+
+    if(dialog_state_failed){
+        ErrorDialog(
+            onDismiss = {
+                dialog_state_failed = false
+                layananViewModel.resetInsertState()
+
+            },
+            title = "Gagal",
+            description = "Layanan gagal ditambahkan!",
+            buttonText = "Coba Lagi",
+            buttonOnClick = {
+                dialog_state_failed = false
+                layananViewModel.resetInsertState()
+
+            }
+        )
+
+    }
+
+    if(dialog_state_true_update){
+        SuccessDialog(
+            onDismiss = {
+                dialog_state_true_update = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetUpdateState()
+
+            },
+            title = "Berhasil",
+            description = "Layanan berhasil ditambahkan",
+            buttonText = "Selesai",
+            buttonOnClick = {
+                dialog_state_true_update = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetUpdateState()
+
+            }
+        )
+    }
+
+    if(dialog_state_failed_update){
+        ErrorDialog(
+            onDismiss = {
+                dialog_state_failed_update = false
+                layananViewModel.resetUpdateState()
+            },
+            title = "Gagal",
+            description = "Layanan gagal ditambahkan!",
+            buttonText = "Coba Lagi",
+            buttonOnClick = {
+                dialog_state_failed_update = false
+                layananViewModel.resetUpdateState()
+
+            }
+        )
+    }
 
     UpdateStatusBarColor(
         darkIcons = false
@@ -91,7 +277,11 @@ fun CmsScreen(
         Scaffold(
             topBar = {
                 AppBarWithDrawer(
-                    title = "Test",
+                    title = if (selectedItem == NavDrawScreen.Layanan.route){
+                        "Layanan"
+                    } else {
+                        "test"
+                    },
                     onNavigationMenu = {
                         scope.launch {
                             drawerState.open()
@@ -111,6 +301,30 @@ fun CmsScreen(
                         painter = painterResource(R.drawable.img_fab),
                         contentDescription = "fab"
                     )
+                } else if (selectedItem == NavDrawScreen.Layanan.route){
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(60.dp)
+                            .background(
+                                brush = Brush.horizontalGradient(listOf(HijauMuda, HijauTua)),
+                                shape = CircleShape
+                            )
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                showDialogInsert = true
+                            },
+                            containerColor = Color.Transparent,
+                            elevation = FloatingActionButtonDefaults.elevation(0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Add",
+                                tint = Color.White,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    }
                 }
             },
         ) { innerPadding ->
@@ -120,7 +334,33 @@ fun CmsScreen(
             } else if (selectedItem == NavDrawScreen.Paket.route){
                 PaketScreen(innerPadding)
             } else if (selectedItem == NavDrawScreen.Layanan.route){
-                LayananScreen(innerPadding)
+                LayananCMSScreen(
+                    layananViewModel = layananViewModel,
+                    innerPadding = innerPadding,
+                    rootNavController = rootNavController,
+                    arr_layanan = arr_layanan,
+                    uuidDoc = {
+                        uuid_doc = it
+                    },
+                    showDialogUpdate = {
+                        showDialogUpdate = it
+                    },
+                    showDialogDelete = {
+                        showDialogDelete = it
+                    },
+                    nameToEdit = {
+                        name_to_edit = it
+                    },
+                    dialogStateFailedUpdate = {
+                        dialog_state_failed_update = it
+                    },
+                    dialogStateTrue = {
+                        dialog_state_true = it
+                    },
+                    dialogStateTrueUpdate = {
+                        dialog_state_true_update = it
+                    }
+                )
             } else if (selectedItem == NavDrawScreen.Terapis.route){
                 TerapisScreen(
                     innerPadding = innerPadding,

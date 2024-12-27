@@ -41,4 +41,18 @@ sealed class Screen(val route: String) {
 
    /*Detail Terapis screen*/
     object DetailTerapis: Screen("detailTerapis")
+
+    /*Detail pemesanan*/
+    object DetailOrder : Screen("detailPemesanan/{uuid_doc}"){
+        fun createRoute(uuid_doc:String):String = "detailPemesanan/$uuid_doc"
+    }
+
+    /*CMS Layanan*/
+    object LayananCMS: Screen("layananCMS")
+
+    /*CMS Pelanggan*/
+    object PelangganCMS: Screen("pelangganCMS")
+
+
+
 }

@@ -1,5 +1,7 @@
 package com.griya.griyabugar.ui.screen.main.order
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,17 +15,32 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.ItemPemesananModel
 import com.griya.griyabugar.ui.theme.GreenMain
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.poppins
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
 /*
@@ -34,8 +51,9 @@ fun TabBarPemesanan(
     modifier:Modifier = Modifier,
     items_content_menunggu: List<ItemPemesananModel>,
     items_content_selesai: List<ItemPemesananModel>,
-    items_content_batal: List<ItemPemesananModel>
-    
+    items_content_batal: List<ItemPemesananModel>,
+    isLoading : Boolean,
+    rootNavControll: NavHostController
     ){
 
     var tabs = listOf("MENUNGGU", "SELESAI", "BATAL")
@@ -85,9 +103,19 @@ fun TabBarPemesanan(
         ) {
             page ->
             when (page){
-                0 -> MenungguScreen(items_content= items_content_menunggu)
-                1 -> SelesaiScreen(items_content= items_content_selesai)
-                2 -> BatalScreen(items_content= items_content_batal)
+                0 -> MenungguScreen(
+                    items_content= items_content_menunggu,
+                    isLoading = isLoading,
+                    rootNavControll = rootNavControll
+                    )
+                1 -> SelesaiScreen(items_content= items_content_selesai,
+                    isLoading= isLoading,
+                    rootNavControll = rootNavControll
+                    )
+                2 -> BatalScreen(items_content= items_content_batal,
+                    isLoading = isLoading,
+                    rootNavControll = rootNavControll
+                    )
             }
         }
     }
@@ -100,14 +128,61 @@ fun TabBarPemesanan(
 @Composable
 fun PemesananScreen(
     modifier:Modifier = Modifier,
-    items_content_menunggu:List<ItemPemesananModel> = listOf(),
-    items_content_selesai:List<ItemPemesananModel> = listOf(),
-    items_content_batal:List<ItemPemesananModel> = listOf()
+    rootNavControll: NavHostController = rememberNavController(),
+    pemesananViewModel: PemesananViewModel = hiltViewModel()
 ){
+    val items_content_menunggu = remember { mutableStateListOf<ItemPemesananModel>() }
+    val items_content_selesai  = remember { mutableStateListOf<ItemPemesananModel>() }
+    val items_content_batal = remember { mutableStateListOf<ItemPemesananModel>() }
+
+
+    /* context from activity */
+    val context = LocalContext.current
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        pemesananViewModel.pemesananData.collect{
+            event ->
+            when(event){
+                is Resource.Loading -> {
+                    isLoading = true
+                }
+
+                is Resource.Success -> {
+                    isLoading = false
+                    val data = event.data
+                    data?.forEach{
+                        item ->
+                        when(item.status){
+                            "MENUNGGU" -> items_content_menunggu.add(item)
+                            "SELESAI" -> items_content_selesai.add(item)
+                            "BATAL" -> items_content_batal.add(item)
+                        }
+                    }
+
+                }
+
+                Resource.Empty -> {
+                    isLoading = false
+                    items_content_menunggu.clear()
+                    items_content_selesai.clear()
+                    items_content_batal.clear()
+                }
+                is Resource.Error -> {
+                    isLoading = false
+                    Toast.makeText(context, "Terjadi Error saat memuat data! : ${event.errorMessage}", Toast.LENGTH_LONG ).show()
+                }
+            }
+        }
+    }
+
     TabBarPemesanan(
         items_content_menunggu = items_content_menunggu,
         items_content_selesai = items_content_selesai,
-        items_content_batal = items_content_batal
+        items_content_batal = items_content_batal,
+        modifier = modifier,
+        isLoading = isLoading,
+        rootNavControll = rootNavControll
     )
 }
 
@@ -118,40 +193,10 @@ fun PemesananPreview(){
     /*
     * hanya sebagai contoh data, untuk asli buat controler
     * */
-    var pemesanan_list = listOf(
-        ItemPemesananModel(
-            title = "Paket 2 Jam",
-            tanggal = "10-09-1965",
-            jam = "04.00-05.00",
-            item_servis = listOf(
-                "SPA",
-                "Body Scrum",
-                "Tradisional"
-            ),
-            harga = "Rp.500,000",
-            jenis_card = "PROMOSI"
-        ),
-        ItemPemesananModel(
-            title = "Paket 3 Jam",
-            tanggal = "10-11-1965",
-            jam = "04.00-05.00",
-            item_servis = listOf(
-                "SPA",
-                "Body Scrum",
-                "Tradisional"
-            ),
-            harga = "Rp.1,500,000",
-            jenis_card = "REGULER"
 
-        ),
-
-        )
     GriyaBugarTheme {
         PemesananScreen(
             modifier = Modifier,
-            items_content_menunggu = pemesanan_list,
-            items_content_selesai = listOf(),
-            items_content_batal = listOf(),
         )
 
     }

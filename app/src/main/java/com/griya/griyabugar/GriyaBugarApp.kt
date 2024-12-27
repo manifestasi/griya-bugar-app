@@ -17,8 +17,10 @@ import com.griya.griyabugar.ui.screen.cms.CmsScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.addterapis.AddTerapisScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.editterapis.EditTerapisScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.previewterapis.PreviewTerapisScreen
+import com.griya.griyabugar.ui.screen.detail_pemesanan.DetailPemesananScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
+import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananCMSScreen
 import com.griya.griyabugar.ui.screen.login.LoginScreen
 import com.griya.griyabugar.ui.screen.main.MainScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.changepassword.ChangePasswordScreen
@@ -27,6 +29,8 @@ import com.griya.griyabugar.ui.screen.main.home.detailpaket.DetailPaketScreen
 import com.griya.griyabugar.ui.screen.main.home.detailterapis.DetailTerapisScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.editprofile.EditProfileScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.informasigriya.InformasiGriyaScreen
+import com.griya.griyabugar.ui.screen.main.order.PemesananScreen
+import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganCMSScreen
 import com.griya.griyabugar.ui.screen.register.RegisterScreen
 import com.griya.griyabugar.ui.screen.splash.SplashScreen
 import com.griya.griyabugar.ui.screen.welcome.WelcomeScreen
@@ -235,6 +239,46 @@ fun GriyaBugarApp(
                 rootNavController = navController
             )
         }
+
+        composable(Screen.Order.route) {
+            PemesananScreen(
+                rootNavControll = navController
+            )
+
+//            LayananCMSScreen(
+//                rootNavControll = navController
+//            )
+//            PelangganCMSScreen(
+//                rootNavControll = navController
+//            )
+
+
+        }
+
+        composable(
+           route = Screen.DetailOrder.route,
+            arguments = listOf(navArgument("uuid_doc") {
+                type = NavType.StringType
+            })
+            ) {
+            p ->
+            val uuid_doc = p.arguments?.getString("uuid_doc")
+            DetailPemesananScreen(
+                rootNavControll = navController,
+                uuid_doc = uuid_doc
+            )
+        }
+
+        /*
+        * layanan CMS
+        * */
+//        composable(Screen.LayananCMS.route) {
+//            LayananCMSScreen(
+//                rootNavControll = navController
+//            )
+//
+//        }
+
     }
 
 }

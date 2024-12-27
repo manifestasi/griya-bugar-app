@@ -24,9 +24,11 @@ import com.griya.griyabugar.ui.components.bottomnavbar.BottomNavigationBar
 import com.griya.griyabugar.ui.components.loading.LoadingAnimation
 import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.navigation.Screen
+import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananCMSScreen
 import com.griya.griyabugar.ui.screen.main.home.HomeScreen
 import com.griya.griyabugar.ui.screen.main.myaccount.MyAccountScreen
 import com.griya.griyabugar.ui.screen.main.order.PemesananScreen
+import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganCMSScreen
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
@@ -91,40 +93,19 @@ fun MainScreen(
             }
 
             composable(Screen.Order.route){
-                var pemesanan_list = listOf(
-                    ItemPemesananModel(
-                        title = "Paket 2 Jam",
-                        tanggal = "10-09-1965",
-                        jam = "04.00-05.00",
-                        item_servis = listOf(
-                            "SPA",
-                            "Body Scrum",
-                            "Tradisional"
-                        ),
-                        harga = "Rp.500,000",
-                        jenis_card = "PROMOSI"
-                    ),
-                    ItemPemesananModel(
-                        title = "Paket 3 Jam",
-                        tanggal = "10-11-1965",
-                        jam = "04.00-05.00",
-                        item_servis = listOf(
-                            "SPA",
-                            "Body Scrum",
-                            "Tradisional"
-                        ),
-                        harga = "Rp.1,500,000",
-                        jenis_card = "REGULER"
 
-                    ),
-
-                    )
                 PemesananScreen(
                     modifier = Modifier,
-                    items_content_menunggu = pemesanan_list,
-                    items_content_selesai = listOf(),
-                    items_content_batal = listOf(),
+                    rootNavControll = rootNavController
+
                 )
+//                LayananCMSScreen(
+//                    rootNavControll = rootNavController
+//                )
+//                PelangganCMSScreen(
+//                    rootNavControll = rootNavController
+//                )
+
             }
 
             composable(Screen.MyAccount.route){

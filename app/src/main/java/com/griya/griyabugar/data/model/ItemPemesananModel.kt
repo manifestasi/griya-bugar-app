@@ -1,10 +1,16 @@
 package com.griya.griyabugar.data.model
 
-data class ItemPemesananModel (
-    val title : String,
-    val tanggal : String,
-    val jam : String,
-    val item_servis : List<String>,
-    val harga : String,
-    val jenis_card : String
+data class ItemPemesananModel(
+    val uuid_doc : String = "",
+    val id_paket :String = "",
+    val id_terapis : String = "",
+    val id_user : String = "",
+    val rated : Boolean = false,
+    val jam_pemesanan : String = "",
+    val nomor_pesanan : Int = 0,
+    val rating : Int = 0,
+    val status : String = "",
+    val tanggal_pemesanan : String = "",
+    val tanggal_servis : String = ""
+
 )
