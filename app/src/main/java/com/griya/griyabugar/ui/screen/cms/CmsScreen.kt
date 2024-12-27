@@ -1,6 +1,5 @@
 package com.griya.griyabugar.ui.screen.cms
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,21 +53,24 @@ import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
 import com.griya.griyabugar.data.model.LayananModel
 import com.griya.griyabugar.data.model.NavDrawerItem
+import com.griya.griyabugar.data.model.PelangganModel
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
 import com.griya.griyabugar.ui.components.dialog.LayananInsertDialog
 import com.griya.griyabugar.ui.components.dialog.LayananUpdateDialog
 import com.griya.griyabugar.ui.components.dialog.QuestionDialog
+import com.griya.griyabugar.ui.components.dialog.StatusPelangganDialog
 import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.navigation.NavDrawScreen
 import com.griya.griyabugar.ui.navigation.Screen
-import com.griya.griyabugar.ui.screen.cms.layanan.LayananScreen
 import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananCMSScreen
 import com.griya.griyabugar.ui.screen.cms.paket.PaketScreen
-import com.griya.griyabugar.ui.screen.cms.pelanggan.PelangganScreen
+import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganCMSScreen
+import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganViewModel
 import com.griya.griyabugar.ui.screen.cms.terapis.TerapisScreen
 import com.griya.griyabugar.ui.screen.layanan.LayananViewModel
+import com.griya.griyabugar.ui.screen.paket.PaketViewModel
 import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
@@ -82,22 +84,27 @@ import kotlinx.coroutines.launch
 @Composable
 fun CmsScreen(
     rootNavController: NavHostController = rememberNavController(),
-    layananViewModel: LayananViewModel = hiltViewModel()
+    layananViewModel: LayananViewModel = hiltViewModel(),
+    pelangganViewModel: PelangganViewModel = hiltViewModel(),
+    paketViewModel: PaketViewModel = hiltViewModel()
 ){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Pelanggan.route) }
-    var isLoading by rememberSaveable { mutableStateOf(false) }
 
     var showDialogInsert by rememberSaveable { mutableStateOf(false) }
     var showDialogUpdate by rememberSaveable { mutableStateOf(false) }
+    var showDialogUpdate2 by rememberSaveable { mutableStateOf(false) }
     var showDialogDelete by rememberSaveable { mutableStateOf(false) }
     var uuid_doc by rememberSaveable { mutableStateOf("") }
     var name_to_edit by rememberSaveable { mutableStateOf("") }
     val arr_layanan = remember { mutableStateListOf<LayananModel>() }
+    val arr_pelanggan = remember { mutableStateListOf<PelangganModel>() }
 
     var dialog_state_true_update by remember { mutableStateOf(false) }
     var dialog_state_failed_update by remember { mutableStateOf(false) }
+    var dialog_state_true_update2 by remember { mutableStateOf(false) }
+    var dialog_state_failed_update2 by remember { mutableStateOf(false) }
 
     var dialog_state_true by remember { mutableStateOf(false) }
     var dialog_state_failed by remember  { mutableStateOf(false) }
@@ -108,6 +115,67 @@ fun CmsScreen(
     * Show Dialog
     * =====================================
     * */
+
+    if(dialog_state_failed_update2){
+        ErrorDialog(
+            onDismiss = {
+                dialog_state_failed_update2 = false
+                pelangganViewModel.resetUpdateState()
+            },
+            title = "Gagal",
+            description = "Layanan gagal ditambahkan!",
+            buttonText = "Coba Lagi",
+            buttonOnClick = {
+                dialog_state_failed_update2 = false
+                pelangganViewModel.resetUpdateState()
+
+            }
+        )
+    }
+
+    /*
+    * Dialog Update Field
+    * */
+    if(showDialogUpdate2){
+
+        StatusPelangganDialog(
+            title = "Edit Status",
+            onDismiss = {
+                showDialogUpdate2 = false
+            },
+            onBatalClick = {
+                showDialogUpdate2 = false
+            },
+            onSimpanClick = {
+                showDialogUpdate2 = false
+            },
+            uuid_doc = uuid_doc,
+            name_to_edit = name_to_edit,
+            pelangganViewModel = pelangganViewModel
+        )
+    }
+
+    if(dialog_state_true_update2){
+        SuccessDialog(
+            onDismiss = {
+                dialog_state_true_update2 = false
+                arr_pelanggan.clear()
+                pelangganViewModel.fetchAll()
+                pelangganViewModel.resetUpdateState()
+
+            },
+            title = "Berhasil",
+            description = "Layanan berhasil ditambahkan",
+            buttonText = "Selesai",
+            buttonOnClick = {
+                dialog_state_true_update2 = false
+                arr_pelanggan.clear()
+                pelangganViewModel.fetchAll()
+                pelangganViewModel.resetUpdateState()
+
+            }
+        )
+    }
 
     /*
     * Dialog Insert Field
@@ -279,8 +347,14 @@ fun CmsScreen(
                 AppBarWithDrawer(
                     title = if (selectedItem == NavDrawScreen.Layanan.route){
                         "Layanan"
+                    } else if (selectedItem == NavDrawScreen.Pelanggan.route){
+                        "Pelanggan"
+                    } else if (selectedItem == NavDrawScreen.Terapis.route){
+                        "Terapis"
+                    } else if (selectedItem == NavDrawScreen.Paket.route){
+                        "Paket"
                     } else {
-                        "test"
+                        ""
                     },
                     onNavigationMenu = {
                         scope.launch {
@@ -330,7 +404,28 @@ fun CmsScreen(
         ) { innerPadding ->
 
             if (selectedItem == NavDrawScreen.Pelanggan.route){
-                PelangganScreen(innerPadding)
+                PelangganCMSScreen(
+                    innerPadding = innerPadding,
+                    rootNavController = rootNavController,
+                    showDialogUpdate = {
+                        showDialogUpdate2 = it
+                    },
+                    nameToEdit = {
+                        name_to_edit = it
+                    },
+                    uuidDoc = {
+                        uuid_doc = it
+                    },
+                    arr_pelanggan = arr_pelanggan,
+                    dialogStateTrueUpdate = {
+                        dialog_state_true_update2 = it
+                    },
+                    dialogStateFailedUpdate = {
+                        dialog_state_failed_update2 = it
+                    },
+                    pelangganViewModel = pelangganViewModel,
+                    paketViewModel = paketViewModel
+                )
             } else if (selectedItem == NavDrawScreen.Paket.route){
                 PaketScreen(innerPadding)
             } else if (selectedItem == NavDrawScreen.Layanan.route){

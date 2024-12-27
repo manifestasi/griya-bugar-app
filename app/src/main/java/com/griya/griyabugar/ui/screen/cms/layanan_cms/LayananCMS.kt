@@ -229,12 +229,13 @@ fun LayananCMSScreen(
     Box(
         modifier = Modifier.fillMaxSize()
             .background(Color.White)
+            .padding(innerPadding)
             .padding(top = 20.dp)
     ) {
         if(isLoading == false){
             Spacer(modifier = Modifier.height(30.dp))
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

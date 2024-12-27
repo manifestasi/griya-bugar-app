@@ -5,20 +5,14 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,11 +21,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,38 +33,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.data.Resource
-import com.griya.griyabugar.data.model.DataUser
-import com.griya.griyabugar.data.model.LayananModel
 import com.griya.griyabugar.data.model.PelangganModel
-import com.griya.griyabugar.ui.components.Card.CardLayanan
 import com.griya.griyabugar.ui.components.Card.CardPelanggan
 import com.griya.griyabugar.ui.components.appbar.AppBar
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
-import com.griya.griyabugar.ui.components.dialog.LayananInsertDialog
-import com.griya.griyabugar.ui.components.dialog.LayananUpdateDialog
-import com.griya.griyabugar.ui.components.dialog.QuestionDialog
-import com.griya.griyabugar.ui.components.dialog.StatusPelangganDialog
-import com.griya.griyabugar.ui.components.dialog.SuccessDialog
-import com.griya.griyabugar.ui.screen.layanan.LayananViewModel
-import com.griya.griyabugar.ui.screen.main.order.PemesananViewModel
+import com.griya.griyabugar.ui.components.loading.LoadingAnimation2
 import com.griya.griyabugar.ui.screen.paket.PaketViewModel
 import com.griya.griyabugar.ui.theme.GreenMain
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
-import com.griya.griyabugar.ui.theme.HijauMuda
-import com.griya.griyabugar.ui.theme.HijauTua
 import com.griya.griyabugar.ui.theme.orange
 
 @Composable
 fun PelangganCMSScreen(
-    rootNavControll: NavHostController = rememberNavController(),
+    rootNavController: NavHostController = rememberNavController(),
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     pelangganViewModel: PelangganViewModel = hiltViewModel(),
-    paketViewModel: PaketViewModel = hiltViewModel()
+    paketViewModel: PaketViewModel = hiltViewModel(),
+    dialogStateTrueUpdate: (Boolean) -> Unit,
+    arr_pelanggan: SnapshotStateList<PelangganModel>,
+    showDialogUpdate: (Boolean) -> Unit,
+    nameToEdit: (String) -> Unit,
+    uuidDoc: (String) -> Unit,
+    dialogStateFailedUpdate: (Boolean) -> Unit,
 ){
-    var arr_pelanggan = remember { mutableStateListOf<PelangganModel>() }
     var isLoading by remember { mutableStateOf(true) }
-    var showDialogUpdate by remember { mutableStateOf(false) }
-    var uuid_doc by remember { mutableStateOf("") }
-    var name_to_edit by remember { mutableStateOf("") }
 
     val pelanggan_pemesanan_state = pelangganViewModel.getAllPemesananState.collectAsState()
 
@@ -81,8 +66,6 @@ fun PelangganCMSScreen(
     * untuk dialog update
     * */
     val update_state = pelangganViewModel.updateResult.collectAsState()
-    var dialog_state_true_update by remember { mutableStateOf(false) }
-    var dialog_state_failed_update by remember { mutableStateOf(false) }
 
 
 
@@ -181,8 +164,6 @@ fun PelangganCMSScreen(
                         }
 
 
-
-
                     }
                 }
             }
@@ -208,35 +189,6 @@ fun PelangganCMSScreen(
         }
     }
 
-    /*
-    * ======================================
-    * Show Dialog
-    * =====================================
-    * */
-
-
-    /*
-    * Dialog Update Field
-    * */
-    if(showDialogUpdate){
-
-        StatusPelangganDialog(
-            title = "Edit Status",
-            onDismiss = {
-                showDialogUpdate = false
-            },
-            onBatalClick = {
-                showDialogUpdate = false
-            },
-            onSimpanClick = {
-                showDialogUpdate = false
-            },
-            uuid_doc = uuid_doc,
-            name_to_edit = name_to_edit,
-            pelangganViewModel = pelangganViewModel
-        )
-    }
-
 
     /*
       * ==================================================
@@ -250,12 +202,12 @@ fun PelangganCMSScreen(
         when(val state = update_state.value){
             is Resource.Success -> {
                 Toast.makeText(context, "Berhasil Update", Toast.LENGTH_SHORT).show()
-                dialog_state_true_update = true
+                dialogStateTrueUpdate(true)
 
             }
             is Resource.Error -> {
                 Toast.makeText(context, "Gagal Update", Toast.LENGTH_SHORT).show()
-                dialog_state_failed_update = true
+                dialogStateFailedUpdate(true)
                 pelangganViewModel.resetUpdateState()
 
             }
@@ -266,114 +218,60 @@ fun PelangganCMSScreen(
         }
     }
 
-    if(dialog_state_true_update){
-        SuccessDialog(
-            onDismiss = {
-                dialog_state_true_update = false
-                arr_pelanggan.clear()
-                pelangganViewModel.fetchAll()
-                pelangganViewModel.resetUpdateState()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(innerPadding)
+            .padding(top = 20.dp)
+    ) {
+        if(isLoading){
+            LoadingAnimation2()
+        }else{
+            Spacer(modifier = Modifier.height(30.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(arr_pelanggan){
+                        item->
 
-            },
-            title = "Berhasil",
-            description = "Layanan berhasil ditambahkan",
-            buttonText = "Selesai",
-            buttonOnClick = {
-                dialog_state_true_update = false
-                arr_pelanggan.clear()
-                pelangganViewModel.fetchAll()
-                pelangganViewModel.resetUpdateState()
+                    val colorStatus = remember { mutableStateOf<Color>(GreenMain) }
 
-            }
-        )
-    }
-
-    if(dialog_state_failed_update){
-        ErrorDialog(
-            onDismiss = {
-                dialog_state_failed_update = false
-                pelangganViewModel.resetUpdateState()
-            },
-            title = "Gagal",
-            description = "Layanan gagal ditambahkan!",
-            buttonText = "Coba Lagi",
-            buttonOnClick = {
-                dialog_state_failed_update = false
-                pelangganViewModel.resetUpdateState()
-
-            }
-        )
-    }
-
-
-
-
-    Scaffold(
-        topBar = {
-            AppBar(
-                title = "Pelanggan",
-            )
-        },
-        content = {
-                innerPadd ->
-
-
-            if(isLoading){
-                Box (
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ){
-                    CircularProgressIndicator(
-                        color = GreenMain
-                    )
-                }
-            }else{
-                Spacer(modifier = Modifier.height(30.dp))
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadd),
-                    verticalArrangement = Arrangement.spacedBy(15.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(arr_pelanggan){
-                            item->
-
-                        val colorStatus = remember { mutableStateOf<Color>(GreenMain) }
-
-                        when(item.status){
-                            "MENUGGU" -> {
-                                colorStatus.value = orange
-                            }
-
-                            "BATAL" -> {
-                                colorStatus.value = Color.Red
-                            }
-
-                            "SELESAI" -> {
-                                colorStatus.value = GreenMain
-                            }
+                    when(item.status){
+                        "MENUGGU" -> {
+                            colorStatus.value = orange
                         }
 
-                        CardPelanggan(
-                            nama = item.nama,
-                            kategori = item.kategori,
-                            tanggal = item.tanggal,
-                            paket = item.title,
-                            status = item.status,
-                            color_status = colorStatus.value,
-                            url_img = item.url_img,
-                            onEditClick = {
-                                uuid_doc = item.uuid_doc
-                                name_to_edit = item.status
-                                showDialogUpdate = true
-                            }
-                        )
+                        "BATAL" -> {
+                            colorStatus.value = Color.Red
+                        }
+
+                        "SELESAI" -> {
+                            colorStatus.value = GreenMain
+                        }
                     }
+
+                    CardPelanggan(
+                        nama = item.nama,
+                        kategori = item.kategori,
+                        tanggal = item.tanggal,
+                        paket = item.title,
+                        status = item.status,
+                        color_status = colorStatus.value,
+                        url_img = item.url_img,
+                        onEditClick = {
+                            uuidDoc(item.uuid_doc)
+                            nameToEdit(item.status)
+                            showDialogUpdate(true)
+                        }
+                    )
                 }
             }
         }
-    )
+    }
 }
 
 
@@ -383,7 +281,14 @@ fun LayananCMSPreview(){
     GriyaBugarTheme {
         LazyColumn {
             item {
-                PelangganCMSScreen()
+                PelangganCMSScreen(
+                    arr_pelanggan = remember { mutableStateListOf() },
+                    dialogStateTrueUpdate = {},
+                    showDialogUpdate = {},
+                    nameToEdit = {},
+                    uuidDoc = {},
+                    dialogStateFailedUpdate = {}
+                )
 
             }
         }
