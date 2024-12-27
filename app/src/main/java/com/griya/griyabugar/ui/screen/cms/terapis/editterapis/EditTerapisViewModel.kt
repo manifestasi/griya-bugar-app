@@ -8,14 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.DataDetailTerapisAndLayanan
-import com.griya.griyabugar.data.model.DataService
-import com.griya.griyabugar.data.model.DataTerapis
 import com.griya.griyabugar.data.respository.LayananRepository
-import com.griya.griyabugar.data.respository.TerapisRespository
+import com.griya.griyabugar.data.respository.TerapisRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditTerapisViewModel @Inject constructor(
-    private val terapisRespository: TerapisRespository,
+    private val terapisRepository: TerapisRepository,
     private val layananRepository: LayananRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -36,7 +33,7 @@ class EditTerapisViewModel @Inject constructor(
 
     fun getDetailTerapisAndLayanan(id: String){
         viewModelScope.launch {
-            terapisRespository.getDetailTerapisAndLayanan(id).collect { event ->
+            terapisRepository.getDetailTerapisAndLayanan(id).collect { event ->
                 when (event){
                     is Resource.Loading -> {
                         _isLoading.value = true
@@ -64,7 +61,7 @@ class EditTerapisViewModel @Inject constructor(
         foto_detail: Uri?,
         layanan: List<String>,
         hari_kerja: List<String>
-    ): Flow<UploadResult<String>> = terapisRespository.updateTerapis(
+    ): Flow<UploadResult<String>> = terapisRepository.updateTerapis(
         id,
         nama,
         jam_pulang,

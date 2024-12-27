@@ -7,7 +7,7 @@ import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.DataService
 import com.griya.griyabugar.data.respository.LayananRepository
-import com.griya.griyabugar.data.respository.TerapisRespository
+import com.griya.griyabugar.data.respository.TerapisRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddTerapisViewModel @Inject constructor(
-    private val terapisRespository: TerapisRespository,
+    private val terapisRepository: TerapisRepository,
     private val layananRepository: LayananRepository
 ) : ViewModel() {
 
@@ -30,7 +30,7 @@ class AddTerapisViewModel @Inject constructor(
         layanan: List<String>,
         hari_kerja: List<String>,
     ): Flow<UploadResult<String>> {
-        return terapisRespository.addTerapis(
+        return terapisRepository.addTerapis(
             nama,
             jam_pulang,
             jam_masuk,

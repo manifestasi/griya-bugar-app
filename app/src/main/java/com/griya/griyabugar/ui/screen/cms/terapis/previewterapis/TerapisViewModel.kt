@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.DataTerapis
-import com.griya.griyabugar.data.respository.TerapisRespository
+import com.griya.griyabugar.data.respository.TerapisRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TerapisViewModel @Inject constructor(
-    private val terapisRespository: TerapisRespository
+    private val terapisRepository: TerapisRepository
 ) : ViewModel() {
 
     private val _isLoadingTerapis = MutableStateFlow(false)
@@ -31,7 +30,7 @@ class TerapisViewModel @Inject constructor(
 
     fun getAllTerapis(){
         viewModelScope.launch {
-            terapisRespository.getAllTerapis().collect { event ->
+            terapisRepository.getAllTerapis().collect { event ->
                 when (event){
                     is Resource.Loading -> {
                         _isErrorTerapis.value = false
@@ -53,5 +52,5 @@ class TerapisViewModel @Inject constructor(
         }
     }
 
-    fun deleteTerapis(id: String) = terapisRespository.deleteTerapis(id)
+    fun deleteTerapis(id: String) = terapisRepository.deleteTerapis(id)
 }

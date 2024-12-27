@@ -69,7 +69,7 @@ import com.griya.griyabugar.ui.screen.cms.paket.PaketScreen
 import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganCMSScreen
 import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganViewModel
 import com.griya.griyabugar.ui.screen.cms.terapis.TerapisScreen
-import com.griya.griyabugar.ui.screen.layanan.LayananViewModel
+import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananViewModel
 import com.griya.griyabugar.ui.screen.paket.PaketViewModel
 import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
