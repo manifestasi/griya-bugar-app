@@ -55,4 +55,15 @@ sealed class Screen(val route: String) {
 
 
 
+
+    /*CMS tambah paket screen*/
+    object TambahPaket: Screen("tambahPaket")
+
+    /*CMS edit paket screen (dengan paketId sebagai argumen)*/
+    object EditPaket : Screen("editPaket/{paketId}") {
+        fun createRoute(paketId: String) = "editPaket/$paketId"
+    }
+
+    /*CMS preview paket screen*/
+    object PreviewPaket: Screen("previewPaket")
 }

@@ -1,6 +1,5 @@
 package com.griya.griyabugar
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -11,13 +10,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.griya.griyabugar.ui.navigation.ChangePassScreen
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.CmsScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.addterapis.AddTerapisScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.editterapis.EditTerapisScreen
 import com.griya.griyabugar.ui.screen.cms.terapis.previewterapis.PreviewTerapisScreen
 import com.griya.griyabugar.ui.screen.detail_pemesanan.DetailPemesananScreen
+import com.griya.griyabugar.ui.screen.cms.paket.editpaket.EditPaketScreen
+import com.griya.griyabugar.ui.screen.cms.paket.previewpaket.PreviewPaketScreen
+import com.griya.griyabugar.ui.screen.cms.paket.tambahpaket.TambahPaketScreen
 import com.griya.griyabugar.ui.screen.forgetPass.ForgetPasswordPart2
 import com.griya.griyabugar.ui.screen.forgetPass.LupaPasswordScreen1
 import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananCMSScreen
@@ -228,6 +229,28 @@ fun GriyaBugarApp(
             )
         }
 
+        composable(Screen.TambahPaket.route){
+           TambahPaketScreen(
+               rootNavController = navController
+           )
+        }
+
+        composable(
+            route = Screen.EditPaket.route,
+            arguments = listOf(navArgument("paketId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val paketId = backStackEntry.arguments?.getString("paketId")
+            if (paketId != null) {
+                EditPaketScreen(
+                    paketId = paketId,
+                    rootNavController = navController
+                )
+            } else {
+                // Tangani error, misalnya navigasi kembali jika paketId null
+                navController.popBackStack()
+            }
+        }
+
         composable(Screen.PreviewTerapis.route){
             PreviewTerapisScreen(
                 rootNavController = navController
@@ -278,6 +301,14 @@ fun GriyaBugarApp(
 //            )
 //
 //        }
+
+
+
+        composable(Screen.PreviewPaket.route){
+            PreviewPaketScreen(
+                rootNavControll = navController
+            )
+        }
 
     }
 

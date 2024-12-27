@@ -141,12 +141,12 @@ fun MenungguScreen(
                                     rootNavControll.navigate(Screen.DetailOrder.createRoute(uuid_data))
 
                                                               },
-                                title = paket.title,
-                                harga = "Rp.${formatNumber(paket.harga)}",
+                                title = paket.title ?: "",
+                                harga = "Rp.${formatNumber(paket.harga ?: 0)}",
                                 tanggal = item.tanggal_servis,
                                 jam = item.jam_pemesanan,
                                 items_servis = arr_layanan,
-                                jenis_card = paket.kategori
+                                jenis_card = paket.kategori ?: ""
 
                             )
                         }

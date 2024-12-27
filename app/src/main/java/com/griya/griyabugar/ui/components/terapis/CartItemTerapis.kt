@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.griya.griyabugar.R
 import com.griya.griyabugar.data.model.DataTerapis
-import com.griya.griyabugar.ui.components.promo.ServiceRow
+import com.griya.griyabugar.ui.components.home.ServiceRow
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.GreenColor3
 import com.griya.griyabugar.ui.theme.poppins

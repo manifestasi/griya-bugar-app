@@ -123,8 +123,8 @@ fun PelangganCMSScreen(
                                                 uuid_doc = dt.uuid_doc,
                                                 nama = pelanggan_data.nama!!,
                                                 status = dt.status,
-                                                kategori = paket_data.kategori,
-                                                title = paket_data.title,
+                                                kategori = paket_data.kategori.toString(),
+                                                title = paket_data.title.toString(),
                                                 tanggal = dt.tanggal_servis,
                                                 url_img = if(pelanggan_data.nama == "") null else pelanggan_data.role!!
                                             )

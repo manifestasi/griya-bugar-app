@@ -942,10 +942,10 @@ fun DetailPemesananScreen(
             when(data_paket_state){
                 is Resource.Success -> {
                     val paket = data_paket_state.data
-                    harga.value = "Rp.${formatNumber(paket.harga)}"
-                    diskon.value = "Rp.${formatNumber(paket.harga * paket.diskon/100)}"
-                    total.value = "Rp.${formatNumber((paket.harga - (paket.harga * paket.diskon/100)))}"
-                    title.value = paket.title
+                    harga.value = "Rp.${formatNumber(paket.harga ?: 0)}"
+                    diskon.value = "Rp.${formatNumber(paket.harga ?: (0 * (paket.diskon ?: 0) / 100))}"
+                    total.value = "Rp.${formatNumber(((paket.harga ?: (0 - (paket.harga ?: (0 * (paket.diskon ?: 0) / 100))))))}"
+                    title.value = paket.title ?: ""
 
 
                     paket.layanan.forEach { layananId ->

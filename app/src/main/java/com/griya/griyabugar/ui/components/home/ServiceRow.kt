@@ -1,4 +1,4 @@
-package com.griya.griyabugar.ui.components.promo
+package com.griya.griyabugar.ui.components.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

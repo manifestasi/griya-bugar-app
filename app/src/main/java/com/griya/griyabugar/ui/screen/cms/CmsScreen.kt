@@ -427,7 +427,7 @@ fun CmsScreen(
                     paketViewModel = paketViewModel
                 )
             } else if (selectedItem == NavDrawScreen.Paket.route){
-                PaketScreen(innerPadding)
+                PaketScreen(innerPadding,rootNavController)
             } else if (selectedItem == NavDrawScreen.Layanan.route){
                 LayananCMSScreen(
                     layananViewModel = layananViewModel,

@@ -34,7 +34,6 @@ fun ImageField(
                 onClick()
             },
         value = value,
-        singleLine = true,
         onValueChange = {},
         readOnly = true,
         enabled = false,

@@ -1,4 +1,4 @@
-package com.griya.griyabugar.ui.components.promo
+package com.griya.griyabugar.ui.components.home
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

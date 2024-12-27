@@ -1,10 +1,28 @@
 package com.griya.griyabugar.data.model
 
-data class PaketModel (
-    val diskon : Int = 0,
-    val harga : Int = 0,
-    val kategori : String = "PROMOSI",
-    val layanan : List<String> = emptyList(),
-    val title : String = ""
+data class PaketModel(
+    val id: String? = null, // UUID document
+    val title: String? = null,
+    val diskon: Int? = null,
+    val harga: Int? = null,
+    val kategori: String? = null,
+    val layanan: List<String> = emptyList(),
+    val fotoDepan: String? = null,
+    val fotoDetail: String? = null
+)
 
+data class PaketModelWithLayanan(
+    val id: String? = null, // UUID document
+    val title: String? = null,
+    val diskon: Int? = null,
+    val harga: Int? = null,
+    val kategori: String? = null,
+    val layananNames: List<String> = emptyList(),
+    val fotoDepan: String? = null,
+    val fotoDetail: String? = null
+)
+
+data class Layanan(
+    val id: String = "", // UUID document
+    val nama: String = "" // Nama layanan
 )
