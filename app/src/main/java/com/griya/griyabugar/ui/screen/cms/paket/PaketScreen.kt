@@ -28,9 +28,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,14 +53,18 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.griya.griyabugar.R
 import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
 import com.griya.griyabugar.ui.components.Button.ButtonDelete
 import com.griya.griyabugar.ui.components.Button.ButtonEdit
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
 import com.griya.griyabugar.ui.components.dialog.QuestionDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
+import com.griya.griyabugar.ui.components.dialog.UploadDialog
 import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.ServiceRow
+import com.griya.griyabugar.ui.components.loading.LoadingAnimation2
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.GreenColor1
@@ -76,38 +82,31 @@ fun PaketScreen(
     navController: NavHostController = rememberNavController(),
     viewModel: PaketScreenViewModel = hiltViewModel()
 ) {
+    var isLoading by rememberSaveable { mutableStateOf(true) }
     val paketState by viewModel.paketState.collectAsState()
     val deleteState by viewModel.deleteState.collectAsState()
     var isError by rememberSaveable { mutableStateOf(false) }
+    var isLoadingUpload by rememberSaveable { mutableStateOf(false) }
+    var isErrorUpload by rememberSaveable { mutableStateOf(false) }
+    var progress by rememberSaveable { mutableStateOf(0) }
+    var isSuccess by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
     var showQuestionDeleteDialog by rememberSaveable { mutableStateOf(false) }
     var paketId by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchPaketWithLayananNames()
+    }
     Scaffold(
         topBar = {
             AppBarWithDrawer("Paket") { }
-        },
-        floatingActionButton = {
-            GradientFloatingActionButton(
-                onClick = { navController.navigate(Screen.TambahPaket.route) },
-                gradientColors = listOf(Color(0xFF4CAF50), Color(0xFF81C784)) // Warna gradien
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Paket",
-                    tint = TextColorWhite
-                )
-            }
         },
         containerColor = BackgroundColor,
         content = { paddingValues ->
 
             when (paketState) {
                 is Resource.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize()
-                    )
+                   LoadingAnimation2()
                 }
 
                 is Resource.Success -> {
@@ -159,6 +158,37 @@ fun PaketScreen(
                 }
             }
 
+            when(deleteState){
+                is UploadResult.Idle -> {
+                    isLoadingUpload = false
+                }
+
+                is UploadResult.Loading -> {
+                    isLoadingUpload = true
+                }
+
+                is UploadResult.Progress -> {
+                    progress = (deleteState as UploadResult.Progress).progress
+                }
+
+                is UploadResult.Success -> {
+                    isLoadingUpload = false
+                    isSuccess = true
+                }
+
+                is UploadResult.Error -> {
+                    errorMessage = (deleteState as UploadResult.Error).errorMessage
+                    isLoadingUpload = false
+                    isErrorUpload = true
+                }
+
+                is UploadResult.Reschedule -> {
+                    isLoadingUpload = false
+                    isErrorUpload = true
+                    errorMessage = "Rescheduled upload"
+                }
+            }
+
             if (isError) {
                 ErrorDialog(
                     onDismiss = {},
@@ -171,6 +201,42 @@ fun PaketScreen(
                 )
             }
 
+            if (isErrorUpload) {
+                ErrorDialog(
+                    onDismiss = {
+
+                    },
+                    title = "Gagal",
+                    description = errorMessage,
+                    buttonText = "Coba Lagi",
+                    buttonOnClick = {
+                        isErrorUpload = false
+                    }
+                )
+            }
+
+            /* Loading */
+            if (isLoadingUpload) {
+                UploadDialog(
+                    onDismiss = {},
+                    title = "Proses Delete Data",
+                    description = "Progress $progress %"
+                )
+            }
+
+            if (isSuccess) {
+                SuccessDialog (
+                    title = "Berhasil",
+                    description = "Paket berhasil di hapus",
+                    buttonText = "Selesai",
+                    buttonOnClick = {
+                        isSuccess = false
+                        viewModel.resetDeleteState()
+                        viewModel.fetchPaketWithLayananNames()
+                    },
+                    onDismiss = {}
+                )
+            }
         }
 
 

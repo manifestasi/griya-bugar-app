@@ -24,14 +24,10 @@ class PaketScreenViewModel @Inject constructor(
     val paketState: StateFlow<Resource<List<PaketModelWithLayanan>>> = _paketState
 
     // StateFlow untuk status penghapusan
-    private val _deleteState = MutableStateFlow<UploadResult<Unit>>(UploadResult.Loading)
+    private val _deleteState = MutableStateFlow<UploadResult<Unit>>(UploadResult.Idle)
     val deleteState: StateFlow<UploadResult<Unit>> = _deleteState
-    init {
-        // Panggil fungsi untuk memuat data saat ViewModel diinisialisasi
-        fetchPaketWithLayananNames()
-    }
 
-    private fun fetchPaketWithLayananNames() {
+     fun fetchPaketWithLayananNames() {
         viewModelScope.launch {
             paketRepository.getPaketWithLayananName().collect { result ->
                 _paketState.value = result
@@ -46,5 +42,9 @@ class PaketScreenViewModel @Inject constructor(
                 _deleteState.value=result
             }
         }
+    }
+
+    fun resetDeleteState() {
+        _deleteState.value = UploadResult.Idle
     }
 }
