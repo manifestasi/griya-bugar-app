@@ -1,6 +1,7 @@
 package com.griya.griyabugar.ui.screen.main.home.detailpaket
 
 import android.annotation.SuppressLint
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,11 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -49,6 +53,7 @@ import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.InputJamDialog
 import com.griya.griyabugar.ui.components.home.Rating
 import com.griya.griyabugar.ui.components.home.ServiceRow
+import com.griya.griyabugar.ui.screen.SharedViewModel
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.FontOff
 import com.griya.griyabugar.ui.theme.GreenColor3
@@ -56,32 +61,39 @@ import com.griya.griyabugar.ui.theme.GreenColor6
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
+import com.griya.griyabugar.util.Days
 import java.time.LocalDate
 import java.util.Locale
 
 @Composable
 fun DetailPaketScreen(
-    rootNavControll: NavHostController = rememberNavController()
+    rootNavControll: NavHostController = rememberNavController(),
+    sharedViewModel: SharedViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 ) {
 
     Box() {
         HeaderSection(
+            sharedViewModel = sharedViewModel,
             navController = rootNavControll, modifier = Modifier
         )
-        ContentSection(modifier = Modifier.padding(top = 240.dp))
+        ContentSection(
+            modifier = Modifier.padding(top = 240.dp),
+            sharedViewModel = sharedViewModel
+        )
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun HeaderSection(
+    sharedViewModel: SharedViewModel,
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
 
         GlideImage(
-            model = R.drawable.img_paket,
+            model = sharedViewModel.paketModel?.fotoDetail ?: "",
             contentDescription = "image",
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,19 +109,23 @@ private fun HeaderSection(
 @SuppressLint("NewApi")
 @Composable
 private fun ContentSection(
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    sharedViewModel: SharedViewModel
+) {
+    val dataPaket = sharedViewModel.paketModel
     var showJamDialog by remember { mutableStateOf(false) }
     var selectedTime by remember { mutableStateOf("10.00") }
-    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
+//    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
+    var selectedDates by rememberSaveable { mutableStateOf(listOf<Int>()) }
     var currentWeekStart by remember { mutableStateOf(getStartOfCurrentWeek()) }
     var isError by rememberSaveable { mutableStateOf(false) }
-    val items = listOf(
-        "Traditional",
-        "Shiatsu",
-        "Kerokan",
-        "Lulur Badan",
-        "Body Scrum"
-    )
+//    val items = listOf(
+//        "Traditional",
+//        "Shiatsu",
+//        "Kerokan",
+//        "Lulur Badan",
+//        "Body Scrum"
+//    )
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
@@ -119,7 +135,7 @@ private fun ContentSection(
         Column(modifier = Modifier.padding(top = 30.dp, start = 16.dp, end = 16.dp)) {
             Row(modifier = Modifier) {
                 Text(
-                    text = "Paket 2 Jam",
+                    text = dataPaket?.title ?: "",
                     color = TextColorBlack,
                     fontSize = 24.sp,
                     fontFamily = poppins,
@@ -144,7 +160,7 @@ private fun ContentSection(
 
             Row(modifier = Modifier) {
                 Text(
-                    text = "Rp200.000",
+                    text = "Rp ${dataPaket?.harga ?: ""}",
                     color = GreenColor6,
                     fontSize = 24.sp,
                     fontFamily = poppins,
@@ -153,7 +169,10 @@ private fun ContentSection(
                         .align(Alignment.CenterVertically)
                 )
                 Spacer(modifier = Modifier.width(5.dp))
-                DiskonBox("Diskon 50%", modifier = Modifier.align(Alignment.CenterVertically))
+
+                if ((dataPaket?.kategori ?: "") == "PROMOSI"){
+                    DiskonBox("Diskon ${dataPaket?.diskon ?: ""}%", modifier = Modifier.align(Alignment.CenterVertically))
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -168,7 +187,7 @@ private fun ContentSection(
                     modifier = Modifier
                 )
                 Spacer(modifier = Modifier.height(5.dp))
-                ServiceRow(items = items, 3, 16)
+                ServiceRow(items = dataPaket?.layanan ?: emptyList(), 3, 16)
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(thickness = 1.dp, color = FontOff)
             }
@@ -192,13 +211,13 @@ private fun ContentSection(
                         .padding(vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(7) { dayIndex ->
-                        val date = currentWeekStart.plusDays(dayIndex.toLong())
+                    items(Days.getDaysWithDates()) { (day, date) ->
                         DateItem(
+                            selectedDates = selectedDates,
+                            day = day,
                             date = date,
-                            isSelected = selectedDates.contains(date),
                             onDateClick = {
-                                selectedDates = toggleDateSelection(selectedDates, date)
+                                selectedDates = it
                             }
                         )
                     }
@@ -304,19 +323,29 @@ private fun ContentSection(
 @SuppressLint("NewApi")
 @Composable
 fun DateItem(
-    date: LocalDate,
-    isSelected: Boolean,
-    onDateClick: () -> Unit
+    date: Int,
+    day: String,
+    selectedDates: List<Int>,
+    onDateClick: (List<Int>) -> Unit
 ) {
+    val items = Days.getDaysWithDates()
+    var checkStates: MutableMap<Int, Boolean> by rememberSaveable(selectedDates) { mutableStateOf(
+        items.associate { (_, date) ->
+            date to (date in selectedDates)
+        }.toMutableMap()
+    ) }
+
+    val isSelected = checkStates[date] ?: false
     val backgroundColor = if (isSelected) TextColorWhite else FontOff
     val textColor = if (isSelected) GreenColor3 else TextColorBlack
 
     Column(
         modifier =
         Modifier
-            .width(52.dp)
-            .height(58.dp)
-            .clickable { onDateClick() }
+            .clickable {
+                checkStates[date] = !isSelected
+                onDateClick(checkStates.filterValues { it }.keys.toList())
+            }
             .then(
                 if (isSelected) {
                     Modifier.border(1.dp, GreenColor3, RoundedCornerShape(8.dp))
@@ -330,17 +359,14 @@ fun DateItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = date.dayOfWeek.getDisplayName(
-                java.time.format.TextStyle.SHORT,
-                Locale.getDefault()
-            ),
+            text = day,
             color = textColor,
             fontSize = 16.sp,
             fontFamily = poppins,
             fontWeight = FontWeight.Medium
         )
         Text(
-            text = date.dayOfMonth.toString(),
+            text = date.toString(),
             color = textColor,
             fontFamily = poppins,
             fontSize = 20.sp,

@@ -9,6 +9,7 @@ import com.cloudinary.android.callback.UploadCallback
 import com.cloudinary.utils.ObjectUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.gson.Gson
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
@@ -317,6 +318,7 @@ class TerapisRepository @Inject constructor(
             Log.d("getAllTerapis", resultLayanan.toString())
 
             val listener = firebaseFirestore.collection(COLLECTION)
+                .orderBy("timemilis", Query.Direction.DESCENDING)
                 .addSnapshotListener { value, error ->
                     if (error != null){
                         trySend(Resource.Error(error.message.toString()))

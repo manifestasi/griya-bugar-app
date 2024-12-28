@@ -1,5 +1,6 @@
 package com.griya.griyabugar.ui.screen.main.home
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,27 +29,38 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.griya.griyabugar.R
+import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.model.DataTerapis
+import com.griya.griyabugar.data.model.PaketModel
+import com.griya.griyabugar.data.model.PaketModelWithLayanan
 import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.Rating
 import com.griya.griyabugar.ui.components.home.ServiceRow
+import com.griya.griyabugar.ui.components.loading.LoadingAnimation2
+import com.griya.griyabugar.ui.components.loading.LoadingAnimation3
 import com.griya.griyabugar.ui.navigation.Screen
+import com.griya.griyabugar.ui.screen.SharedViewModel
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
@@ -61,10 +74,15 @@ import com.griya.griyabugar.ui.theme.poppins
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    rootNavController: NavHostController = rememberNavController()
+    rootNavController: NavHostController = rememberNavController(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollState = rememberScrollState()
+
+    val dataTerapis by homeViewModel.dataTerapis.collectAsState()
+    val dataPaket by homeViewModel.dataPaket.collectAsState()
 
     Column(
         modifier = Modifier
@@ -78,55 +96,133 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.height(25.dp))
 
-        //Promo
-        Text(
-            text = "Paket Promosi",
-            fontFamily = poppins,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            color = TextColorBlack,
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        PromoSection(
-            rootNavController = rootNavController, modifier = Modifier.padding(16.dp)
-        )
+        when (dataPaket){
+            is Resource.Loading -> {
+                //Promo
+                Text(
+                    text = "Paket Promosi",
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = TextColorBlack,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                LoadingAnimation3()
 
-        Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-        //Reguler
-        Text(
-            text = "Paket Reguler",
-            fontFamily = poppins,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            color = TextColorBlack,
-            modifier = Modifier.padding(start = 16.dp)
-        )
-        RegulerSection(modifier = Modifier.padding(16.dp))
-        Spacer(modifier = Modifier.height(10.dp))
+                //Reguler
+                Text(
+                    text = "Paket Reguler",
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = TextColorBlack,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
 
-        //Terapis
-        Text(
-            text = "Terapis Kami",
-            fontFamily = poppins,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            color = TextColorBlack,
-            modifier = Modifier.padding(start = 16.dp)
-        )
+                LoadingAnimation3()
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                //Terapis
+                Text(
+                    text = "Terapis Kami",
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = TextColorBlack,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            is Resource.Success -> {
+
+                val dataResult = (dataPaket as Resource.Success<List<PaketModelWithLayanan>>).data
+                val promoResult = dataResult.filter {
+                    it.kategori == "PROMOSI"
+                }
+                val regulerResult = dataResult.filter {
+                    it.kategori == "REGULER"
+                }
+
+                //Promo
+                Text(
+                    text = "Paket Promosi",
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = TextColorBlack,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                PromoSection(
+                    sharedViewModel = sharedViewModel,
+                    dataPromo = promoResult,
+                    rootNavController = rootNavController, modifier = Modifier.padding(16.dp)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                //Reguler
+                Text(
+                    text = "Paket Reguler",
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = TextColorBlack,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+                RegulerSection(
+                    sharedViewModel = sharedViewModel,
+                    dataReguler = regulerResult,
+                    rootNavController = rootNavController,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+
+                //Terapis
+                Text(
+                    text = "Terapis Kami",
+                    fontFamily = poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = TextColorBlack,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            else -> {
+
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(5) {
-                TerapisSection(
-                    rootNavController = rootNavController,
-                    modifier = Modifier.fillMaxWidth())
+        when(dataTerapis){
+            is Resource.Loading -> {
+                Box(Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                ){
+                    LoadingAnimation3()
+                }
             }
+            is Resource.Success -> {
+                val dataResult = (dataTerapis as Resource.Success<List<DataTerapis>>).data
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(dataResult, key = {it.timemilis}) { terapis ->
+                        TerapisSection(
+                            sharedViewModel = sharedViewModel,
+                            terapis = terapis,
+                            rootNavController = rootNavController,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
+            }
+            else -> {}
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -183,144 +279,192 @@ fun AddressSection(modifier: Modifier) {
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun PromoSection(
+    sharedViewModel: SharedViewModel,
+    dataPromo: List<PaketModelWithLayanan>,
     rootNavController: NavHostController = rememberNavController(),
     modifier: Modifier
 ) {
     // Konten Paket Promosi
-    val items = listOf(
-        "Traditional",
-        "Shiatsu",
-        "Kerokan",
-        "Lulur Badan",
-        "Body Scrum"
-    )
-    Card(
-        shape = RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp),
-        colors = CardDefaults.elevatedCardColors(BackgroundColor),
-        elevation = CardDefaults.cardElevation(4.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                rootNavController.navigate(Screen.DetailPaket.route)
-            }
+//    val items = listOf(
+//        "Traditional",
+//        "Shiatsu",
+//        "Kerokan",
+//        "Lulur Badan",
+//        "Body Scrum"
+//    )
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(modifier = Modifier) {
-            GlideImage(
-                model = "https://i.pinimg.com/236x/70/6f/ce/706fceeef69b7ff27985902fc4860612.jpg",
-                contentDescription = "image",
-                modifier = Modifier
+        dataPromo.forEach {
+            Card(
+                shape = RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp),
+                colors = CardDefaults.elevatedCardColors(BackgroundColor),
+                elevation = CardDefaults.cardElevation(4.dp),
+                modifier = modifier
                     .fillMaxWidth()
-                    .height(130.dp),
-                contentScale = ContentScale.None,
-                loading = placeholder(R.drawable.baseline_person_24),
-                failure = placeholder(R.drawable.baseline_person_24)
-            )
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row {
-                    Text(
-                        text = "Paket 2 Jam",
-                        color = TextColorBlack,
-                        fontSize = 16.sp,
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.Normal,
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Rating(rate = "4.5")
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Row {
-                    Text(
-                        text = "Rp200.000",
-                        color = GreenColor6,
-                        fontSize = 16.sp,
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.SemiBold,
+                    .clickable {
+                        sharedViewModel.paketModel = PaketModel(
+                            title = it.title,
+                            harga = it.harga,
+                            layanan = it.layananNames,
+                            fotoDepan = it.fotoDepan,
+                            fotoDetail = it.fotoDetail,
+                            diskon = it.diskon,
+                            kategori = it.kategori
+                        )
+                        rootNavController.navigate(Screen.DetailPaket.route)
+                    }
+            ) {
+                Column(modifier = Modifier) {
+                    GlideImage(
+                        model = it.fotoDepan,
+                        contentDescription = "image",
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
+                            .fillMaxWidth()
+                            .height(130.dp),
+                        contentScale = ContentScale.None,
+                        loading = placeholder(R.drawable.baseline_person_24),
+                        failure = placeholder(R.drawable.baseline_person_24)
                     )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    DiskonBox(text = "Diskon 20%")
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row {
+                            Text(
+                                text = it.title ?: "",
+                                color = TextColorBlack,
+                                fontSize = 16.sp,
+                                fontFamily = poppins,
+                                fontWeight = FontWeight.Normal,
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Rating(rate = "4.5")
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Row {
+                            Text(
+                                text = "Rp.${it.harga ?: ""}",
+                                color = GreenColor6,
+                                fontSize = 16.sp,
+                                fontFamily = poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            DiskonBox(text = "Diskon ${it.diskon}%")
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        ServiceRow(items = it.layananNames,4)
+                    }
                 }
-                Spacer(modifier = Modifier.height(5.dp))
-                ServiceRow(items = items,4)
             }
         }
     }
+
 }
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun RegulerSection(modifier: Modifier) {
+fun RegulerSection(
+    modifier: Modifier,
+    sharedViewModel: SharedViewModel,
+    dataReguler: List<PaketModelWithLayanan>,
+    rootNavController: NavHostController,
+) {
     // Konten Paket Promosi
-    val items = listOf(
-        "Traditional",
-        "Shiatsu",
-        "Kerokan",
-        "Lulur Badan",
-        "Body Scrum"
-    )
-    Card(
-        shape = RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp),
-        colors = CardDefaults.elevatedCardColors(BackgroundColor),
-        elevation = CardDefaults.cardElevation(4.dp),
-        modifier = modifier
-            .fillMaxWidth()
+//    val items = listOf(
+//        "Traditional",
+//        "Shiatsu",
+//        "Kerokan",
+//        "Lulur Badan",
+//        "Body Scrum"
+//    )
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(modifier = Modifier) {
-            GlideImage(
-                model = "https://i.pinimg.com/236x/70/6f/ce/706fceeef69b7ff27985902fc4860612.jpg",
-                contentDescription = "image",
-                modifier = Modifier
+        dataReguler.forEach {
+            Card(
+                shape = RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp),
+                colors = CardDefaults.elevatedCardColors(BackgroundColor),
+                elevation = CardDefaults.cardElevation(4.dp),
+                modifier = modifier
                     .fillMaxWidth()
-                    .height(130.dp),
-                contentScale = ContentScale.None,
-                loading = placeholder(R.drawable.baseline_person_24),
-                failure = placeholder(R.drawable.baseline_person_24)
-            )
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row {
-                    Text(
-                        text = "Paket 2 Jam",
-                        color = TextColorBlack,
-                        fontSize = 16.sp,
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.Normal,
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Rating(rate = "4.5")
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Row {
-                    Text(
-                        text = "Rp200.000",
-                        color = GreenColor6,
-                        fontSize = 16.sp,
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.SemiBold,
+                    .clickable {
+                        sharedViewModel.paketModel = PaketModel(
+                            title = it.title,
+                            harga = it.harga,
+                            layanan = it.layananNames,
+                            fotoDepan = it.fotoDepan,
+                            fotoDetail = it.fotoDetail,
+                            diskon = it.diskon,
+                            kategori = it.kategori
+                        )
+
+                        rootNavController.navigate(Screen.DetailPaket.route)
+                    }
+            ) {
+                Column(modifier = Modifier) {
+                    GlideImage(
+                        model = it.fotoDepan ?: "",
+                        contentDescription = "image",
                         modifier = Modifier
-                            .align(Alignment.CenterVertically)
+                            .fillMaxWidth()
+                            .height(130.dp),
+                        contentScale = ContentScale.None,
+                        loading = placeholder(R.drawable.baseline_person_24),
+                        failure = placeholder(R.drawable.baseline_person_24)
                     )
-                    Spacer(modifier = Modifier.width(5.dp))
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row {
+                            Text(
+                                text = it.title ?: "",
+                                color = TextColorBlack,
+                                fontSize = 16.sp,
+                                fontFamily = poppins,
+                                fontWeight = FontWeight.Normal,
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Rating(rate = "4.5")
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Row {
+                            Text(
+                                text = "Rp.${it.harga ?: ""}",
+                                color = GreenColor6,
+                                fontSize = 16.sp,
+                                fontFamily = poppins,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        ServiceRow(items = it.layananNames,4)
+                    }
                 }
-                Spacer(modifier = Modifier.height(5.dp))
-               ServiceRow(items = items,4)
             }
         }
     }
+
 }
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun TerapisSection(
+    sharedViewModel: SharedViewModel,
+    terapis: DataTerapis,
     rootNavController: NavHostController = rememberNavController(),
-    modifier: Modifier) {
-    val items = listOf(
-        "Traditional",
-        "Shiatsu",
-        "Kerokan",
-        "Lulur Badan",
-        "Body Scrum"
-    )
+    modifier: Modifier
+) {
+//    val items = listOf(
+//        "Traditional",
+//        "Shiatsu",
+//        "Kerokan",
+//        "Lulur Badan",
+//        "Body Scrum"
+//    )
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.elevatedCardColors(BackgroundColor),
@@ -328,12 +472,19 @@ fun TerapisSection(
         modifier = Modifier
             .width(260.dp)
             .clickable {
+                sharedViewModel.namaTerapis = terapis.nama
+                sharedViewModel.layananName = terapis.layanan
+                sharedViewModel.fotoDepanTerapis = terapis.foto_depan
+                sharedViewModel.jamPulang = terapis.jam_pulang
+                sharedViewModel.jamDatang = terapis.jam_masuk
+                sharedViewModel.hari = terapis.hari_kerja
+                sharedViewModel.fotoDetailTerapis = terapis.foto_detail
                 rootNavController.navigate(Screen.DetailTerapis.route)
             }
     ) {
         Column(modifier = Modifier) {
             GlideImage(
-                model = "https://i.pinimg.com/236x/70/6f/ce/706fceeef69b7ff27985902fc4860612.jpg",
+                model = terapis.foto_depan,
                 contentDescription = "image",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -345,7 +496,7 @@ fun TerapisSection(
             Column(modifier = Modifier.padding(16.dp)) {
                 Row {
                     Text(
-                        text = "Angelica",
+                        text = terapis.nama,
                         color = TextColorBlack,
                         fontSize = 16.sp,
                         fontFamily = poppins,
@@ -362,7 +513,7 @@ fun TerapisSection(
                     )
                     Spacer(modifier = Modifier.width(2.dp))
                     Text(
-                        text = "10.00 - 12.00",
+                        text = "${terapis.jam_masuk} - ${terapis.jam_pulang}",
                         color = TextColorBlack,
                         fontSize = 12.sp,
                         fontFamily = poppins,
@@ -370,7 +521,7 @@ fun TerapisSection(
                     )
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-                ServiceRow(items = items,3)
+                ServiceRow(items = terapis.layanan,3)
             }
         }
     }

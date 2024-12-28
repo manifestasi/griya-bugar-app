@@ -12,7 +12,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor() : ViewModel() {
     //var layanan: List<DataService> = emptyList()
+
+    /* Terapis */
     var layanan: List<DataService> = emptyList()
+    var layananName: List<String> = emptyList()
     var hari: List<String> = emptyList()
     var namaTerapis: String = ""
     var jamDatang: String = ""
@@ -20,5 +23,6 @@ class SharedViewModel @Inject constructor() : ViewModel() {
     var fotoDepanTerapis: String = ""
     var fotoDetailTerapis: String = ""
 
+    /* Paket */
     var paketModel: PaketModel? by mutableStateOf(null)
 }
