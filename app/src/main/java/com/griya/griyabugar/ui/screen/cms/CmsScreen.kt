@@ -66,6 +66,7 @@ import com.griya.griyabugar.ui.components.dialog.LayananUpdateDialog
 import com.griya.griyabugar.ui.components.dialog.QuestionDialog
 import com.griya.griyabugar.ui.components.dialog.StatusPelangganDialog
 import com.griya.griyabugar.ui.components.dialog.SuccessDialog
+import com.griya.griyabugar.ui.components.loading.LoadingAnimation
 import com.griya.griyabugar.ui.components.statusbar.UpdateStatusBarColor
 import com.griya.griyabugar.ui.navigation.NavDrawScreen
 import com.griya.griyabugar.ui.navigation.Screen
@@ -86,6 +87,8 @@ import com.griya.griyabugar.ui.theme.HijauTua
 import com.griya.griyabugar.ui.theme.RedColor1
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
+import com.griya.griyabugar.util.finishAffinity
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -94,7 +97,10 @@ fun CmsScreen(
     layananViewModel: LayananViewModel = hiltViewModel(),
     pelangganViewModel: PelangganViewModel = hiltViewModel(),
     paketViewModel: PaketViewModel = hiltViewModel(),
+    scope: CoroutineScope = rememberCoroutineScope(),
+    cmsViewModel:CmsScreenViewModel = hiltViewModel()
 ){
+    val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Pelanggan.route) }
@@ -116,12 +122,54 @@ fun CmsScreen(
     var dialog_state_true by remember { mutableStateOf(false) }
     var dialog_state_failed by remember  { mutableStateOf(false) }
 
+    var isLogout by remember { mutableStateOf(false) }
+
 
     /*
     * ======================================
     * Show Dialog
     * =====================================
     * */
+
+    /* Untuk Logout */
+
+    if(isLogout){
+        QuestionDialog(
+            onDismiss = {},
+            title = "Keluar Akun",
+            description = "Apakah anda yakin keluar akun?",
+            btnClickYes = {
+                scope.launch {
+                    cmsViewModel.signout()
+                    cmsViewModel.logout_state.collect { event ->
+                        when (event){
+                            is Resource.Loading -> {
+                                Toast.makeText(context, "Loading proses logout", Toast.LENGTH_LONG).show()
+                            }
+
+                            is Resource.Success -> {
+
+                                /* Keluar dari aplikasi */
+                                finishAffinity(context)
+                            }
+
+                            is Resource.Error -> {
+                                Toast.makeText(context, event.errorMessage, Toast.LENGTH_LONG).show()
+                            }
+
+                            else -> {
+                            }
+                        }
+                    }
+                }
+                isLogout = false
+            },
+            btnClickNo = {
+                isLogout = false
+            }
+        )
+    }
+
 
     if(dialog_state_failed_update2){
         ErrorDialog(
@@ -345,6 +393,10 @@ fun CmsScreen(
                     scope.launch {
                         drawerState.close()
                     }
+                },
+                cmsViewModel = cmsViewModel,
+                onLogout = {
+                    isLogout = it
                 }
             )
         }
@@ -496,36 +548,9 @@ fun DrawerContent(
     selectedItem: String,
     rootNavController: NavHostController,
     cmsViewModel:CmsScreenViewModel = hiltViewModel(),
-    onItemClick: (String) -> Unit
+    onItemClick: (String) -> Unit,
+    onLogout: (Boolean) -> Unit
 ){
-    /*
-    * untuk state button logout
-    * */
-    val logout_state = cmsViewModel.logout_state.collectAsState()
-    var isLogout by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
-
-    LaunchedEffect(logout_state.value) {
-        when(logout_state.value){
-            is Resource.Success -> {
-                isLogout = true
-                Toast.makeText(context, "Berhasil Logout!", Toast.LENGTH_SHORT ).show()
-
-            }
-
-            is Resource.Error -> {
-                isLogout = false
-                Toast.makeText(context, "Gagal Logout!", Toast.LENGTH_SHORT ).show()
-            }
-
-            else -> {}
-        }
-    }
-
-    if(isLogout == true){
-        rootNavController.navigate("login")
-    }
 
     val menuItems = listOf(
         NavDrawerItem(
@@ -640,8 +665,7 @@ fun DrawerContent(
                         )
                         .clickable {
                             if ((menuItems.size-1) == index){
-                                cmsViewModel.signout()
-
+                                onLogout(true)
                             } else {
                                 onItemClick(item.route)
                             }
