@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -12,11 +14,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.ItemPemesananModel
 import com.griya.griyabugar.ui.components.appbar.AppBarBasic
 import com.griya.griyabugar.ui.components.appbar.AppBarHome
@@ -32,11 +36,13 @@ import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganCMSScreen
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
+import kotlinx.coroutines.flow.catch
 
 @Composable
 fun MainScreen(
     rootNavController: NavHostController = rememberNavController(),
     navController: NavHostController = rememberNavController(),
+    mainViewModel: MainViewModel = hiltViewModel()
 //    onNavigateToEditProfile: () -> Unit
 ){
     UpdateStatusBarColor(
@@ -44,6 +50,25 @@ fun MainScreen(
     )
 
     var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    var username by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        mainViewModel.getDataUser()
+            .catch {  }
+            .collect { event ->
+            when(event){
+                is Resource.Loading -> {
+                    username = "Loading..."
+                }
+                is Resource.Success -> {
+                    username = event.data?.nama ?: ""
+                }
+                else -> {}
+            }
+        }
+
+    }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -64,14 +89,15 @@ fun MainScreen(
             } else if (currentRoute == Screen.Home.route){
                 AppBarHome(
                     rootNavController = rootNavController,
-                    Modifier.background(
+                    modifier = Modifier.background(
                         brush = Brush.linearGradient(
                             listOf(
                                 GreenColor1,
                                 GreenColor2
                             )
                         )
-                    )
+                    ),
+                    username = username
                 )
             } else if (currentRoute == Screen.Order.route){
                 AppBarBasic(

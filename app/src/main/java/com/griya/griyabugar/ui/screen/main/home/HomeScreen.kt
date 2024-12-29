@@ -62,6 +62,7 @@ import com.griya.griyabugar.ui.components.loading.LoadingAnimation3
 import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.SharedViewModel
 import com.griya.griyabugar.ui.theme.BackgroundColor
+import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
 import com.griya.griyabugar.ui.theme.GreenColor2
 import com.griya.griyabugar.ui.theme.GreenColor6
@@ -69,6 +70,7 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
+import com.griya.griyabugar.util.isOpen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -235,44 +237,48 @@ fun HomeScreen(
 @Composable
 fun AddressSection(modifier: Modifier) {
     // Konten Alamat
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
-        Icon(
-            painterResource(R.drawable.ic_location),
-            contentDescription = "Location",
-            tint = TextColorWhite,
-            modifier = Modifier
-                .size(16.dp)
-                .align(Alignment.CenterVertically)
-        )
+        Row {
+            Icon(
+                painterResource(R.drawable.ic_location),
+                contentDescription = "Location",
+                tint = TextColorWhite,
+                modifier = Modifier
+                    .size(16.dp)
+                    .align(Alignment.CenterVertically)
+            )
 
-        Text(
-            text = "Jl. Patimura 5, Ruko Patimura Blok 1 Semarang",
-            color = TextColorWhite,
-            fontFamily = poppins,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(start = 5.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            painterResource(R.drawable.ic_buka),
-            contentDescription = "Location",
-            tint = TextColorWhite,
-            modifier = Modifier
-                .size(16.dp)
-                .align(Alignment.CenterVertically)
-        )
-        Text(
-            text = "Buka",
-            color = TextColorWhite,
-            fontFamily = poppins,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-        )
+            Text(
+                text = "Jl. Patimura 5, Ruko Patimura Blok 1 Semarang",
+                color = TextColorWhite,
+                fontFamily = poppins,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        }
+//        Spacer(modifier = Modifier.weight(1f))
+        Row {
+            Icon(
+                painterResource(R.drawable.ic_buka),
+                contentDescription = "Location",
+                tint = if(isOpen())TextColorWhite else DisabledColor,
+                modifier = Modifier
+                    .size(16.dp)
+                    .align(Alignment.CenterVertically)
+            )
+            Text(
+                text = if(isOpen())"Buka" else "Tutup",
+                color = if(isOpen())TextColorWhite else DisabledColor,
+                fontFamily = poppins,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+            )
+        }
     }
 }
 

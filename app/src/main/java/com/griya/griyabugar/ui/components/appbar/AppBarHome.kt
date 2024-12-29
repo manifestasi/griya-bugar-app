@@ -30,8 +30,9 @@ import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
 fun AppBarHome(
+    modifier: Modifier,
     rootNavController: NavHostController = rememberNavController(),
-    modifier: Modifier
+    username: String = ""
 ) {
     Box(
         modifier = modifier
@@ -40,7 +41,7 @@ fun AppBarHome(
     ) {
         Column {
             Text(
-                text = "Hai, Username",
+                text = "Hai, $username",
                 fontFamily = poppins,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,

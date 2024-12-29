@@ -371,7 +371,6 @@ class TerapisRepository @Inject constructor(
             Log.e("getAllTerapis", "Error: ${e.message}")
             trySend(Resource.Error("Unexpected error occurred: ${e.message}"))
             close()
-            awaitClose {  }
         }
     }.flowOn(Dispatchers.IO)
 
