@@ -339,6 +339,7 @@ fun CmsScreen(
         drawerContent = {
             DrawerContent(
                 selectedItem = selectedItem,
+                rootNavController = rootNavController,
                 onItemClick = { item ->
                     selectedItem = item
                     scope.launch {
@@ -493,6 +494,7 @@ fun CmsScreen(
 @Composable
 fun DrawerContent(
     selectedItem: String,
+    rootNavController: NavHostController,
     cmsViewModel:CmsScreenViewModel = hiltViewModel(),
     onItemClick: (String) -> Unit
 ){
@@ -522,7 +524,7 @@ fun DrawerContent(
     }
 
     if(isLogout == true){
-        onItemClick("login")
+        rootNavController.navigate("login")
     }
 
     val menuItems = listOf(
