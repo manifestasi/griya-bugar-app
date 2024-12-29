@@ -70,6 +70,7 @@ import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganCMSScreen
 import com.griya.griyabugar.ui.screen.cms.pelanggan_cms.PelangganViewModel
 import com.griya.griyabugar.ui.screen.cms.terapis.TerapisScreen
 import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananViewModel
+import com.griya.griyabugar.ui.screen.cms.paket.GradientFloatingActionButton
 import com.griya.griyabugar.ui.screen.paket.PaketViewModel
 import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor1
@@ -78,6 +79,7 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.HijauMuda
 import com.griya.griyabugar.ui.theme.HijauTua
 import com.griya.griyabugar.ui.theme.RedColor1
+import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
 import kotlinx.coroutines.launch
 
@@ -399,7 +401,22 @@ fun CmsScreen(
                             )
                         }
                     }
+                }else if(selectedItem == NavDrawScreen.Paket.route) {
+                    GradientFloatingActionButton(
+                        onClick = { rootNavController.navigate(Screen.TambahPaket.route) },
+                        gradientColors = listOf(
+                            HijauMuda,
+                            HijauTua
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Tambah Paket",
+                            tint = TextColorWhite
+                        )
+                    }
                 }
+
             },
         ) { innerPadding ->
 

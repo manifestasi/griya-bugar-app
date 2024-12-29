@@ -1,5 +1,6 @@
 package com.griya.griyabugar.ui.screen.cms.paket.tambahpaket
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -548,6 +549,7 @@ fun MultiSelectCheckboxGridWithoutScroll(modifier: Modifier = Modifier) {
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun MultiSelectCheckboxList(
     onSelectionChanged: (List<String>) -> Unit,

@@ -39,6 +39,7 @@ import com.griya.griyabugar.data.model.PaketModelWithLayanan
 import com.griya.griyabugar.ui.components.Button.ButtonBorder
 import com.griya.griyabugar.ui.components.Field.DropDownField
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
+import com.griya.griyabugar.ui.components.cmspaket.DiskonField
 import com.griya.griyabugar.ui.components.cmspaket.HargaField
 import com.griya.griyabugar.ui.components.cmspaket.InputFotoField
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
@@ -242,13 +243,12 @@ private fun ContenSection(
                 fontWeight = FontWeight.Normal,
             )
             Spacer(Modifier.height(5.dp))
-            TextField(
+            DiskonField(
                 onChange = {
                     diskon = it
                     harga = calculateHargaAkhir(hargaAwal, diskon).toString()
                 },
-                value = diskon,
-                placeHolder = "Masukkan Diskon"
+                value = diskon
             )
             Spacer(Modifier.height(16.dp))
 
