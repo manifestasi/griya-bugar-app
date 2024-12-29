@@ -1,5 +1,6 @@
 package com.griya.griyabugar.ui.screen.cms
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +55,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
+import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.LayananModel
 import com.griya.griyabugar.data.model.NavDrawerItem
 import com.griya.griyabugar.data.model.PelangganModel
@@ -88,7 +93,7 @@ fun CmsScreen(
     rootNavController: NavHostController = rememberNavController(),
     layananViewModel: LayananViewModel = hiltViewModel(),
     pelangganViewModel: PelangganViewModel = hiltViewModel(),
-    paketViewModel: PaketViewModel = hiltViewModel()
+    paketViewModel: PaketViewModel = hiltViewModel(),
 ){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -488,8 +493,38 @@ fun CmsScreen(
 @Composable
 fun DrawerContent(
     selectedItem: String,
+    cmsViewModel:CmsScreenViewModel = hiltViewModel(),
     onItemClick: (String) -> Unit
 ){
+    /*
+    * untuk state button logout
+    * */
+    val logout_state = cmsViewModel.logout_state.collectAsState()
+    var isLogout by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+
+    LaunchedEffect(logout_state.value) {
+        when(logout_state.value){
+            is Resource.Success -> {
+                isLogout = true
+                Toast.makeText(context, "Berhasil Logout!", Toast.LENGTH_SHORT ).show()
+
+            }
+
+            is Resource.Error -> {
+                isLogout = false
+                Toast.makeText(context, "Gagal Logout!", Toast.LENGTH_SHORT ).show()
+            }
+
+            else -> {}
+        }
+    }
+
+    if(isLogout == true){
+        onItemClick("login")
+    }
+
     val menuItems = listOf(
         NavDrawerItem(
             label = "Pelanggan",
@@ -603,6 +638,7 @@ fun DrawerContent(
                         )
                         .clickable {
                             if ((menuItems.size-1) == index){
+                                cmsViewModel.signout()
 
                             } else {
                                 onItemClick(item.route)
