@@ -37,6 +37,8 @@ import com.griya.griyabugar.data.model.PelangganModel
 import com.griya.griyabugar.ui.components.Card.CardPelanggan
 import com.griya.griyabugar.ui.components.appbar.AppBar
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.StatusPelangganDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.loading.LoadingAnimation2
 import com.griya.griyabugar.ui.screen.paket.PaketViewModel
 import com.griya.griyabugar.ui.theme.GreenMain
@@ -46,17 +48,15 @@ import com.griya.griyabugar.ui.theme.orange
 @Composable
 fun PelangganCMSScreen(
     rootNavController: NavHostController = rememberNavController(),
-    innerPadding: PaddingValues = PaddingValues(0.dp),
     pelangganViewModel: PelangganViewModel = hiltViewModel(),
     paketViewModel: PaketViewModel = hiltViewModel(),
-    dialogStateTrueUpdate: (Boolean) -> Unit,
-    arr_pelanggan: SnapshotStateList<PelangganModel>,
-    showDialogUpdate: (Boolean) -> Unit,
-    nameToEdit: (String) -> Unit,
-    uuidDoc: (String) -> Unit,
-    dialogStateFailedUpdate: (Boolean) -> Unit,
+    innerPadding: PaddingValues = PaddingValues(0.dp)
 ){
+    var arr_pelanggan = remember { mutableStateListOf<PelangganModel>() }
     var isLoading by remember { mutableStateOf(true) }
+    var showDialogUpdate by remember { mutableStateOf(false) }
+    var uuid_doc by remember { mutableStateOf("") }
+    var name_to_edit by remember { mutableStateOf("") }
 
     val pelanggan_pemesanan_state = pelangganViewModel.getAllPemesananState.collectAsState()
 
@@ -66,6 +66,8 @@ fun PelangganCMSScreen(
     * untuk dialog update
     * */
     val update_state = pelangganViewModel.updateResult.collectAsState()
+    var dialog_state_true_update by remember { mutableStateOf(false) }
+    var dialog_state_failed_update by remember { mutableStateOf(false) }
 
 
 
@@ -123,8 +125,8 @@ fun PelangganCMSScreen(
                                                 uuid_doc = dt.uuid_doc,
                                                 nama = pelanggan_data.nama!!,
                                                 status = dt.status,
-                                                kategori = paket_data.kategori.toString(),
-                                                title = paket_data.title.toString(),
+                                                kategori = paket_data.kategori ?: "",
+                                                title = paket_data.title ?: "",
                                                 tanggal = dt.tanggal_servis,
                                                 url_img = pelanggan_data.foto ?: "",
                                                 jam = dt.jam_pemesanan
@@ -165,6 +167,8 @@ fun PelangganCMSScreen(
                         }
 
 
+
+
                     }
                 }
             }
@@ -190,6 +194,35 @@ fun PelangganCMSScreen(
         }
     }
 
+    /*
+    * ======================================
+    * Show Dialog
+    * =====================================
+    * */
+
+
+    /*
+    * Dialog Update Field
+    * */
+    if(showDialogUpdate){
+
+        StatusPelangganDialog(
+            title = "Edit Status",
+            onDismiss = {
+                showDialogUpdate = false
+            },
+            onBatalClick = {
+                showDialogUpdate = false
+            },
+            onSimpanClick = {
+                showDialogUpdate = false
+            },
+            uuid_doc = uuid_doc,
+            name_to_edit = name_to_edit,
+            pelangganViewModel = pelangganViewModel
+        )
+    }
+
 
     /*
       * ==================================================
@@ -203,12 +236,12 @@ fun PelangganCMSScreen(
         when(val state = update_state.value){
             is Resource.Success -> {
                 Toast.makeText(context, "Berhasil Update", Toast.LENGTH_SHORT).show()
-                dialogStateTrueUpdate(true)
+                dialog_state_true_update = true
 
             }
             is Resource.Error -> {
                 Toast.makeText(context, "Gagal Update", Toast.LENGTH_SHORT).show()
-                dialogStateFailedUpdate(true)
+                dialog_state_failed_update = true
                 pelangganViewModel.resetUpdateState()
 
             }
@@ -217,6 +250,45 @@ fun PelangganCMSScreen(
                 pelangganViewModel.resetUpdateState()
             }
         }
+    }
+
+    if(dialog_state_true_update){
+        SuccessDialog(
+            onDismiss = {
+                dialog_state_true_update = false
+                arr_pelanggan.clear()
+                pelangganViewModel.fetchAll()
+                pelangganViewModel.resetUpdateState()
+
+            },
+            title = "Berhasil",
+            description = "Layanan berhasil ditambahkan",
+            buttonText = "Selesai",
+            buttonOnClick = {
+                dialog_state_true_update = false
+                arr_pelanggan.clear()
+                pelangganViewModel.fetchAll()
+                pelangganViewModel.resetUpdateState()
+
+            }
+        )
+    }
+
+    if(dialog_state_failed_update){
+        ErrorDialog(
+            onDismiss = {
+                dialog_state_failed_update = false
+                pelangganViewModel.resetUpdateState()
+            },
+            title = "Gagal",
+            description = "Layanan gagal ditambahkan!",
+            buttonText = "Coba Lagi",
+            buttonOnClick = {
+                dialog_state_failed_update = false
+                pelangganViewModel.resetUpdateState()
+
+            }
+        )
     }
 
     Box(
@@ -265,9 +337,9 @@ fun PelangganCMSScreen(
                         url_img = item.url_img,
                         jam = item.jam,
                         onEditClick = {
-                            uuidDoc(item.uuid_doc)
-                            nameToEdit(item.status)
-                            showDialogUpdate(true)
+                            uuid_doc = item.uuid_doc
+                            name_to_edit = item.status
+                            showDialogUpdate = true
                         }
                     )
                 }
@@ -283,14 +355,7 @@ fun LayananCMSPreview(){
     GriyaBugarTheme {
         LazyColumn {
             item {
-                PelangganCMSScreen(
-                    arr_pelanggan = remember { mutableStateListOf() },
-                    dialogStateTrueUpdate = {},
-                    showDialogUpdate = {},
-                    nameToEdit = {},
-                    uuidDoc = {},
-                    dialogStateFailedUpdate = {}
-                )
+                PelangganCMSScreen()
 
             }
         }

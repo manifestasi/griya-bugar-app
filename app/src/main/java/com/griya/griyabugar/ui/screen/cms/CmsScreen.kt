@@ -106,21 +106,6 @@ fun CmsScreen(
     var selectedItem by rememberSaveable { mutableStateOf(NavDrawScreen.Pelanggan.route) }
 
     var showDialogInsert by rememberSaveable { mutableStateOf(false) }
-    var showDialogUpdate by rememberSaveable { mutableStateOf(false) }
-    var showDialogUpdate2 by rememberSaveable { mutableStateOf(false) }
-    var showDialogDelete by rememberSaveable { mutableStateOf(false) }
-    var uuid_doc by rememberSaveable { mutableStateOf("") }
-    var name_to_edit by rememberSaveable { mutableStateOf("") }
-    val arr_layanan = remember { mutableStateListOf<LayananModel>() }
-    val arr_pelanggan = remember { mutableStateListOf<PelangganModel>() }
-
-    var dialog_state_true_update by remember { mutableStateOf(false) }
-    var dialog_state_failed_update by remember { mutableStateOf(false) }
-    var dialog_state_true_update2 by remember { mutableStateOf(false) }
-    var dialog_state_failed_update2 by remember { mutableStateOf(false) }
-
-    var dialog_state_true by remember { mutableStateOf(false) }
-    var dialog_state_failed by remember  { mutableStateOf(false) }
 
     var isLogout by remember { mutableStateOf(false) }
 
@@ -170,68 +155,6 @@ fun CmsScreen(
         )
     }
 
-
-    if(dialog_state_failed_update2){
-        ErrorDialog(
-            onDismiss = {
-                dialog_state_failed_update2 = false
-                pelangganViewModel.resetUpdateState()
-            },
-            title = "Gagal",
-            description = "Layanan gagal ditambahkan!",
-            buttonText = "Coba Lagi",
-            buttonOnClick = {
-                dialog_state_failed_update2 = false
-                pelangganViewModel.resetUpdateState()
-
-            }
-        )
-    }
-
-    /*
-    * Dialog Update Field
-    * */
-    if(showDialogUpdate2){
-
-        StatusPelangganDialog(
-            title = "Edit Status",
-            onDismiss = {
-                showDialogUpdate2 = false
-            },
-            onBatalClick = {
-                showDialogUpdate2 = false
-            },
-            onSimpanClick = {
-                showDialogUpdate2 = false
-            },
-            uuid_doc = uuid_doc,
-            name_to_edit = name_to_edit,
-            pelangganViewModel = pelangganViewModel
-        )
-    }
-
-    if(dialog_state_true_update2){
-        SuccessDialog(
-            onDismiss = {
-                dialog_state_true_update2 = false
-                arr_pelanggan.clear()
-                pelangganViewModel.fetchAll()
-                pelangganViewModel.resetUpdateState()
-
-            },
-            title = "Berhasil",
-            description = "Layanan berhasil ditambahkan",
-            buttonText = "Selesai",
-            buttonOnClick = {
-                dialog_state_true_update2 = false
-                arr_pelanggan.clear()
-                pelangganViewModel.fetchAll()
-                pelangganViewModel.resetUpdateState()
-
-            }
-        )
-    }
-
     /*
     * Dialog Insert Field
     * */
@@ -247,133 +170,6 @@ fun CmsScreen(
             },
             onSimpanClick = {
                 showDialogInsert = false
-            }
-        )
-    }
-
-    /*
-    * Dialog Update Field
-    * */
-    if(showDialogUpdate){
-        LayananUpdateDialog(
-            title = "Edit Layanan",
-            onDismiss = {
-                showDialogUpdate = false
-            },
-            onBatalClick = {
-                showDialogUpdate = false
-            },
-            onSimpanClick = {
-                showDialogUpdate = false
-            },
-            uuid_doc = uuid_doc,
-            name_to_edit = name_to_edit
-        )
-    }
-
-    if(showDialogDelete){
-        QuestionDialog(
-            onDismiss = {
-                showDialogDelete = false
-            },
-            title = "Konfirmasi",
-            description = "Apakah Anda yakin untuk menghapus ?",
-            btnClickYes = {
-                layananViewModel.deleteData(
-                    uuid_doc = uuid_doc
-                )
-                arr_layanan.clear()
-                layananViewModel.fetchAll()
-                showDialogDelete = false
-            },
-            btnClickNo = {
-                showDialogDelete = false
-            }
-        )
-    }
-
-    /*
-    *
-    * Dialog untuk insert
-    * */
-
-    if(dialog_state_true){
-        SuccessDialog(
-            onDismiss = {
-                dialog_state_true = false
-                arr_layanan.clear()
-                layananViewModel.fetchAll()
-                layananViewModel.resetInsertState()
-
-            },
-            title = "Berhasil",
-            description = "Layanan berhasil ditambahkan",
-            buttonText = "Selesai",
-            buttonOnClick = {
-                dialog_state_true = false
-                arr_layanan.clear()
-                layananViewModel.fetchAll()
-                layananViewModel.resetInsertState()
-
-            }
-        )
-
-    }
-
-    if(dialog_state_failed){
-        ErrorDialog(
-            onDismiss = {
-                dialog_state_failed = false
-                layananViewModel.resetInsertState()
-
-            },
-            title = "Gagal",
-            description = "Layanan gagal ditambahkan!",
-            buttonText = "Coba Lagi",
-            buttonOnClick = {
-                dialog_state_failed = false
-                layananViewModel.resetInsertState()
-
-            }
-        )
-
-    }
-
-    if(dialog_state_true_update){
-        SuccessDialog(
-            onDismiss = {
-                dialog_state_true_update = false
-                arr_layanan.clear()
-                layananViewModel.fetchAll()
-                layananViewModel.resetUpdateState()
-
-            },
-            title = "Berhasil",
-            description = "Layanan berhasil ditambahkan",
-            buttonText = "Selesai",
-            buttonOnClick = {
-                dialog_state_true_update = false
-                arr_layanan.clear()
-                layananViewModel.fetchAll()
-                layananViewModel.resetUpdateState()
-
-            }
-        )
-    }
-
-    if(dialog_state_failed_update){
-        ErrorDialog(
-            onDismiss = {
-                dialog_state_failed_update = false
-                layananViewModel.resetUpdateState()
-            },
-            title = "Gagal",
-            description = "Layanan gagal ditambahkan!",
-            buttonText = "Coba Lagi",
-            buttonOnClick = {
-                dialog_state_failed_update = false
-                layananViewModel.resetUpdateState()
-
             }
         )
     }
@@ -482,22 +278,6 @@ fun CmsScreen(
                 PelangganCMSScreen(
                     innerPadding = innerPadding,
                     rootNavController = rootNavController,
-                    showDialogUpdate = {
-                        showDialogUpdate2 = it
-                    },
-                    nameToEdit = {
-                        name_to_edit = it
-                    },
-                    uuidDoc = {
-                        uuid_doc = it
-                    },
-                    arr_pelanggan = arr_pelanggan,
-                    dialogStateTrueUpdate = {
-                        dialog_state_true_update2 = it
-                    },
-                    dialogStateFailedUpdate = {
-                        dialog_state_failed_update2 = it
-                    },
                     pelangganViewModel = pelangganViewModel,
                     paketViewModel = paketViewModel
                 )
@@ -508,28 +288,6 @@ fun CmsScreen(
                     layananViewModel = layananViewModel,
                     innerPadding = innerPadding,
                     rootNavController = rootNavController,
-                    arr_layanan = arr_layanan,
-                    uuidDoc = {
-                        uuid_doc = it
-                    },
-                    showDialogUpdate = {
-                        showDialogUpdate = it
-                    },
-                    showDialogDelete = {
-                        showDialogDelete = it
-                    },
-                    nameToEdit = {
-                        name_to_edit = it
-                    },
-                    dialogStateFailedUpdate = {
-                        dialog_state_failed_update = it
-                    },
-                    dialogStateTrue = {
-                        dialog_state_true = it
-                    },
-                    dialogStateTrueUpdate = {
-                        dialog_state_true_update = it
-                    }
                 )
             } else if (selectedItem == NavDrawScreen.Terapis.route){
                 TerapisScreen(

@@ -50,7 +50,11 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchAllPaket(){
         viewModelScope.launch {
-            paketRepository.getPaketWithLayananName().collect {
+            paketRepository.getPaketWithLayananName()
+                .catch { e ->
+                    Log.e("fetchAllPaket", "Error occurred: ${e.message}", e)
+                }
+                .collect {
                 _dataPaket.value = it
             }
         }

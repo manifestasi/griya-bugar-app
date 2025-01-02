@@ -34,6 +34,11 @@ import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.LayananModel
 import com.griya.griyabugar.ui.components.Card.CardLayanan
+import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.LayananInsertDialog
+import com.griya.griyabugar.ui.components.dialog.LayananUpdateDialog
+import com.griya.griyabugar.ui.components.dialog.QuestionDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.loading.LoadingAnimation2
 import com.griya.griyabugar.ui.theme.GreenMain
 import com.griya.griyabugar.ui.theme.GriyaBugarTheme
@@ -42,17 +47,15 @@ import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 fun LayananCMSScreen(
     rootNavController: NavHostController = rememberNavController(),
     layananViewModel: LayananViewModel = hiltViewModel(),
-    innerPadding: PaddingValues = PaddingValues(0.dp),
-    arr_layanan: SnapshotStateList<LayananModel>,
-    uuidDoc: (String) -> Unit,
-    showDialogUpdate: (Boolean) -> Unit,
-    showDialogDelete: (Boolean) -> Unit,
-    nameToEdit: (String) -> Unit,
-    dialogStateTrueUpdate: (Boolean) -> Unit,
-    dialogStateFailedUpdate: (Boolean) -> Unit,
-    dialogStateTrue: (Boolean) -> Unit
+    innerPadding: PaddingValues = PaddingValues(0.dp)
 ){
+    val arr_layanan = remember { mutableStateListOf<LayananModel>() }
     var isLoading by remember { mutableStateOf(true) }
+    var showDialogInsert by remember { mutableStateOf(false) }
+    var showDialogUpdate by remember { mutableStateOf(false) }
+    var showDialogDelete by remember { mutableStateOf(false) }
+    var uuid_doc by remember { mutableStateOf("") }
+    var name_to_edit by remember { mutableStateOf("") }
 
     val layanan_state = layananViewModel.getAlllayananState.collectAsState()
     val context = LocalContext.current
@@ -61,11 +64,15 @@ fun LayananCMSScreen(
     * */
 
     val insert_state = layananViewModel.insertResult.collectAsState()
+    var dialog_state_true by remember { mutableStateOf(false) }
+    var dialog_state_failed by remember  { mutableStateOf(false) }
 
     /*
     * untuk dialog update
     * */
     val update_state = layananViewModel.updateResult.collectAsState()
+    var dialog_state_true_update by remember { mutableStateOf(false) }
+    var dialog_state_failed_update by remember { mutableStateOf(false) }
 
     /*
     * untuk delete
@@ -124,6 +131,45 @@ fun LayananCMSScreen(
     * */
 
     /*
+    * Dialog Insert Field
+    * */
+    if(showDialogInsert){
+        LayananInsertDialog(
+            title = "Tambah Layanan",
+            layananViewModel = layananViewModel,
+            onDismiss = {
+                showDialogInsert = false
+            },
+            onBatalClick = {
+                showDialogInsert = false
+            },
+            onSimpanClick = {
+                showDialogInsert = false
+            }
+        )
+    }
+
+    /*
+    * Dialog Update Field
+    * */
+    if(showDialogUpdate){
+        LayananUpdateDialog(
+            title = "Edit Layanan",
+            onDismiss = {
+                showDialogUpdate = false
+            },
+            onBatalClick = {
+                showDialogUpdate = false
+            },
+            onSimpanClick = {
+                showDialogUpdate = false
+            },
+            uuid_doc = uuid_doc,
+            name_to_edit = name_to_edit
+        )
+    }
+
+    /*
     * Dialog Delete Confirm
     * */
 
@@ -144,6 +190,27 @@ fun LayananCMSScreen(
         }
     }
 
+    if(showDialogDelete){
+        QuestionDialog(
+            onDismiss = {
+                showDialogDelete = false
+            },
+            title = "Konfirmasi",
+            description = "Apakah Anda yakin untuk menghapus ?",
+            btnClickYes = {
+                layananViewModel.deleteData(
+                    uuid_doc = uuid_doc
+                )
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                showDialogDelete = false
+            },
+            btnClickNo = {
+                showDialogDelete = false
+            }
+        )
+    }
+
     /*
     * ==================================================
     *
@@ -155,20 +222,67 @@ fun LayananCMSScreen(
         when(val state = insert_state.value){
             is Resource.Success -> {
                 Toast.makeText(context, "Berhasil Disimpan", Toast.LENGTH_SHORT).show()
-                dialogStateTrue(true)
+                dialog_state_true = true
             }
             is Resource.Error -> {
                 Toast.makeText(context, "Gagal Update", Toast.LENGTH_SHORT).show()
-                dialogStateTrue(false)
+                dialog_state_failed = true
                 layananViewModel.resetInsertState()
             }
 
             else -> {
-                dialogStateTrue(false)
+                dialog_state_true = false
                 layananViewModel.resetInsertState()
 
             }
         }
+    }
+
+    /*
+    *
+    * Dialog untuk insert
+    * */
+
+    if(dialog_state_true){
+        SuccessDialog(
+            onDismiss = {
+                dialog_state_true = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetInsertState()
+
+            },
+            title = "Berhasil",
+            description = "Layanan berhasil ditambahkan",
+            buttonText = "Selesai",
+            buttonOnClick = {
+                dialog_state_true = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetInsertState()
+
+            }
+        )
+
+    }
+
+    if(dialog_state_failed){
+        ErrorDialog(
+            onDismiss = {
+                dialog_state_failed = false
+                layananViewModel.resetInsertState()
+
+            },
+            title = "Gagal",
+            description = "Layanan gagal ditambahkan!",
+            buttonText = "Coba Lagi",
+            buttonOnClick = {
+                dialog_state_failed = false
+                layananViewModel.resetInsertState()
+
+            }
+        )
+
     }
 
 
@@ -184,11 +298,11 @@ fun LayananCMSScreen(
         when(val state = update_state.value){
             is Resource.Success -> {
                 Toast.makeText(context, "Berhasil Update", Toast.LENGTH_SHORT).show()
-                dialogStateTrueUpdate(true)
+                dialog_state_true_update = true
             }
             is Resource.Error -> {
                 Toast.makeText(context, "Gagal Update", Toast.LENGTH_SHORT).show()
-                dialogStateFailedUpdate(true)
+                dialog_state_failed_update = true
                 layananViewModel.resetUpdateState()
 
             }
@@ -199,9 +313,44 @@ fun LayananCMSScreen(
         }
     }
 
-//    CircularProgressIndicator(
-//        color = GreenMain
-//    )
+    if(dialog_state_true_update){
+        SuccessDialog(
+            onDismiss = {
+                dialog_state_true_update = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetUpdateState()
+
+            },
+            title = "Berhasil",
+            description = "Layanan berhasil ditambahkan",
+            buttonText = "Selesai",
+            buttonOnClick = {
+                dialog_state_true_update = false
+                arr_layanan.clear()
+                layananViewModel.fetchAll()
+                layananViewModel.resetUpdateState()
+
+            }
+        )
+    }
+
+    if(dialog_state_failed_update){
+        ErrorDialog (
+            onDismiss = {
+                dialog_state_failed_update = false
+                layananViewModel.resetUpdateState()
+            },
+            title = "Gagal",
+            description = "Layanan gagal ditambahkan!",
+            buttonText = "Coba Lagi",
+            buttonOnClick = {
+                dialog_state_failed_update = false
+                layananViewModel.resetUpdateState()
+
+            }
+        )
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -221,13 +370,13 @@ fun LayananCMSScreen(
                     CardLayanan(
                         text = item.nama,
                         onEditClick = {
-                            showDialogUpdate(true)
-                            uuidDoc(item.uuid_doc)
-                            nameToEdit(item.nama)
+                            showDialogUpdate = true
+                            uuid_doc = item.uuid_doc
+                            name_to_edit = item.nama
                         },
                         onDeleteClick = {
-                            showDialogDelete(true)
-                            uuidDoc(item.uuid_doc)
+                            showDialogDelete = true
+                            uuid_doc = item.uuid_doc
                         }
                     )
                 }
@@ -245,16 +394,7 @@ fun LayananCMSPreview(){
     GriyaBugarTheme {
         LazyColumn {
             item {
-                LayananCMSScreen(
-                    arr_layanan = rememberSaveable { mutableStateListOf<LayananModel>() },
-                    showDialogDelete = {},
-                    showDialogUpdate = {},
-                    uuidDoc = {},
-                    nameToEdit = {},
-                    dialogStateTrueUpdate = {},
-                    dialogStateFailedUpdate = {},
-                    dialogStateTrue = {}
-                )
+                LayananCMSScreen()
 
             }
         }
