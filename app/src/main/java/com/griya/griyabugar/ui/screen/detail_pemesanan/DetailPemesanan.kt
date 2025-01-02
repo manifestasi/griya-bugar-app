@@ -74,6 +74,7 @@ import com.griya.griyabugar.ui.components.Button.BoxButtonBorderDP
 import com.griya.griyabugar.ui.components.dialog.RateDialog
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
 import com.griya.griyabugar.ui.components.profile.image.CircleImageProfile
+import com.griya.griyabugar.ui.navigation.Screen
 import com.griya.griyabugar.ui.screen.cms.layanan_cms.LayananViewModel
 import com.griya.griyabugar.ui.screen.main.order.PemesananViewModel
 import com.griya.griyabugar.ui.screen.main.order.formatNumber
@@ -833,7 +834,7 @@ fun DetailPemesananScreen(
                         "Berhasil membatalkan pesanan",
                         Toast.LENGTH_SHORT
                     ).show()
-                    rootNavControll.navigate("main")
+                    rootNavControll.popBackStack()
                 }
 
                 is Resource.Error -> {
@@ -1005,13 +1006,13 @@ fun DetailPemesananScreen(
                             showDialogRate = true
                         },
                         onPesanLain = {
-                            rootNavControll.navigate("main")
+                            rootNavControll.navigate(Screen.Main.route)
                         },
                         onPesanLagi = {
                             /*
                             * sesuaikan ini
                             * */
-                            rootNavControll.navigate("main")
+                            rootNavControll.navigate(Screen.Main.route)
                         }
                     )
                 }

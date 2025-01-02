@@ -50,6 +50,7 @@ fun CardPelanggan(
     nama:String,
     kategori : String,
     tanggal: String,
+    jam: String,
     paket:String,
     url_img:String?,
     status:String,
@@ -105,12 +106,21 @@ fun CardPelanggan(
                         modifier = Modifier.padding(start=5.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text(tanggal,
-                        fontFamily = poppins,
-                        fontSize = 9.sp,
-                        color = Color.Black,
-                        modifier = Modifier.padding(start=5.dp)
-                    )
+                    Row {
+                        Text(tanggal,
+                            fontFamily = poppins,
+                            fontSize = 9.sp,
+                            color = Color.Black,
+                            modifier = Modifier.padding(start=5.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text("$jam WIB",
+                            fontFamily = poppins,
+                            fontSize = 9.sp,
+                            color = Color.Black,
+                            modifier = Modifier.padding(start=5.dp)
+                        )
+                    }
                 }
 
 
@@ -180,6 +190,7 @@ fun CardPelangganPreview(){
                 paket = "Paket 2 Jam",
                 status = "Menunggu",
                 url_img = null,
+                jam = "19.00",
                 onEditClick = {}
             )
         }

@@ -7,6 +7,6 @@ data class PelangganModel (
     val kategori:String = "",
     val title:String = "",
     val tanggal:String = "",
-    val url_img:String?
-
-    )
+    val url_img:String?,
+    val jam: String = ""
+)

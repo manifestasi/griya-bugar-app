@@ -6,8 +6,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.ItemPemesananModel
+import com.griya.griyabugar.data.model.ItemPemesananModel2
 import com.griya.griyabugar.data.model.LayananModel
 import com.griya.griyabugar.data.respository.LayananRepository.Companion.LAYANAN_COLLECTION
+import com.griya.griyabugar.util.Date
+import com.griya.griyabugar.util.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +25,38 @@ class PemesananRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
 
 ) {
+
+    fun addPemesanan(
+        id_paket: String,
+        jam_pemesanan: String,
+        rated: Boolean,
+        tanggal_servis: String
+    ): Flow<Resource<String>> = flow {
+        emit(Resource.Loading)
+
+        try {
+            val user = firebaseAuth.currentUser
+            firestore.collection(PEMESANAN_COLLECTION)
+                .add(ItemPemesananModel2(
+                    id_user = user?.uid ?: "",
+                    tanggal_pemesanan = Date.getCurrentDateFromMillis(),
+                    status = "MENUNGGU",
+                    id_paket = id_paket,
+                    jam_pemesanan = jam_pemesanan,
+                    rated = rated,
+                    tanggal_servis = tanggal_servis,
+                    nomor_pesanan = Order.generateOrderNumberWithTimestamp(),
+                    timemilis = System.currentTimeMillis()
+                ))
+                .await()
+
+            emit(Resource.Success("Berhasil di pesan"))
+        } catch (e: Exception){
+            Log.e("addPemesanan", "Error: ${e.message.toString()}")
+            emit(Resource.Error(e.message.toString()))
+        }
+    }.flowOn(Dispatchers.IO)
+
     fun getPemesananData(): Flow<Resource<List<ItemPemesananModel>?>> = callbackFlow {
         val user_id = firebaseAuth.currentUser?.uid
         Log.d("USER ID : ", "USER ID : $user_id")

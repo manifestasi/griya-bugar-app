@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,13 +47,17 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.griya.griyabugar.R
+import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.ui.components.Button.ButtonGradient
+import com.griya.griyabugar.ui.components.dialog.ClockInputDialog
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
+import com.griya.griyabugar.ui.components.dialog.SuccessDialog
 import com.griya.griyabugar.ui.components.home.BackButton
 import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.InputJamDialog
 import com.griya.griyabugar.ui.components.home.Rating
 import com.griya.griyabugar.ui.components.home.ServiceRow
+import com.griya.griyabugar.ui.components.register.ButtonConfirm
 import com.griya.griyabugar.ui.screen.SharedViewModel
 import com.griya.griyabugar.ui.theme.BackgroundColor
 import com.griya.griyabugar.ui.theme.FontOff
@@ -61,14 +66,19 @@ import com.griya.griyabugar.ui.theme.GreenColor6
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
+import com.griya.griyabugar.util.Date
 import com.griya.griyabugar.util.Days
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Locale
 
 @Composable
 fun DetailPaketScreen(
     rootNavControll: NavHostController = rememberNavController(),
-    sharedViewModel: SharedViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+    sharedViewModel: SharedViewModel = hiltViewModel(LocalContext.current as ComponentActivity),
+    detailPaketViewModel: DetailPaketViewModel = hiltViewModel(),
+    scope: CoroutineScope = rememberCoroutineScope()
 ) {
 
     Box() {
@@ -78,7 +88,9 @@ fun DetailPaketScreen(
         )
         ContentSection(
             modifier = Modifier.padding(top = 240.dp),
-            sharedViewModel = sharedViewModel
+            sharedViewModel = sharedViewModel,
+            detailPaketViewModel = detailPaketViewModel,
+            scope = scope,
         )
     }
 }
@@ -110,15 +122,24 @@ private fun HeaderSection(
 @Composable
 private fun ContentSection(
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    detailPaketViewModel: DetailPaketViewModel,
+    scope: CoroutineScope
 ) {
     val dataPaket = sharedViewModel.paketModel
     var showJamDialog by remember { mutableStateOf(false) }
     var selectedTime by remember { mutableStateOf("10.00") }
 //    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
-    var selectedDates by rememberSaveable { mutableStateOf(listOf<Int>()) }
+    var selectedDates by rememberSaveable { mutableStateOf<Int>(0) }
     var currentWeekStart by remember { mutableStateOf(getStartOfCurrentWeek()) }
+
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    var isSuccess by rememberSaveable { mutableStateOf(false) }
+    var successMessage by rememberSaveable { mutableStateOf("") }
+
     var isError by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf("") }
 //    val items = listOf(
 //        "Traditional",
 //        "Shiatsu",
@@ -277,9 +298,36 @@ private fun ContentSection(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ButtonGradient(onClick = {
-                    isError = true
-                }, name = "Pesan")
+                ButtonConfirm(onClick = {
+                    scope.launch {
+                        detailPaketViewModel.addPemesanan(
+                            id_paket = dataPaket?.id ?: "",
+                            rated = false,
+                            jam_pemesanan = selectedTime,
+                            tanggal_servis = Date.getCurrentDateFromDay(selectedDates)
+                        ).collect { event ->
+                            when (event){
+                                is Resource.Loading -> {
+                                    isLoading = true
+                                }
+                                is Resource.Success -> {
+                                    isLoading = false
+                                    isSuccess = true
+                                    successMessage = event.data
+                                }
+                                is Resource.Error -> {
+                                    isError = true
+                                    errorMessage = event.errorMessage
+                                }
+                                else -> {}
+                            }
+                        }
+                    }
+                },
+                    name = "Pesan",
+                    isLoading = isLoading,
+                    isDisabled = isLoading
+                )
             }
         }
 
@@ -287,22 +335,45 @@ private fun ContentSection(
 
     // Tampilkan Dialog ketika showJamDialog bernilai true
     if (showJamDialog) {
-        Dialog(onDismissRequest = { showJamDialog = false }) {
-            InputJamDialog(
-                input = selectedTime,
-                modifier = Modifier
-                    .background(BackgroundColor)
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                onSave = {newTime ->
-                    selectedTime = newTime // Update jam yang dipilih
-                    showJamDialog = false // Tutup dialog
-                },
-                onCancel = {
-                    showJamDialog = false
-                }
-            )
-        }
+//        Dialog(onDismissRequest = { showJamDialog = false }) {
+//            InputJamDialog(
+//                input = selectedTime,
+//                modifier = Modifier
+//                    .background(BackgroundColor)
+//                    .padding(16.dp)
+//                    .clip(RoundedCornerShape(8.dp)),
+//                onSave = {newTime ->
+//                    selectedTime = newTime // Update jam yang dipilih
+//                    showJamDialog = false // Tutup dialog
+//                },
+//                onCancel = {
+//                    showJamDialog = false
+//                }
+//            )
+//        }
+        ClockInputDialog(
+            title = "Masukkan Jam Datang",
+            btnClickCancel = {
+                showJamDialog = false
+            },
+            btnClickAccept = {
+                selectedTime = it
+                showJamDialog = false
+            },
+            onDismiss = {}
+        )
+    }
+
+    if (isSuccess){
+        SuccessDialog(
+            onDismiss = {},
+            title = "Pesanan berhasil",
+            buttonText = "Ok",
+            description = successMessage,
+            buttonOnClick = {
+                isSuccess = false
+            }
+        )
     }
 
     if (isError){
@@ -325,17 +396,18 @@ private fun ContentSection(
 fun DateItem(
     date: Int,
     day: String,
-    selectedDates: List<Int>,
-    onDateClick: (List<Int>) -> Unit
+    selectedDates: Int,
+    onDateClick: (Int) -> Unit
 ) {
-    val items = Days.getDaysWithDates()
-    var checkStates: MutableMap<Int, Boolean> by rememberSaveable(selectedDates) { mutableStateOf(
-        items.associate { (_, date) ->
-            date to (date in selectedDates)
-        }.toMutableMap()
-    ) }
+//    val items = Days.getDaysWithDates()
+//    var checkStates: MutableMap<Int, Boolean> by rememberSaveable(selectedDates) { mutableStateOf(
+//        items.associate { (_, date) ->
+//            date to (date in selectedDates)
+//        }.toMutableMap()
+//    ) }
 
-    val isSelected = checkStates[date] ?: false
+//    val isSelected = checkStates[date] ?: false
+    val isSelected = selectedDates == date
     val backgroundColor = if (isSelected) TextColorWhite else FontOff
     val textColor = if (isSelected) GreenColor3 else TextColorBlack
 
@@ -343,8 +415,9 @@ fun DateItem(
         modifier =
         Modifier
             .clickable {
-                checkStates[date] = !isSelected
-                onDateClick(checkStates.filterValues { it }.keys.toList())
+//                checkStates[date] = !isSelected
+//                onDateClick(checkStates.filterValues { it }.keys.toList())
+                onDateClick(date)
             }
             .then(
                 if (isSelected) {

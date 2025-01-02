@@ -311,6 +311,7 @@ fun PromoSection(
                     .fillMaxWidth()
                     .clickable {
                         sharedViewModel.paketModel = PaketModel(
+                            id = it.id,
                             title = it.title,
                             harga = it.harga,
                             layanan = it.layananNames,
@@ -398,6 +399,7 @@ fun RegulerSection(
                     .fillMaxWidth()
                     .clickable {
                         sharedViewModel.paketModel = PaketModel(
+                            id = it.id,
                             title = it.title,
                             harga = it.harga,
                             layanan = it.layananNames,

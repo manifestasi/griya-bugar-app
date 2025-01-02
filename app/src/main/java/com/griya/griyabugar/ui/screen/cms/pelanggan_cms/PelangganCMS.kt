@@ -126,7 +126,8 @@ fun PelangganCMSScreen(
                                                 kategori = paket_data.kategori.toString(),
                                                 title = paket_data.title.toString(),
                                                 tanggal = dt.tanggal_servis,
-                                                url_img = if(pelanggan_data.nama == "") null else pelanggan_data.role!!
+                                                url_img = pelanggan_data.foto ?: "",
+                                                jam = dt.jam_pemesanan
                                             )
                                         )
 
@@ -262,6 +263,7 @@ fun PelangganCMSScreen(
                         status = item.status,
                         color_status = colorStatus.value,
                         url_img = item.url_img,
+                        jam = item.jam,
                         onEditClick = {
                             uuidDoc(item.uuid_doc)
                             nameToEdit(item.status)
