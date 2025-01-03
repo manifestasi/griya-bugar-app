@@ -113,6 +113,7 @@ fun DetailPemesananItem(modifier: Modifier=Modifier,
                         rated:Boolean,
                         rating:Int,
                         terapis:String,
+                        terapis_url:String,
                         onBatal:()->Unit,
                         onRate:()->Unit ,
                         onPesanLain:()->Unit,
@@ -580,7 +581,7 @@ fun DetailPemesananItem(modifier: Modifier=Modifier,
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             CircleImageProfile(
-                                url = "https://banggaikep.go.id/portal/wp-content/uploads/2024/03/jokowi-1.jpg",
+                                url = terapis_url,
                                 modifier = Modifier.size(50.dp)
                             )
                             Spacer(modifier = Modifier.width(5.dp))
@@ -708,6 +709,7 @@ fun DetailPemesananScreen(
     val rated = rememberSaveable { mutableStateOf(false) }
     val rating = rememberSaveable { mutableIntStateOf(0) }
     val terapis = rememberSaveable { mutableStateOf("") }
+    val terapis_url = rememberSaveable { mutableStateOf("") }
 
     val data_detail_stateMap by detailViewModel.detail_data.collectAsState()
     val data_result_state = data_detail_stateMap[uuid_doc] ?: Resource.Empty
@@ -909,6 +911,7 @@ fun DetailPemesananScreen(
                 is Resource.Success -> {
                     val data_terapis = state.data
                     terapis.value = data_terapis.nama
+                    terapis_url.value = data_terapis.foto_depan!!
                 }
                 else -> {
 
@@ -936,9 +939,9 @@ fun DetailPemesananScreen(
             when(data_paket_state){
                 is Resource.Success -> {
                     val paket = data_paket_state.data
-                    harga.value = "Rp.${formatNumber(paket.harga ?: 0)}"
-                    diskon.value = "Rp.${formatNumber(paket.harga ?: (0 * (paket.diskon ?: 0) / 100))}"
-                    total.value = "Rp.${formatNumber(((paket.harga ?: (0 - (paket.harga ?: (0 * (paket.diskon ?: 0) / 100))))))}"
+                    harga.value = "Rp.${formatNumber(paket.harga!!)}"
+                    diskon.value = "Rp.${formatNumber(paket.harga * paket.diskon!! /100)}"
+                    total.value = "Rp.${formatNumber((paket.harga - (paket.harga * paket.diskon/100)))}"
                     title.value = paket.title ?: ""
 
 
@@ -999,6 +1002,7 @@ fun DetailPemesananScreen(
                         rated = rated.value,
                         rating = rating.value,
                         terapis = terapis.value,
+                        terapis_url = terapis_url.value,
                         onBatal = {
                             showDialog = true
                         },
