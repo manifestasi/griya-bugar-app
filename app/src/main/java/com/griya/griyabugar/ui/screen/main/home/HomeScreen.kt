@@ -273,7 +273,7 @@ fun AddressSection(modifier: Modifier) {
             )
             Text(
                 text = if(isOpen())"Buka" else "Tutup",
-                color = if(isOpen())TextColorWhite else DisabledColor,
+                color = TextColorWhite,
                 fontFamily = poppins,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,

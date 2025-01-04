@@ -91,7 +91,9 @@ fun BatalScreen(
                     }
 
                     when (data_paket_state) {
-                        is Resource.Empty -> Text("No data", color = Color.Black)
+                        is Resource.Empty -> {
+//                            Text("No data", color = Color.Black)
+                        }
                         is Resource.Error -> {
                             val error_msg = (data_paket_state as Resource.Error).errorMessage
                             Text("Data Error! | $error_msg", color = Color.Black)
