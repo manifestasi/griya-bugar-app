@@ -60,8 +60,8 @@ fun GriyaBugarApp(
                     navController.navigate(Screen.ForgotPassword.route)
                 },
                 onNavigateToMain = {
-                    navController.navigate(Screen.Main.route){
-                        popUpTo(0){
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(0) {
                             inclusive = true
                         }
                         launchSingleTop = true
@@ -74,7 +74,7 @@ fun GriyaBugarApp(
                         }
                         launchSingleTop = true
                     }
-                }
+                },
             )
         }
         composable(Screen.Register.route){

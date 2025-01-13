@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -68,6 +69,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
 import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.model.ItemPemesananModel
 import com.griya.griyabugar.ui.components.Button.BoxButton
 import com.griya.griyabugar.ui.components.Button.BoxButtonBorder
 import com.griya.griyabugar.ui.components.Button.BoxButtonBorderDP
@@ -110,7 +112,7 @@ fun DetailPemesananItem(modifier: Modifier=Modifier,
                         tanggal_pesan:String,
                         status:String,
                         jam:String,
-                        rated:Boolean,
+                        rated:MutableState<Boolean>,
                         rating:Int,
                         terapis:String,
                         terapis_url:String,
@@ -187,7 +189,7 @@ fun DetailPemesananItem(modifier: Modifier=Modifier,
                     "SELESAI" -> Icon(
                         imageVector = Icons.Outlined.CheckCircle,
                         contentDescription = "cek",
-                        tint = if (rated) GreenMain else abu,
+                        tint = if (rated.value) GreenMain else abu,
                         modifier = Modifier.size(30.dp)
                     )
 
@@ -563,7 +565,7 @@ fun DetailPemesananItem(modifier: Modifier=Modifier,
                     modifier = Modifier.fillMaxWidth()
                 ) {
 
-                    if (rated) {
+                    if (rated.value) {
 
                         Box(
                             modifier = Modifier
@@ -712,10 +714,12 @@ fun DetailPemesananScreen(
     val terapis_url = rememberSaveable { mutableStateOf("") }
 
     val data_detail_stateMap by detailViewModel.detail_data.collectAsState()
-    val data_result_state = data_detail_stateMap[uuid_doc] ?: Resource.Empty
+    var data_result_state = data_detail_stateMap[uuid_doc] ?: Resource.Empty
     val updateStateBatal by pemesananViewModel.updateResult.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var showDialogRate by remember { mutableStateOf(false) }
+    var onBatalPressed by rememberSaveable { mutableStateOf(false) }
+    var onSimpanPressed by remember { mutableStateOf(false) }
 
     LaunchedEffect(uuid_doc) {
         if(data_result_state == Resource.Empty){
@@ -809,6 +813,7 @@ fun DetailPemesananScreen(
                                     new_value = "BATAL"
                                 )
                                 showDialog = false
+                                onBatalPressed = true
                             }
                         ) {
                             Text("Ya", fontFamily = poppins, color = Color.Black)
@@ -824,35 +829,44 @@ fun DetailPemesananScreen(
                         }
                     }
                 )
+
             }
 
             /*
-            * cek state batal button
-            * */
-            when (updateStateBatal) {
-                is Resource.Success -> {
-                    Toast.makeText(
-                        context,
-                        "Berhasil membatalkan pesanan",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    rootNavControll.popBackStack()
-                }
+        * cek state batal button
+        * */
+            if(onBatalPressed){
+                when (val s =  updateStateBatal) {
+                    is Resource.Success -> {
+                        val g = s.data
+                        if (g == true){
+                            Toast.makeText(
+                                context,
+                                "Berhasil membatalkan pesanan",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            rootNavControll.popBackStack()
+                        }
+                    }
 
-                is Resource.Error -> {
-                    Toast.makeText(
-                        context,
-                        "Gagal membatalkan!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                    is Resource.Error -> {
+                        Toast.makeText(
+                            context,
+                            "Gagal membatalkan!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                else -> {
-                    /*
-                    * kosong ii ae
-                    * */
+                    else -> {
+                        /*
+                        * kosong ii ae
+                        * */
+                    }
                 }
             }
+
+
+
 
             /*
             * cek button state onRate
@@ -862,15 +876,44 @@ fun DetailPemesananScreen(
                 RateDialog(
                     onDismissRequest = {
                         showDialogRate = false
+                        onSimpanPressed = false
                     },
                     onBatalClick = {
                         showDialogRate = false
+                        onSimpanPressed = false
                     },
                     onSimpanClick = {
-
+                        showDialogRate = false
+                        onSimpanPressed = true
+                        data_result_state = Resource.Empty
                     },
                     uuid_doc = uuid_doc
                 )
+                Log.d("AFTER RATED", "DIALOG RATED KIII")
+            }
+
+            if(onSimpanPressed){
+                LaunchedEffect(uuid_doc) {
+                    if(data_result_state == Resource.Empty){
+                        detailViewModel.fetchDetailById(uuid_doc!!)
+                    }
+                }
+
+                when(data_detail_stateMap[uuid_doc]){
+                    is Resource.Success -> {
+                        rated.value = (data_result_state as Resource.Success<ItemPemesananModel>).data.rated
+                        Toast.makeText(context, "Berhasil memberi rating!", Toast.LENGTH_SHORT).show()
+                        rootNavControll.navigate("main")
+
+                    }
+
+                    is Resource.Error -> {
+                        Toast.makeText(context, "Gagal memberi rating!", Toast.LENGTH_SHORT).show()
+
+                    }
+
+                    else -> {}
+                }
             }
 
 
@@ -887,7 +930,7 @@ fun DetailPemesananScreen(
             /*
             *  layanan state
             * */
-            val data_result = data_result_state.data
+            val data_result = (data_result_state as Resource.Success<ItemPemesananModel>).data
             Log.d("DATA RESULT", "DATA RESULT : ${data_result}")
             val layananStateMap by layananViewModel.layananState.collectAsState()
             val arr_layanan = remember(data_result.id_paket) { mutableStateListOf<String>() }
@@ -936,6 +979,9 @@ fun DetailPemesananScreen(
                 }
             }
 
+            /*
+            * perhitungan diskon, harga, total harga
+            * */
             when(data_paket_state){
                 is Resource.Success -> {
                     val paket = data_paket_state.data
@@ -999,7 +1045,7 @@ fun DetailPemesananScreen(
                         tanggal_pesan = tanggal_pesan.value,
                         status = status.value,
                         jam = jam.value,
-                        rated = rated.value,
+                        rated = rated,
                         rating = rating.value,
                         terapis = terapis.value,
                         terapis_url = terapis_url.value,
