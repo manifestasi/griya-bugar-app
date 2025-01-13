@@ -102,4 +102,7 @@ dependencies {
 
     //gson
     implementation(libs.gson)
+
+    // firebase messaging
+    implementation(libs.firebase.messaging)
 }
