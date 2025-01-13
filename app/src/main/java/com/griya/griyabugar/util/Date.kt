@@ -13,6 +13,12 @@ object Date {
         return dateFormat.format(Date(currentTimeMillis))
     }
 
+    fun getCurrentDateFromMillis2(): String {
+        val currentTimeMillis = System.currentTimeMillis()
+        val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+        return dateFormat.format(Date(currentTimeMillis))
+    }
+
     fun getCurrentDateFromDay(day: Int): String {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.DAY_OF_MONTH, day)

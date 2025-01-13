@@ -8,9 +8,11 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.DataUser
+import com.griya.griyabugar.data.model.DataUserWithTokenMessaging
 import com.griya.griyabugar.util.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore,
+    private val firebaseMessaging: FirebaseMessaging,
     @ApplicationContext private val context: Context
 ) {
     private fun isValidEmail(email: String): Boolean {
@@ -270,6 +273,43 @@ class AuthRepository @Inject constructor(
                 throw Exception("Oops, maaf kamu tidak di izinkan masuk")
             }
 
+            if (dataUser.role == ADMIN){
+                firebaseMessaging.subscribeToTopic(ADMIN)
+                    .addOnCompleteListener { task ->
+                        var msg = "Subscribed"
+                        if (!task.isSuccessful) {
+                            msg = "Subscribe failed"
+                        }
+                        Log.d("loginAccount", msg)
+                    }
+            } else {
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                    if (!task.isSuccessful){
+                        Log.w("token", "Fetching FCM registration token failed", task.exception)
+                        return@addOnCompleteListener
+                    }
+
+                    val token = task.result
+
+                    firebaseFirestore.collection(COLLECTION_USER)
+                        .document(result.user?.uid ?: "")
+                        .set(DataUserWithTokenMessaging(
+                            nama = dataUser.nama,
+                            foto = dataUser.foto,
+                            role = dataUser.role,
+                            email = dataUser.email,
+                            kelamin = dataUser.kelamin,
+                            noTelepon = dataUser.noTelepon,
+                            tokenMessaging = token
+                        ))
+                        .addOnSuccessListener {
+                            Log.w("token", "Save token FCM Successfull")
+                        }
+
+                    Log.d("token result", token)
+                }
+            }
+
             Preferences.saveToPreferences(context = context, ROLE, dataUser.role ?: "")
 
             emit(Resource.Success(dataUser))
@@ -287,6 +327,8 @@ class AuthRepository @Inject constructor(
             delay(2000)
 
             firebaseAuth.signOut()
+
+            firebaseMessaging.unsubscribeFromTopic(ADMIN).await()
 
             emit(Resource.Success(firebaseAuth.currentUser == null))
 

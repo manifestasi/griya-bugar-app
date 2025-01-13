@@ -2,13 +2,18 @@ package com.griya.griyabugar.data.respository
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.core.app.NotificationCompat.MessagingStyle.Message
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.model.DataNotificationModel
 import com.griya.griyabugar.data.model.ItemPemesananModel
 import com.griya.griyabugar.data.model.ItemPemesananModel2
 import com.griya.griyabugar.data.model.LayananModel
 import com.griya.griyabugar.data.respository.LayananRepository.Companion.LAYANAN_COLLECTION
+import com.griya.griyabugar.data.respository.NotificationRepository.Companion.COLLECTION
 import com.griya.griyabugar.util.Date
 import com.griya.griyabugar.util.Order
 import kotlinx.coroutines.Dispatchers
@@ -23,19 +28,23 @@ import javax.inject.Inject
 class PemesananRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-
+    private val firebaseMessaging: FirebaseMessaging
 ) {
 
     fun addPemesanan(
         id_paket: String,
         jam_pemesanan: String,
         rated: Boolean,
-        tanggal_servis: String
+        tanggal_servis: String,
+        kategori: String,
+        paket: String
     ): Flow<Resource<String>> = flow {
         emit(Resource.Loading)
 
         try {
+
             val user = firebaseAuth.currentUser
+
             firestore.collection(PEMESANAN_COLLECTION)
                 .add(ItemPemesananModel2(
                     id_user = user?.uid ?: "",
@@ -50,11 +59,33 @@ class PemesananRepository @Inject constructor(
                 ))
                 .await()
 
+            firestore.collection(AuthRepository.COLLECTION_USER)
+                .document(user?.uid ?: "")
+                .collection(COLLECTION)
+                .add(
+                    DataNotificationModel(
+                    title = "Pesanan berhasil dibuat",
+                    text = "$kategori, $paket pukul $jam_pemesanan WIB",
+                    date = Date.getCurrentDateFromMillis2(),
+                    timeStamp = System.currentTimeMillis()
+                )
+                )
+                .await()
+
+            val message = RemoteMessage.Builder("/topics/${AuthRepository.ADMIN}")
+                .addData("title", "Ada yang memesan")
+                .addData("body", "Ada yang memesan paket $kategori, pukul $jam_pemesanan")
+                .build()
+
+            firebaseMessaging.send(message)
+
             emit(Resource.Success("Berhasil di pesan"))
+
         } catch (e: Exception){
             Log.e("addPemesanan", "Error: ${e.message.toString()}")
             emit(Resource.Error(e.message.toString()))
         }
+
     }.flowOn(Dispatchers.IO)
 
     fun getPemesananData(): Flow<Resource<List<ItemPemesananModel>?>> = callbackFlow {

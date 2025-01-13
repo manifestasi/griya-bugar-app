@@ -304,7 +304,9 @@ private fun ContentSection(
                             id_paket = dataPaket?.id ?: "",
                             rated = false,
                             jam_pemesanan = selectedTime,
-                            tanggal_servis = Date.getCurrentDateFromDay(selectedDates)
+                            tanggal_servis = Date.getCurrentDateFromDay(selectedDates),
+                            kategori = dataPaket?.kategori ?: "",
+                            paket = dataPaket?.title ?: ""
                         ).collect { event ->
                             when (event){
                                 is Resource.Loading -> {
