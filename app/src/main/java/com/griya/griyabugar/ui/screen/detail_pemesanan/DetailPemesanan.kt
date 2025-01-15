@@ -614,7 +614,9 @@ fun DetailPemesananItem(modifier: Modifier=Modifier,
                                     Spacer(modifier = Modifier.width(5.dp))
                                     BoxButtonBorderDP(
                                         text = "Edit Penilaian",
-                                        onClick = {},
+                                        onClick = {
+                                            onRate()
+                                        },
                                         width = 100.dp,
                                         height = 25.dp,
                                         fontSize = 12.sp,
@@ -813,7 +815,7 @@ fun DetailPemesananScreen(
                                     new_value = "BATAL"
                                 )
                                 showDialog = false
-                                onBatalPressed = true
+
                             }
                         ) {
                             Text("Ya", fontFamily = poppins, color = Color.Black)
@@ -835,33 +837,35 @@ fun DetailPemesananScreen(
             /*
         * cek state batal button
         * */
-            if(onBatalPressed){
-                when (val s =  updateStateBatal) {
-                    is Resource.Success -> {
-                        val g = s.data
-                        if (g == true){
-                            Toast.makeText(
-                                context,
-                                "Berhasil membatalkan pesanan",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            rootNavControll.popBackStack()
-                        }
-                    }
+//            if(onBatalPressed){
+//
+//            }
 
-                    is Resource.Error -> {
+            when (val s =  updateStateBatal) {
+                is Resource.Success -> {
+                    val g = s.data
+                    if (g == true){
                         Toast.makeText(
                             context,
-                            "Gagal membatalkan!",
+                            "Berhasil membatalkan pesanan",
                             Toast.LENGTH_SHORT
                         ).show()
+                        rootNavControll.navigate("main")
                     }
+                }
 
-                    else -> {
-                        /*
-                        * kosong ii ae
-                        * */
-                    }
+                is Resource.Error -> {
+                    Toast.makeText(
+                        context,
+                        "Gagal membatalkan!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                else -> {
+                    /*
+                    * kosong ii ae
+                    * */
                 }
             }
 
@@ -1056,13 +1060,16 @@ fun DetailPemesananScreen(
                             showDialogRate = true
                         },
                         onPesanLain = {
-                            rootNavControll.navigate(Screen.Main.route)
-                        },
+//                            rootNavControll.navigate(Screen.Main.route)
+                            rootNavControll.navigate("main")
+
+                                      },
                         onPesanLagi = {
                             /*
                             * sesuaikan ini
                             * */
-                            rootNavControll.navigate(Screen.Main.route)
+//                            rootNavControll.navigate(Screen.Main.route)
+                            rootNavControll.navigate("main")
                         }
                     )
                 }
