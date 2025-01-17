@@ -1,5 +1,6 @@
 package com.griya.griyabugar.ui.screen.main.home
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,15 +23,25 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
+import com.griya.griyabugar.data.Resource
+import com.griya.griyabugar.data.model.DataNotificationModel
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton
 import com.griya.griyabugar.ui.components.appbar.AppBarWithBackButton2
 import com.griya.griyabugar.ui.theme.BackgroundColor
@@ -37,12 +49,23 @@ import com.griya.griyabugar.ui.theme.DisabledColor
 import com.griya.griyabugar.ui.theme.GreenColor6
 import com.griya.griyabugar.ui.theme.TextColorBlack
 import com.griya.griyabugar.ui.theme.poppins
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @Composable
 fun NotifikasiScreen(
-    rootNavControll: NavHostController = rememberNavController()
+    rootNavControll: NavHostController = rememberNavController(),
+    notifikasiViewModel: NotifikasiViewModel = hiltViewModel()
 ) {
     var count = 10
+    val dataNotification by notifikasiViewModel.dataNotification.collectAsState()
+
+    LaunchedEffect(Unit) {
+        notifikasiViewModel.fetchGetAllNotification()
+    }
+
     Scaffold() { innerPadding ->
         Column(
             modifier = Modifier
@@ -58,24 +81,66 @@ fun NotifikasiScreen(
                 }
             )
 
-            if (count == 0) {
-                NotifikasiKosong(modifier = Modifier)
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(count) {
-                        NotifikasiItem(modifier = Modifier)
+            when (dataNotification) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    val notificationData = (dataNotification as Resource.Success<List<DataNotificationModel>>).data
+
+                    if (notificationData.isEmpty()) {
+                        NotifikasiKosong(modifier = Modifier.fillMaxSize())
+                    } else {
+                        LazyColumn(
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(notificationData, key = { it.timeStamp ?: it.uid }) { notifikasi ->
+                                NotifikasiItem(
+                                    modifier = Modifier,
+                                    dataNotification = notifikasi,
+                                    notifikasiViewModel = notifikasiViewModel
+                                )
+                            }
+                        }
                     }
                 }
+                is Resource.Error -> {
+                    Text(
+                        text = "Terjadi error: ${(dataNotification as Resource.Error).errorMessage}",
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+                else -> {
+                    NotifikasiKosong(modifier = Modifier.fillMaxSize())
+                }
             }
+
+
+//            if (count == 0) {
+//                NotifikasiKosong(modifier = Modifier)
+//            } else {
+//                LazyColumn(
+//                    contentPadding = PaddingValues(16.dp),
+//                    verticalArrangement = Arrangement.spacedBy(16.dp)
+//                ) {
+//                    items(count) {
+//                        NotifikasiItem(modifier = Modifier)
+//                    }
+//                }
+//            }
         }
     }
 }
 
 @Composable
-private fun NotifikasiItem(modifier: Modifier = Modifier) {
+private fun NotifikasiItem(
+    modifier: Modifier = Modifier,
+    dataNotification: DataNotificationModel,
+    notifikasiViewModel: NotifikasiViewModel,
+    scope: CoroutineScope = rememberCoroutineScope()
+) {
+    val context = LocalContext.current
     OutlinedCard(
         colors = CardDefaults.cardColors(
             containerColor = BackgroundColor
@@ -94,7 +159,7 @@ private fun NotifikasiItem(modifier: Modifier = Modifier) {
         ) {
             Column {
                 Text(
-                    text = "2 Januari 2024",
+                    text = dataNotification.date,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
@@ -103,7 +168,7 @@ private fun NotifikasiItem(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = "Pesanan berhasil dibuat",
+                    text = dataNotification.title,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
@@ -112,7 +177,7 @@ private fun NotifikasiItem(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = "Reguler paket 2 jam pukul 10.00 WIB",
+                    text = dataNotification.text,
                     fontFamily = poppins,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
@@ -121,7 +186,26 @@ private fun NotifikasiItem(modifier: Modifier = Modifier) {
                 )
             }
             IconButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        notifikasiViewModel.deleteNotification(
+                            dataNotification.uid
+                        )
+                            .catch {  }
+                            .collect { event ->
+                                when (event){
+                                    is Resource.Loading -> {
+                                        Toast.makeText(context, "Proses delete", Toast.LENGTH_SHORT).show()
+                                    }
+                                    is Resource.Success -> {
+                                        Toast.makeText(context, event.data, Toast.LENGTH_SHORT).show()
+                                        notifikasiViewModel.fetchGetAllNotification()
+                                    }
+                                    else -> {}
+                                }
+                            }
+                    }
+                },
                 modifier = Modifier
                     .size(30.dp)
                     .align(Alignment.TopEnd)

@@ -5,6 +5,6 @@ data class DataNotificationModel(
     val title: String = "",
     val text: String = "",
     val date: String = "",
-    val isRead: Boolean = false,
+    val read: Boolean = false,
     val timeStamp: Long = 0L
 )

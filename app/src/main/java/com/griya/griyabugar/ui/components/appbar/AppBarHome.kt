@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -18,21 +19,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.griya.griyabugar.R
 import com.griya.griyabugar.ui.navigation.Screen
+import com.griya.griyabugar.ui.theme.GriyaBugarTheme
 import com.griya.griyabugar.ui.theme.TextColorWhite
 import com.griya.griyabugar.ui.theme.poppins
 
 @Composable
 fun AppBarHome(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     rootNavController: NavHostController = rememberNavController(),
-    username: String = ""
+    username: String = "",
+    notif: Boolean = false
 ) {
     Box(
         modifier = modifier
@@ -69,13 +74,34 @@ fun AppBarHome(
                 .size(40.dp)
                 .align(Alignment.TopEnd)
         ) {
-            Icon(
-                painterResource(R.drawable.ic_notif),
-                contentDescription = "Icon",
-                tint = Color.Black,
-                modifier = Modifier.size(20.dp)
+            Box {
+                Icon(
+                    painterResource(R.drawable.ic_notif),
+                    contentDescription = "Icon",
+                    tint = Color.Black,
+                    modifier = Modifier.size(20.dp)
 
-            )
+                )
+                if (notif){
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .background(
+                                color = Color.Red,
+                                shape = RoundedCornerShape(100)
+                            )
+                            .align(Alignment.TopEnd)
+                    )
+                }
+            }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppBarHomePreview(){
+    GriyaBugarTheme {
+        AppBarHome()
     }
 }

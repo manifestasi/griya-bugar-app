@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -53,6 +54,8 @@ fun MainScreen(
 
     var username by rememberSaveable { mutableStateOf("") }
 
+    var unreadCount by rememberSaveable { mutableIntStateOf(0) }
+
     LaunchedEffect(Unit) {
         mainViewModel.getDataUser()
             .catch {  }
@@ -68,6 +71,19 @@ fun MainScreen(
             }
         }
 
+        mainViewModel.countNotificationUnread()
+            .catch {  }
+            .collect { event ->
+                when (event){
+                    is Resource.Loading -> {
+
+                    }
+                    is Resource.Success -> {
+                        unreadCount = event.data
+                    }
+                    else -> {}
+                }
+            }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -97,7 +113,8 @@ fun MainScreen(
                             )
                         )
                     ),
-                    username = username
+                    username = username,
+                    notif = unreadCount != 0
                 )
             } else if (currentRoute == Screen.Order.route){
                 AppBarBasic(
