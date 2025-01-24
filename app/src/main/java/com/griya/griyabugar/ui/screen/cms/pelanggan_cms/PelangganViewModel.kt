@@ -81,16 +81,21 @@ class PelangganViewModel @Inject constructor(
     /*
     * function untuk update data
     * */
-    fun updateData(uuid:String,
-                   field:String,
-                   new_value:Any
+    fun updateData(
+        uuid:String,
+        field:String,
+        new_value:Any,
+        id_user: String,
+        no_pesanan: String
     ){
 
         viewModelScope.launch {
             pemesananRepository.updateDataPemesanan(
                 uuid,
+                no_pesanan,
                 field,
-                new_value
+                new_value,
+                id_user,
             ).collect{
                     result ->
                 _updateResult.value = result

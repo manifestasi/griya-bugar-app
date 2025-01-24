@@ -57,6 +57,8 @@ fun PelangganCMSScreen(
     var showDialogUpdate by remember { mutableStateOf(false) }
     var uuid_doc by remember { mutableStateOf("") }
     var name_to_edit by remember { mutableStateOf("") }
+    var id_user by remember { mutableStateOf("") }
+    var no_pesanan by remember { mutableStateOf("") }
 
     val pelanggan_pemesanan_state = pelangganViewModel.getAllPemesananState.collectAsState()
 
@@ -123,13 +125,15 @@ fun PelangganCMSScreen(
                                         arr_pelanggan.add(
                                             PelangganModel(
                                                 uuid_doc = dt.uuid_doc,
+                                                id_user = dt.id_user,
                                                 nama = pelanggan_data.nama!!,
                                                 status = dt.status,
                                                 kategori = paket_data.kategori ?: "",
                                                 title = paket_data.title ?: "",
                                                 tanggal = dt.tanggal_servis,
                                                 url_img = pelanggan_data.foto ?: "",
-                                                jam = dt.jam_pemesanan
+                                                jam = dt.jam_pemesanan,
+                                                no_pesanan = dt.nomor_pesanan.toString()
                                             )
                                         )
 
@@ -219,7 +223,9 @@ fun PelangganCMSScreen(
             },
             uuid_doc = uuid_doc,
             name_to_edit = name_to_edit,
-            pelangganViewModel = pelangganViewModel
+            pelangganViewModel = pelangganViewModel,
+            id_user = id_user,
+            no_pesanan = no_pesanan
         )
     }
 
@@ -339,6 +345,8 @@ fun PelangganCMSScreen(
                         onEditClick = {
                             uuid_doc = item.uuid_doc
                             name_to_edit = item.status
+                            id_user = item.id_user
+                            no_pesanan = item.no_pesanan
                             showDialogUpdate = true
                         }
                     )

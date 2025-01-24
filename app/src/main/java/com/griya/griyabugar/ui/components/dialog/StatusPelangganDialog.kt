@@ -36,6 +36,8 @@ import com.griya.griyabugar.ui.theme.poppins
 @Composable
 fun StatusPelangganDialog(
     title:String,
+    id_user: String = "",
+    no_pesanan: String = "",
     onDismiss:()->Unit,
     modifier: Modifier = Modifier,
     width:Float = 0.9f,
@@ -120,7 +122,9 @@ fun StatusPelangganDialog(
                                 pelangganViewModel.updateData(
                                     uuid = uuid_doc,
                                     field = "status",
-                                    new_value = selectedStatus
+                                    new_value = selectedStatus,
+                                    id_user = id_user,
+                                    no_pesanan = no_pesanan
                                 )
                             },
                             fontColor = Color.White,

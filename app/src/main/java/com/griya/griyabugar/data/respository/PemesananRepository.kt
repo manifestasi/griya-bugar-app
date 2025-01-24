@@ -7,9 +7,9 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.DataNotificationModel
+import com.griya.griyabugar.data.model.DataUserWithTokenMessaging
 import com.griya.griyabugar.data.model.ItemPemesananModel
 import com.griya.griyabugar.data.model.ItemPemesananModel2
-import com.griya.griyabugar.data.respository.NotificationRepository.Companion.COLLECTION
 import com.griya.griyabugar.util.Date
 import com.griya.griyabugar.util.Order
 import kotlinx.coroutines.Dispatchers
@@ -57,7 +57,7 @@ class PemesananRepository @Inject constructor(
 
             firestore.collection(AuthRepository.COLLECTION_USER)
                 .document(user?.uid ?: "")
-                .collection(COLLECTION)
+                .collection(NotificationRepository.COLLECTION)
                 .add(
                     DataNotificationModel(
                     title = "Pesanan berhasil dibuat",
@@ -175,34 +175,103 @@ class PemesananRepository @Inject constructor(
 
     fun updateDataPemesanan(
         uuid_doc: String,
+        no_pesanan: String,
         field : String,
-        new_value:Any
+        new_value:Any,
+        id_user: String
     ):Flow<Resource<Boolean>> = callbackFlow {
         trySend(Resource.Loading)
 
-        val id_user = firebaseAuth.currentUser?.uid
+        val user_id = firebaseAuth.currentUser?.uid
+        val user = firebaseAuth.currentUser
 
-        if(id_user == null){
+        if(user_id == null){
             trySend(Resource.Error("User Invalid!"))
             close()
             return@callbackFlow
         }
 
-           val updateTask =  firestore.collection(PEMESANAN_COLLECTION)
-                .document(uuid_doc)
-                .update(
-                    field,
-                    new_value
+        val getDataUsers = firestore.collection(AuthRepository.COLLECTION_USER)
+            .document(id_user)
+            .get()
+            .await()
+
+        val dataUser = getDataUsers?.toObject(DataUserWithTokenMessaging::class.java)
+
+        val token = dataUser?.tokenMessaging ?: ""
+        val message = RemoteMessage.Builder(token)
+            .addData("title", "Pesanan $new_value")
+            .addData("body", "Pesanan yang kamu pesan sudah $new_value")
+            .build()
+
+        firebaseMessaging.send(message)
+
+        firestore.collection(AuthRepository.COLLECTION_USER)
+            .document(id_user)
+            .collection(NotificationRepository.COLLECTION)
+            .add(
+                DataNotificationModel(
+                    title = "Pesanan $new_value",
+                    text = "Pesanan dengan no $no_pesanan $new_value",
+                    date = Date.getCurrentDateFromMillis2(),
+                    timeStamp = System.currentTimeMillis()
                 )
-            val listeners = updateTask
-                .addOnSuccessListener {
+            )
+            .await()
+
+        val updateTask =  firestore.collection(PEMESANAN_COLLECTION)
+            .document(uuid_doc)
+            .update(
+                field,
+                new_value
+            )
+        val listeners = updateTask
+            .addOnSuccessListener {
                 trySend(Resource.Success(true))
                 close()
-                }
-                .addOnFailureListener {
-                    trySend(Resource.Error("Error!, Gagal update"))
-                    close()
-                }
+            }
+            .addOnFailureListener {
+                trySend(Resource.Error("Error!, Gagal update"))
+                close()
+            }
+
+        awaitClose {
+            listeners
+        }
+
+    }.flowOn(Dispatchers.IO)
+
+
+    fun updateDataPemesanan2(
+        uuid_doc: String,
+        field : String,
+        new_value:Any,
+    ):Flow<Resource<Boolean>> = callbackFlow {
+        trySend(Resource.Loading)
+
+        val user_id = firebaseAuth.currentUser?.uid
+
+        if(user_id == null){
+            trySend(Resource.Error("User Invalid!"))
+            close()
+            return@callbackFlow
+        }
+
+        val updateTask =  firestore.collection(PEMESANAN_COLLECTION)
+            .document(uuid_doc)
+            .update(
+                field,
+                new_value
+            )
+        val listeners = updateTask
+            .addOnSuccessListener {
+                trySend(Resource.Success(true))
+                close()
+            }
+            .addOnFailureListener {
+                trySend(Resource.Error("Error!, Gagal update"))
+                close()
+            }
 
         awaitClose {
             listeners

@@ -55,7 +55,7 @@ class PemesananViewModel @Inject constructor(
                    ){
 
         viewModelScope.launch {
-            pemesananRepository.updateDataPemesanan(
+            pemesananRepository.updateDataPemesanan2(
                 uuid,
                 field,
                 new_value
