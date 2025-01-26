@@ -8,6 +8,7 @@ import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.DataTerapis
 import com.griya.griyabugar.data.model.DataUser
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
+import com.griya.griyabugar.data.model.PaketModelWithLayanan2
 import com.griya.griyabugar.data.respository.PaketRepository
 import com.griya.griyabugar.data.respository.TerapisRepository
 import com.griya.griyabugar.data.respository.UserDataRepository
@@ -45,8 +46,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val _dataPaket = MutableStateFlow<Resource<List<PaketModelWithLayanan>>>(Resource.Loading)
-    val dataPaket: StateFlow<Resource<List<PaketModelWithLayanan>>> = _dataPaket
+    private val _dataPaket = MutableStateFlow<Resource<List<PaketModelWithLayanan2>>>(Resource.Loading)
+    val dataPaket: StateFlow<Resource<List<PaketModelWithLayanan2>>> = _dataPaket
 
     private fun fetchAllPaket(){
         viewModelScope.launch {

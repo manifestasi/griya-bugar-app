@@ -105,7 +105,7 @@ private fun HeaderSection(
     Box(modifier = modifier.fillMaxWidth()) {
 
         GlideImage(
-            model = sharedViewModel.paketModel?.fotoDetail ?: "",
+            model = sharedViewModel.paketModel2?.fotoDetail ?: "",
             contentDescription = "image",
             modifier = Modifier
                 .fillMaxWidth()
@@ -126,7 +126,7 @@ private fun ContentSection(
     detailPaketViewModel: DetailPaketViewModel,
     scope: CoroutineScope
 ) {
-    val dataPaket = sharedViewModel.paketModel
+    val dataPaket = sharedViewModel.paketModel2
     var showJamDialog by remember { mutableStateOf(false) }
     var selectedTime by remember { mutableStateOf("10.00") }
 //    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }

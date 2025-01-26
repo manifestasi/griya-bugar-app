@@ -7,6 +7,7 @@ import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.PaketModel
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
+import com.griya.griyabugar.data.model.PaketModelWithLayanan2
 import com.griya.griyabugar.data.respository.PaketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +21,8 @@ class PaketScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     // StateFlow untuk menyimpan status data paket
-    private val _paketState = MutableStateFlow<Resource<List<PaketModelWithLayanan>>>(Resource.Loading)
-    val paketState: StateFlow<Resource<List<PaketModelWithLayanan>>> = _paketState
+    private val _paketState = MutableStateFlow<Resource<List<PaketModelWithLayanan2>>>(Resource.Loading)
+    val paketState: StateFlow<Resource<List<PaketModelWithLayanan2>>> = _paketState
 
     // StateFlow untuk status penghapusan
     private val _deleteState = MutableStateFlow<UploadResult<Unit>>(UploadResult.Idle)

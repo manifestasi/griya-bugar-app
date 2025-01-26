@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.griya.griyabugar.data.model.DataService
 import com.griya.griyabugar.data.model.PaketModel
+import com.griya.griyabugar.data.model.PaketModel2
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -25,4 +26,6 @@ class SharedViewModel @Inject constructor() : ViewModel() {
 
     /* Paket */
     var paketModel: PaketModel? by mutableStateOf(null)
+
+    var paketModel2: PaketModel2? by mutableStateOf(null)
 }

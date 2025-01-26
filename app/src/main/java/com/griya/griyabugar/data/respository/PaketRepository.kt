@@ -14,9 +14,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.DataUser
+import com.griya.griyabugar.data.model.ItemPemesananModel2
 import com.griya.griyabugar.data.model.Layanan
 import com.griya.griyabugar.data.model.PaketModel
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
+import com.griya.griyabugar.data.model.PaketModelWithLayanan2
 import com.griya.griyabugar.util.ImageProcess
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -109,7 +111,7 @@ class PaketRepository @Inject constructor (
 //        }
 //    }
 
-    suspend fun getPaketWithLayananNames(): List<PaketModelWithLayanan> {
+    suspend fun getPaketWithLayananNames(): List<PaketModelWithLayanan2> {
         val paketSnapshot = firestore.collection("paket").get().await()
         val paketList = paketSnapshot.documents.mapNotNull { doc ->
             val layananIds = doc.get("layanan") as? List<String> ?: emptyList()
@@ -125,6 +127,14 @@ class PaketRepository @Inject constructor (
             )
         }
 
+        val pemesananSnapshot = firestore.collection(PemesananRepository.PEMESANAN_COLLECTION)
+            .get()
+            .await()
+
+        val getDataPemesanan = pemesananSnapshot?.toObjects(ItemPemesananModel2::class.java)
+
+
+
         val layananIds = paketList.flatMap { it.layanan }.distinct()
         val layananMap = if (layananIds.isNotEmpty()) {
             firestore.collection("layanan")
@@ -137,8 +147,27 @@ class PaketRepository @Inject constructor (
         }
 
         return paketList.map { paket ->
+            var rataRating = 0F
+            var totalSize = 0
             val layananNames = paket.layanan.mapNotNull { layananMap[it] }
-            PaketModelWithLayanan(
+
+            val filterDataPemesanan = getDataPemesanan?.filter {
+                it.id_paket == paket.id
+            }
+
+            if (filterDataPemesanan != null){
+                filterDataPemesanan.forEach {
+                    if (it.rated){
+                        rataRating += it.rating
+                        totalSize++
+                    }
+                }
+                Log.d("getPaketWithLayananNames", "jumlah: $totalSize")
+                Log.d("getPaketWithLayananNames", "rataRating: $rataRating")
+                rataRating /= totalSize
+            }
+
+            PaketModelWithLayanan2(
                 id = paket.id, // Menyertakan id dokumen
                 title = paket.title,
                 diskon = paket.diskon,
@@ -146,13 +175,14 @@ class PaketRepository @Inject constructor (
                 kategori = paket.kategori,
                 layananNames = layananNames,
                 fotoDepan = paket.fotoDepan,
-                fotoDetail = paket.fotoDetail
+                fotoDetail = paket.fotoDetail,
+                rating = rataRating
             )
         }
     }
 
 
-    fun getPaketWithLayananName(): Flow<Resource<List<PaketModelWithLayanan>>> = flow {
+    fun getPaketWithLayananName(): Flow<Resource<List<PaketModelWithLayanan2>>> = flow {
         emit(Resource.Loading)
 
         try {

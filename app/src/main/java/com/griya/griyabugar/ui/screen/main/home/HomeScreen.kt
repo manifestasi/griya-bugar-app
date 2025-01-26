@@ -54,7 +54,9 @@ import com.griya.griyabugar.R
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.model.DataTerapis
 import com.griya.griyabugar.data.model.PaketModel
+import com.griya.griyabugar.data.model.PaketModel2
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
+import com.griya.griyabugar.data.model.PaketModelWithLayanan2
 import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.Rating
 import com.griya.griyabugar.ui.components.home.ServiceRow
@@ -141,7 +143,7 @@ fun HomeScreen(
             }
             is Resource.Success -> {
 
-                val dataResult = (dataPaket as Resource.Success<List<PaketModelWithLayanan>>).data
+                val dataResult = (dataPaket as Resource.Success<List<PaketModelWithLayanan2>>).data
                 val promoResult = dataResult.filter {
                     it.kategori == "PROMOSI"
                 }
@@ -288,7 +290,7 @@ fun AddressSection(modifier: Modifier) {
 @Composable
 fun PromoSection(
     sharedViewModel: SharedViewModel,
-    dataPromo: List<PaketModelWithLayanan>,
+    dataPromo: List<PaketModelWithLayanan2>,
     rootNavController: NavHostController = rememberNavController(),
     modifier: Modifier
 ) {
@@ -312,7 +314,7 @@ fun PromoSection(
                 modifier = modifier
                     .fillMaxWidth()
                     .clickable {
-                        sharedViewModel.paketModel = PaketModel(
+                        sharedViewModel.paketModel2 = PaketModel2(
                             id = it.id,
                             title = it.title,
                             harga = it.harga,
@@ -320,7 +322,8 @@ fun PromoSection(
                             fotoDepan = it.fotoDepan,
                             fotoDetail = it.fotoDetail,
                             diskon = it.diskon,
-                            kategori = it.kategori
+                            kategori = it.kategori,
+                            rating = it.rating
                         )
                         rootNavController.navigate(Screen.DetailPaket.route)
                     }
@@ -346,7 +349,7 @@ fun PromoSection(
                                 fontWeight = FontWeight.Normal,
                             )
                             Spacer(modifier = Modifier.width(5.dp))
-                            Rating(rate = "4.5")
+                            Rating(rate = it.rating.toString())
                         }
                         Spacer(modifier = Modifier.height(5.dp))
                         Row {
@@ -377,7 +380,7 @@ fun PromoSection(
 fun RegulerSection(
     modifier: Modifier,
     sharedViewModel: SharedViewModel,
-    dataReguler: List<PaketModelWithLayanan>,
+    dataReguler: List<PaketModelWithLayanan2>,
     rootNavController: NavHostController,
 ) {
     // Konten Paket Promosi
@@ -400,7 +403,7 @@ fun RegulerSection(
                 modifier = modifier
                     .fillMaxWidth()
                     .clickable {
-                        sharedViewModel.paketModel = PaketModel(
+                        sharedViewModel.paketModel2 = PaketModel2(
                             id = it.id,
                             title = it.title,
                             harga = it.harga,
@@ -408,7 +411,8 @@ fun RegulerSection(
                             fotoDepan = it.fotoDepan,
                             fotoDetail = it.fotoDetail,
                             diskon = it.diskon,
-                            kategori = it.kategori
+                            kategori = it.kategori,
+                            rating = it.rating
                         )
 
                         rootNavController.navigate(Screen.DetailPaket.route)
@@ -435,7 +439,7 @@ fun RegulerSection(
                                 fontWeight = FontWeight.Normal,
                             )
                             Spacer(modifier = Modifier.width(5.dp))
-                            Rating(rate = "4.5")
+                            Rating(rate = it.rating.toString())
                         }
                         Spacer(modifier = Modifier.height(5.dp))
                         Row {

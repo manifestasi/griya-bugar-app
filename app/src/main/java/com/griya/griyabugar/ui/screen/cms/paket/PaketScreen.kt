@@ -55,6 +55,7 @@ import com.griya.griyabugar.R
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
 import com.griya.griyabugar.data.model.PaketModelWithLayanan
+import com.griya.griyabugar.data.model.PaketModelWithLayanan2
 import com.griya.griyabugar.ui.components.Button.ButtonDelete
 import com.griya.griyabugar.ui.components.Button.ButtonEdit
 import com.griya.griyabugar.ui.components.appbar.AppBarWithDrawer
@@ -111,7 +112,7 @@ fun PaketScreen(
 
                 is Resource.Success -> {
                     val paketList =
-                        (paketState as Resource.Success<List<PaketModelWithLayanan>>).data
+                        (paketState as Resource.Success<List<PaketModelWithLayanan2>>).data
                     LazyColumn(
                         modifier = Modifier
                             .padding(paddingValues)
@@ -267,7 +268,7 @@ fun GradientFloatingActionButton(
 fun PaketItem(
     onDeleteClick: (String) -> Unit,
     rootNavController: NavHostController = rememberNavController(),
-    paketModel: PaketModelWithLayanan,
+    paketModel: PaketModelWithLayanan2,
     preview: Boolean = false,
     modifier: Modifier = Modifier
 ) {
