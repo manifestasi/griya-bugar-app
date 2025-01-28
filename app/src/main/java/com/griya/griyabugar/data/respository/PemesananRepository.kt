@@ -1,8 +1,10 @@
 package com.griya.griyabugar.data.respository
 
+import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
 import com.griya.griyabugar.data.Resource
@@ -11,7 +13,9 @@ import com.griya.griyabugar.data.model.DataUserWithTokenMessaging
 import com.griya.griyabugar.data.model.ItemPemesananModel
 import com.griya.griyabugar.data.model.ItemPemesananModel2
 import com.griya.griyabugar.util.Date
+import com.griya.griyabugar.util.Fcm
 import com.griya.griyabugar.util.Order
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +28,8 @@ import javax.inject.Inject
 class PemesananRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-    private val firebaseMessaging: FirebaseMessaging
+    private val firebaseMessaging: FirebaseMessaging,
+    @ApplicationContext private val context: Context
 ) {
 
     fun addPemesanan(
@@ -68,12 +73,13 @@ class PemesananRepository @Inject constructor(
                 )
                 .await()
 
-            val message = RemoteMessage.Builder("/topics/${AuthRepository.ADMIN}")
-                .addData("title", "Ada yang memesan")
-                .addData("body", "Ada yang memesan paket $kategori, pukul $jam_pemesanan")
-                .build()
-
-            firebaseMessaging.send(message)
+            val token = Fcm.getAccessToken(context)
+            Fcm.sendFcmMessageTopic(
+                accessToken = token,
+                topic = AuthRepository.ADMIN,
+                title = "Ada yang memesan",
+                body = "Ada yang memesan paket $kategori, pukul $jam_pemesanan"
+            )
 
             emit(Resource.Success("Berhasil di pesan"))
 
@@ -95,6 +101,7 @@ class PemesananRepository @Inject constructor(
         }
 
         val listenerRegistration = firestore.collection(PEMESANAN_COLLECTION)
+            .orderBy("timemilis", Query.Direction.DESCENDING)
             .whereEqualTo("id_user", user_id)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -199,12 +206,14 @@ class PemesananRepository @Inject constructor(
         val dataUser = getDataUsers?.toObject(DataUserWithTokenMessaging::class.java)
 
         val token = dataUser?.tokenMessaging ?: ""
-        val message = RemoteMessage.Builder(token)
-            .addData("title", "Pesanan $new_value")
-            .addData("body", "Pesanan yang kamu pesan sudah $new_value")
-            .build()
 
-        firebaseMessaging.send(message)
+        val accessToken = Fcm.getAccessToken(context)
+        Fcm.sendFcmMessageDeviceToken(
+            accessToken = accessToken,
+            title = "Pesanan $new_value",
+            body = "Pesanan yang kamu pesan sudah $new_value",
+            deviceToken = token
+        )
 
         firestore.collection(AuthRepository.COLLECTION_USER)
             .document(id_user)
@@ -295,6 +304,7 @@ class PemesananRepository @Inject constructor(
         }
 
         val listener_result = firestore.collection(PEMESANAN_COLLECTION)
+            .orderBy("timemilis", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if(error != null){
                     Log.e("getLayananData", "Error: ${error.message}")

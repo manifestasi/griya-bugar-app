@@ -165,7 +165,7 @@ private fun ContentSection(
                         .align(Alignment.CenterVertically)
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                Rating(rate = "4.5", modifier = Modifier.align(Alignment.CenterVertically))
+                Rating(rate = dataPaket?.rating.toString(), modifier = Modifier.align(Alignment.CenterVertically))
                 Text(
                     text = "(200)",
                     color = TextColorBlack,
