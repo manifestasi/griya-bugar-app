@@ -149,6 +149,7 @@ class PaketRepository @Inject constructor (
         return paketList.map { paket ->
             var rataRating = 0F
             var totalSize = 0
+            var totalDataPemesanan = 0
             val layananNames = paket.layanan.mapNotNull { layananMap[it] }
 
             val filterDataPemesanan = getDataPemesanan?.filter {
@@ -160,6 +161,7 @@ class PaketRepository @Inject constructor (
                     if (it.rated){
                         rataRating += it.rating
                         totalSize++
+                        totalDataPemesanan++
                     }
                 }
                 Log.d("getPaketWithLayananNames", "jumlah: $totalSize")
@@ -176,7 +178,8 @@ class PaketRepository @Inject constructor (
                 layananNames = layananNames,
                 fotoDepan = paket.fotoDepan,
                 fotoDetail = paket.fotoDetail,
-                rating = rataRating
+                rating = rataRating,
+                jumlahRating = totalDataPemesanan
             )
         }
     }

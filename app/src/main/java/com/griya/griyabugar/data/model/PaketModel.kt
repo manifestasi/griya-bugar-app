@@ -21,6 +21,7 @@ data class PaketModel2(
     val fotoDepan: String? = null,
     val fotoDetail: String? = null,
     val rating: Float = 0F,
+    val jumlahRating: Int = 0
 )
 
 data class PaketModelWithLayanan(
@@ -49,4 +50,5 @@ data class PaketModelWithLayanan2(
     val fotoDepan: String? = null,
     val fotoDetail: String? = null,
     val rating: Float = 0F,
+    val jumlahRating: Int = 0
 )

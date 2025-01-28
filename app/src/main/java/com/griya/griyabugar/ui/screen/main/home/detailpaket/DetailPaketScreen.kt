@@ -167,7 +167,7 @@ private fun ContentSection(
                 Spacer(modifier = Modifier.weight(1f))
                 Rating(rate = dataPaket?.rating.toString(), modifier = Modifier.align(Alignment.CenterVertically))
                 Text(
-                    text = "(200)",
+                    text = "(${dataPaket?.jumlahRating})",
                     color = TextColorBlack,
                     fontSize = 16.sp,
                     fontFamily = poppins,

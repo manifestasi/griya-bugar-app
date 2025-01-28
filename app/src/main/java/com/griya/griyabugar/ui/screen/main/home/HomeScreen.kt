@@ -323,7 +323,8 @@ fun PromoSection(
                             fotoDetail = it.fotoDetail,
                             diskon = it.diskon,
                             kategori = it.kategori,
-                            rating = it.rating
+                            rating = it.rating,
+                            jumlahRating = it.jumlahRating
                         )
                         rootNavController.navigate(Screen.DetailPaket.route)
                     }
@@ -412,7 +413,8 @@ fun RegulerSection(
                             fotoDetail = it.fotoDetail,
                             diskon = it.diskon,
                             kategori = it.kategori,
-                            rating = it.rating
+                            rating = it.rating,
+                            jumlahRating = it.jumlahRating
                         )
 
                         rootNavController.navigate(Screen.DetailPaket.route)
