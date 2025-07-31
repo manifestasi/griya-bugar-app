@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -127,6 +128,7 @@ fun PelangganCMSScreen(
                                                 uuid_doc = dt.uuid_doc,
                                                 id_user = dt.id_user,
                                                 nama = pelanggan_data.nama!!,
+                                                nama_terapis = dt.nama_terapis,
                                                 status = dt.status,
                                                 kategori = paket_data.kategori ?: "",
                                                 title = paket_data.title ?: "",
@@ -307,10 +309,10 @@ fun PelangganCMSScreen(
         if(isLoading){
             LoadingAnimation2()
         }else{
-            Spacer(modifier = Modifier.height(30.dp))
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(bottom = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -335,6 +337,7 @@ fun PelangganCMSScreen(
 
                     CardPelanggan(
                         nama = item.nama,
+                        terapis = item.nama_terapis,
                         kategori = item.kategori,
                         tanggal = item.tanggal,
                         paket = item.title,

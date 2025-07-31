@@ -1,7 +1,6 @@
 package com.griya.griyabugar.util
 
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -25,5 +24,27 @@ object Date {
 
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return formatter.format(calendar.time)
+    }
+
+    fun getDayNameOld(dateString: String): String {
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = format.parse(dateString)
+        val dayFormat = SimpleDateFormat("EEEE", Locale("id"))
+        return dayFormat.format(date!!)
+    }
+
+    fun isTimeInRange(selected: String, start: String, end: String): Boolean {
+        return try {
+            val format = SimpleDateFormat("HH.mm", Locale.getDefault())
+
+            val selectedDate = format.parse(selected)
+            val startDate = format.parse(start)
+            val endDate = format.parse(end)
+
+            selectedDate != null && startDate != null && endDate != null &&
+                    !selectedDate.before(startDate) && !selectedDate.after(endDate)
+        } catch (e: Exception) {
+            false
+        }
     }
 }

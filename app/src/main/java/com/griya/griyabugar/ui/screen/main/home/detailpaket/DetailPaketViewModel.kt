@@ -17,6 +17,7 @@ class DetailPaketViewModel @Inject constructor(
 
     fun addPemesanan(
         id_paket: String,
+        id_terapis: String,
         jam_pemesanan: String,
         rated: Boolean,
         tanggal_servis: String,
@@ -24,7 +25,7 @@ class DetailPaketViewModel @Inject constructor(
         paket: String
     ): Flow<Resource<String>> {
         return pemesananRepository.addPemesanan(
-            id_paket, jam_pemesanan, rated, tanggal_servis, kategori, paket
+            id_paket, id_terapis, jam_pemesanan, rated, tanggal_servis, kategori, paket
         )
     }
 }

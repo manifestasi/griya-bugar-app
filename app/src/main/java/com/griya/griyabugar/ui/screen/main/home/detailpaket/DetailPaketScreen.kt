@@ -18,12 +18,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +55,7 @@ import com.griya.griyabugar.ui.components.Button.ButtonGradient
 import com.griya.griyabugar.ui.components.dialog.ClockInputDialog
 import com.griya.griyabugar.ui.components.dialog.ErrorDialog
 import com.griya.griyabugar.ui.components.dialog.SuccessDialog
+import com.griya.griyabugar.ui.components.dropdown.DropDownTerapis
 import com.griya.griyabugar.ui.components.home.BackButton
 import com.griya.griyabugar.ui.components.home.DiskonBox
 import com.griya.griyabugar.ui.components.home.InputJamDialog
@@ -81,7 +85,10 @@ fun DetailPaketScreen(
     scope: CoroutineScope = rememberCoroutineScope()
 ) {
 
-    Box() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
         HeaderSection(
             sharedViewModel = sharedViewModel,
             navController = rootNavControll, modifier = Modifier
@@ -128,9 +135,11 @@ private fun ContentSection(
 ) {
     val dataPaket = sharedViewModel.paketModel2
     var showJamDialog by remember { mutableStateOf(false) }
-    var selectedTime by remember { mutableStateOf("10.00") }
+    var selectedTime by remember { mutableStateOf("") }
 //    var selectedDates by remember { mutableStateOf(setOf<LocalDate>()) }
     var selectedDates by rememberSaveable { mutableStateOf<Int>(0) }
+    var selectedDay by rememberSaveable { mutableStateOf("") }
+
     var currentWeekStart by remember { mutableStateOf(getStartOfCurrentWeek()) }
 
     var isLoading by rememberSaveable { mutableStateOf(false) }
@@ -140,6 +149,10 @@ private fun ContentSection(
 
     var isError by rememberSaveable { mutableStateOf(false) }
     var errorMessage by rememberSaveable { mutableStateOf("") }
+
+    var selectedNameTerapis by rememberSaveable { mutableStateOf("") }
+    var selectedIdTerapis by rememberSaveable { mutableStateOf("") }
+
 //    val items = listOf(
 //        "Traditional",
 //        "Shiatsu",
@@ -239,13 +252,13 @@ private fun ContentSection(
                             date = date,
                             onDateClick = {
                                 selectedDates = it
+                                selectedDay = Date.getDayNameOld(Date.getCurrentDateFromDay(selectedDates))
                             }
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(5.dp))
-
 
             }
 
@@ -298,30 +311,51 @@ private fun ContentSection(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                if (selectedDay.isNotBlank() && selectedTime.isNotBlank()) {
+                    val filteredTerapis = dataPaket?.terapis
+                        ?.filter { terapis ->
+                            selectedDay in terapis.hari_kerja &&
+                                    Date.isTimeInRange(selectedTime, terapis.jam_masuk, terapis.jam_pulang)
+                        } ?: emptyList()
+
+                    DropDownTerapis(
+                        options = filteredTerapis,
+                        selectedText = selectedNameTerapis
+                    ) { name, id ->
+                        selectedNameTerapis = name
+                        selectedIdTerapis = id
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 ButtonConfirm(onClick = {
-                    scope.launch {
-                        detailPaketViewModel.addPemesanan(
-                            id_paket = dataPaket?.id ?: "",
-                            rated = false,
-                            jam_pemesanan = selectedTime,
-                            tanggal_servis = Date.getCurrentDateFromDay(selectedDates),
-                            kategori = dataPaket?.kategori ?: "",
-                            paket = dataPaket?.title ?: ""
-                        ).collect { event ->
-                            when (event){
-                                is Resource.Loading -> {
-                                    isLoading = true
+                    if (selectedDay.isNotBlank() && selectedTime.isNotBlank() && selectedNameTerapis.isNotBlank()){
+                        scope.launch {
+                            detailPaketViewModel.addPemesanan(
+                                id_paket = dataPaket?.id ?: "",
+                                id_terapis = selectedIdTerapis,
+                                rated = false,
+                                jam_pemesanan = selectedTime,
+                                tanggal_servis = Date.getCurrentDateFromDay(selectedDates),
+                                kategori = dataPaket?.kategori ?: "",
+                                paket = dataPaket?.title ?: ""
+                            ).collect { event ->
+                                when (event){
+                                    is Resource.Loading -> {
+                                        isLoading = true
+                                    }
+                                    is Resource.Success -> {
+                                        isLoading = false
+                                        isSuccess = true
+                                        successMessage = event.data
+                                    }
+                                    is Resource.Error -> {
+                                        isError = true
+                                        errorMessage = event.errorMessage
+                                    }
+                                    else -> {}
                                 }
-                                is Resource.Success -> {
-                                    isLoading = false
-                                    isSuccess = true
-                                    successMessage = event.data
-                                }
-                                is Resource.Error -> {
-                                    isError = true
-                                    errorMessage = event.errorMessage
-                                }
-                                else -> {}
                             }
                         }
                     }
@@ -332,6 +366,8 @@ private fun ContentSection(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(80.dp))
 
     }
 

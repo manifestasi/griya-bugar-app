@@ -48,6 +48,7 @@ fun CardPelanggan(
     width:Float = 0.9f,
     height:Dp = 100.dp,
     nama:String,
+    terapis: String,
     kategori : String,
     tanggal: String,
     jam: String,
@@ -70,7 +71,7 @@ fun CardPelanggan(
         ),
         modifier = modifier.fillMaxWidth(
             width
-        ).height(height)
+        ).wrapContentHeight()
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(5.dp),
@@ -129,47 +130,56 @@ fun CardPelanggan(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Row (
-                modifier = Modifier.wrapContentWidth().padding(end=10.dp, top=5.dp, bottom=5.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Box(
-                    modifier = Modifier.wrapContentSize()
-                        .border(border = BorderStroke(
-                            width = 1.dp, color = color_status
-                        ))
-                ) {
-                    Text(
-                        status, 
-                        fontFamily = poppins,
-                        fontSize = 10.sp,
-                        color = color_status,
-                        modifier = Modifier.padding(5.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-
-                /*
-                * button edit
-                * */
-                ButtonGradientBorder(
-                    onClick = {
-                        onEditClick()
-                    }
+            Column {
+                Row (
+                    modifier = Modifier.wrapContentWidth().padding(end=10.dp, top=5.dp, bottom=5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ){
-                    Icon(
-                        imageVector = Icons.Filled.Create,
-                        contentDescription = "SD",
-                        tint = GreenMain,
-                        modifier = Modifier.size(20.dp)
-                    )
+                    Box(
+                        modifier = Modifier.wrapContentSize()
+                            .border(border = BorderStroke(
+                                width = 1.dp, color = color_status
+                            ))
+                    ) {
+                        Text(
+                            status,
+                            fontFamily = poppins,
+                            fontSize = 10.sp,
+                            color = color_status,
+                            modifier = Modifier.padding(5.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    /*
+                    * button edit
+                    * */
+                    ButtonGradientBorder(
+                        onClick = {
+                            onEditClick()
+                        }
+                    ){
+                        Icon(
+                            imageVector = Icons.Filled.Create,
+                            contentDescription = "SD",
+                            tint = GreenMain,
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                    }
+
 
                 }
 
+                Spacer(modifier = Modifier.height(8.dp))
 
+                Text("Terapis: $terapis",
+                    fontFamily = poppins,
+                    fontSize = 9.sp,
+                    color = Color.Black
+                )
             }
-
 
         }
     }
@@ -185,6 +195,7 @@ fun CardPelangganPreview(){
         ){
             CardPelanggan(
                 nama = "Bento",
+                terapis = "Angela",
                 kategori = "Promosi",
                 tanggal = "Kamis, 22-12-2024",
                 paket = "Paket 2 Jam",

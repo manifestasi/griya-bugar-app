@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.griya.griyabugar.data.Resource
 import com.griya.griyabugar.data.UploadResult
+import com.griya.griyabugar.data.model.DataTerapis
 import com.griya.griyabugar.data.model.DataUser
 import com.griya.griyabugar.data.model.ItemPemesananModel2
 import com.griya.griyabugar.data.model.Layanan
@@ -127,6 +128,26 @@ class PaketRepository @Inject constructor (
             )
         }
 
+        val terapisSnapshot = firestore.collection(TerapisRepository.COLLECTION)
+            .get()
+            .await()
+
+        val dataTerapis = terapisSnapshot.documents.mapNotNull { doc ->
+            DataTerapis(
+                id = doc.id,
+                hari_kerja = doc.get("hari_kerja") as? List<String> ?: emptyList(),
+                jam_masuk = doc.getString("jam_masuk") ?: "",
+                jam_pulang = doc.getString("jam_pulang") ?: "",
+                layanan = doc.get("layanan") as? List<String> ?: emptyList(),
+                nama = doc.getString("nama") ?: "",
+                foto_depan = doc.getString("foto_depan") ?: "",
+                foto_depan_public_id = doc.getString("foto_depan_public_id") ?: "",
+                foto_detail = doc.getString("foto_detail") ?: "",
+                foto_detail_public_id = doc.getString("foto_detail_public_id") ?: "",
+                timemilis = doc.getLong("timemilis") ?: 0L
+            )
+        }
+
         val pemesananSnapshot = firestore.collection(PemesananRepository.PEMESANAN_COLLECTION)
             .get()
             .await()
@@ -156,6 +177,10 @@ class PaketRepository @Inject constructor (
                 it.id_paket == paket.id
             }
 
+            val filterDataTerapis = dataTerapis.filter { terapis ->
+                terapis.layanan.any { it in layananIds }
+            }
+
             if (filterDataPemesanan != null){
                 filterDataPemesanan.forEach {
                     if (it.rated){
@@ -179,7 +204,8 @@ class PaketRepository @Inject constructor (
                 fotoDepan = paket.fotoDepan,
                 fotoDetail = paket.fotoDetail,
                 rating = rataRating,
-                jumlahRating = totalDataPemesanan
+                jumlahRating = totalDataPemesanan,
+                terapis = filterDataTerapis
             )
         }
     }

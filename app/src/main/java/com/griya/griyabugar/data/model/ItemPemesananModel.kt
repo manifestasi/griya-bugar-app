@@ -4,6 +4,7 @@ data class ItemPemesananModel(
     val uuid_doc : String = "",
     val id_paket :String = "",
     val id_terapis : String = "",
+    val nama_terapis: String = "",
     val id_user : String = "",
     val rated : Boolean = false,
     val jam_pemesanan : String = "",
